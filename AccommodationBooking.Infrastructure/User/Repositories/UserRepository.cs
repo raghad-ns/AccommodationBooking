@@ -20,15 +20,24 @@ public class UserRepository : IUserRepository
         return _context.Users.ToListAsync();
     }
 
-    public Task<UserModel> Login(string username, string password)
+    public async Task<UserModel> Login(LoginDTO loginDTO)
     {
-        throw new NotImplementedException();
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == loginDTO.UserName);
+        if (user == null)
+        {
+            return null;
+        }
+        if (user.Password != loginDTO.Password)
+        {
+            return null;
+        }
+        return user;
     }
 
-    public Task Logout(string token)
-    {
-        throw new NotImplementedException();
-    }
+    //public Task Logout(string token)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     public async Task<UserModel> Register(UserModel model)
     {
@@ -44,8 +53,8 @@ public class UserRepository : IUserRepository
             return null;
         }
 
-        _context.Users.AddAsync(model);
-        _context.SaveChanges();
+        _context.Users.Add(model);
+        await _context.SaveChangesAsync();
         var user =  await _context.Users.FirstOrDefaultAsync(user => user.Email == model.Email);
         Console.WriteLine(user);
         return user;

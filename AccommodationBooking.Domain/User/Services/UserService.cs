@@ -1,6 +1,7 @@
 ﻿using AccommodationBooking.Domain.User.Models;
 using AccommodationBooking.Domain.User.Repositories;
 using AccommodationBooking.Domain.User.Validators;
+using System.Reflection;
 
 namespace AccommodationBooking.Domain.User.Services
 {
@@ -17,15 +18,20 @@ namespace AccommodationBooking.Domain.User.Services
             return _userRepository.GetAllUsers();
         }
 
-        public Task<UserModel> Login(string username, string password)
+        public Task<UserModel> Login(LoginDTO loginDTO)
         {
-            throw new NotImplementedException();
+            var validator = new LoginValidator();
+            if (!validator.Validate(loginDTO).IsValid)
+            {
+                return null;
+            }
+            return _userRepository.Login(loginDTO);
         }
 
-        public Task Logout(string token)
-        {
-            throw new NotImplementedException();
-        }
+        // public Task Logout(string token)
+        // {
+        //     throw new NotImplementedException();
+        // }
 
         public Task<UserModel> Register(UserModel model)
         {

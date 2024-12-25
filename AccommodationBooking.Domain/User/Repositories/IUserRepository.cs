@@ -4,8 +4,8 @@ namespace AccommodationBooking.Domain.User.Repositories
 {
     public interface IUserRepository
     {
-        Task<UserModel> Login(string username, string password);
-        Task Logout(string token);
+        Task<UserModel> Login(LoginDTO loginDTO);
+        //Task Logout(string token);
         Task<UserModel> Register(UserModel model);
         Task<List<UserModel>> GetAllUsers();
     }

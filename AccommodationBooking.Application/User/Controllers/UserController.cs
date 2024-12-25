@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AccommodationBooking.Application.User.Controllers;
 [ApiController]
-[Route("/user")]
+[Route("api/users")]
 public class UserController: ControllerBase
 {
     private readonly IUserService _userService;
@@ -24,9 +24,23 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("/register")]
-    public async Task<ActionResult<UserModel>> Register(UserModel userDTO)
+    public async Task<ActionResult<UserModel>> Register([FromBody] UserModel userDTO)
     {
         var user = _userService.Register(userDTO);
+        if (user == null)
+            return BadRequest();
+
         return Created();
+    }
+
+    [HttpPost("/login")]
+    public async Task<ActionResult<UserModel>> Login([FromBody] LoginDTO loginDTO)
+    {
+        var user = await _userService.Login(loginDTO);
+
+        if (user == null)
+            return Unauthorized();
+
+        return Ok(user);
     }
 }

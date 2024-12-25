@@ -5,16 +5,43 @@ using AccommodationBooking.Domain.User.Services;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.User.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using AccommodationBooking.Application.Configuration.Authentication.Extensions;
+using AccommodationBooking.Application.Configuration.Authentication.Models;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+// Add authentication services to the container.
+builder.Services
+    .LoadDatabaseConfiguration(builder)
+    .LoadAuthenticationConfiguration(builder);
 
-// Add services to the container.
-builder.Services.LoadDatabaseConfiguration(builder);
+var authenticationConfiguration = new AuthenticationOptions();
+var databaseOptions = 
+//builder.Services.AddAuthentication(k =>
+//{
+//    k.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    k.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(p =>
+//{
+//    var key = Encoding.UTF8.GetBytes(authenticationConfiguration.Key);
+//    p.SaveToken = true;
+//    p.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = false,
+//        ValidateAudience = false,
+//        ValidateLifetime = false,
+//        ValidateIssuerSigningKey = true,
+//        ValidIssuer = authenticationConfiguration.Key,
+//        ValidAudience = authenticationConfiguration.Audience,
+//        IssuerSigningKey = new SymmetricSecurityKey(key)
+//    };
+//});
 
+// Add DbContext to the container
 builder.Services.AddDbContext<AccommodationBookingContext>(options =>
 {
     var serviceProvider = builder.Services.BuildServiceProvider();
@@ -23,31 +50,17 @@ builder.Services.AddDbContext<AccommodationBookingContext>(options =>
 });
 
 // Add services
-//builder.Services.AddScoped<AccommodationBookingContext>();
+builder.Services.AddScoped<AccommodationBookingContext>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+app.MapControllers();
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-//app.UseAuthorization();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.MapGet("/", () => "Hello World!");
 
 app.Run();
 
