@@ -19,14 +19,14 @@ public class UserController: ControllerBase
     [HttpGet()]
     public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
     {
-        var users = _userService.GetUsers();
+        var users = await _userService.GetUsers();
         return Ok(users);
     }
 
     [HttpPost("/register")]
     public async Task<ActionResult<UserModel>> Register([FromBody] UserModel userDTO)
     {
-        var user = _userService.Register(userDTO);
+        var user = await _userService.Register(userDTO);
         if (user == null)
             return BadRequest();
 

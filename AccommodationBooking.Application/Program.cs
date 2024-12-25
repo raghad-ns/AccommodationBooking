@@ -11,6 +11,9 @@ using AccommodationBooking.Application.Configuration.Authentication.Extensions;
 using AccommodationBooking.Application.Configuration.Authentication.Models;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using FluentValidation;
+using AccommodationBooking.Domain.User.Models;
+using AccommodationBooking.Domain.User.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +56,7 @@ builder.Services.AddDbContext<AccommodationBookingContext>(options =>
 builder.Services.AddScoped<AccommodationBookingContext>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IValidator<UserModel>, UserValidator>();
 
 builder.Services.AddControllers();
 
