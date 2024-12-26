@@ -16,14 +16,14 @@ public class UserController: ControllerBase
         _userService = userService; 
     }
 
-    [HttpGet()]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
     {
         var users = await _userService.GetUsers();
         return Ok(users);
     }
 
-    [HttpPost("/register")]
+    [HttpPost("register")]
     public async Task<ActionResult<UserModel>> Register([FromBody] UserModel userDTO)
     {
         var user = await _userService.Register(userDTO);
