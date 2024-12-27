@@ -3,7 +3,6 @@ using AccommodationBooking.Application.Configuration.Database.Models;
 using AccommodationBooking.Domain.User.Repositories;
 using AccommodationBooking.Domain.User.Services;
 using AccommodationBooking.Infrastructure.Contexts;
-using AccommodationBooking.Infrastructure.User.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
@@ -12,8 +11,11 @@ using AccommodationBooking.Application.Configuration.Authentication.Models;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using FluentValidation;
-using AccommodationBooking.Domain.User.Models;
 using AccommodationBooking.Domain.User.Validators;
+using AccommodationBooking.Infrastructure.Users.Repositories;
+using AccommodationBooking.Domain.Users.Models;
+using AccommodationBooking.Infrastructure.Users.Mappers;
+using AccommodationBooking.Application.User.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,7 +58,12 @@ builder.Services.AddDbContext<AccommodationBookingContext>(options =>
 builder.Services.AddScoped<AccommodationBookingContext>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IValidator<UserModel>, UserValidator>();
+builder.Services.AddScoped<IValidator<User>, UserValidator>();
+builder.Services.AddScoped<IValidator<LoginRequest>, LoginValidator>();
+
+// Add mappers
+builder.Services.AddScoped<UserMapper>();
+builder.Services.AddScoped<ApplicationDomainUserMapper>();
 
 builder.Services.AddControllers();
 

@@ -1,8 +1,6 @@
-﻿using AccommodationBooking.Infrastructure.User.Models;
+﻿namespace AccommodationBooking.Domain.Users.Models;
 
-namespace AccommodationBooking.Domain.User.Models;
-
-public class UserModel
+public class User
 {
     public int Id { get; set; }
     public string UserName { get; set; }

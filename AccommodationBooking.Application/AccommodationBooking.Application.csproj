@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Middlewares\" />
-    <Folder Include="User\Mappers\" />
-    <Folder Include="User\Models\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Riok.Mapperly" Version="4.1.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
   </ItemGroup>
 

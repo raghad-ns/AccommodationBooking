@@ -1,9 +1,9 @@
-﻿using AccommodationBooking.Domain.User.Models;
+﻿using AccommodationBooking.Domain.Users.Models;
 using FluentValidation;
 
 namespace AccommodationBooking.Domain.User.Validators;
 
-public class LoginValidator : AbstractValidator<LoginDTO>
+public class LoginValidator : AbstractValidator<LoginRequest>
 {
     public LoginValidator()
     {
