@@ -1,11 +1,8 @@
-﻿//using AccommodationBooking.Domain.User.Models;
-using AccommodationBooking.Domain.User.Repositories;
-using AccommodationBooking.Domain.Users.Models;
+﻿using AccommodationBooking.Domain.User.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Infrastructure.Users.Models;
-
-//using AccommodationBooking.Infrastructure.Users.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccommodationBooking.Infrastructure.Users.Repositories;
@@ -14,11 +11,13 @@ public class UserRepository : IUserRepository
 {
     private readonly AccommodationBookingContext _context;
     private readonly UserMapper _mapper;
+    private readonly UserManager<User> _userManager;
 
-    public UserRepository(AccommodationBookingContext context, UserMapper mapper)
+    public UserRepository(AccommodationBookingContext context, UserMapper mapper, UserManager<User> userManager)
     {
         _context = context;
         _mapper = mapper;
+        _userManager = userManager;
     }
     public Task<List<Domain.Users.Models.User>> GetAllUsers()
     {
@@ -28,14 +27,14 @@ public class UserRepository : IUserRepository
             .ToListAsync();
     }
 
-    public async Task<Domain.Users.Models.User> Login(LoginRequest loginDTO)
+    public async Task<Domain.Users.Models.User> Login(Domain.Users.Models.LoginRequest loginDTO)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == loginDTO.UserName);
         if (user == null)
         {
             return null;
         }
-        if (user.Password != loginDTO.Password)
+        if (user.PasswordHash != loginDTO.Password)
         {
             return null;
         }
@@ -62,10 +61,22 @@ public class UserRepository : IUserRepository
             return null;
         }
 
-        _context.Users.Add(model);
-        await _context.SaveChangesAsync();
-        var user = await _context.Users.FirstOrDefaultAsync(user => user.Email == model.Email);
-
-        return _mapper.ToDomainUser(user);
+        var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
+        if (createdUser.Succeeded)
+        {
+            var roleResult = await _userManager.AddToRoleAsync(model, "User");
+            if (roleResult.Succeeded)
+            {
+                return _mapper.ToDomainUser(model);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
     }
 }

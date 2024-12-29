@@ -1,20 +1,22 @@
 ﻿using AccommodationBooking.Application.User.Mappers;
 using AccommodationBooking.Application.User.Models;
 using AccommodationBooking.Domain.User.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccommodationBooking.Application.User.Controllers;
 [ApiController]
 [Route("api/users")]
-public class UserController: ControllerBase
+public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly ApplicationDomainUserMapper _mapper;
 
-    public UserController(IUserService userService, ApplicationDomainUserMapper mapper)
+    public UserController(
+        IUserService userService,
+        ApplicationDomainUserMapper mapper
+        )
     {
-        _userService = userService; 
+        _userService = userService;
         _mapper = mapper;
     }
 

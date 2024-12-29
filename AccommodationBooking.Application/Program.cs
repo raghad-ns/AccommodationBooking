@@ -16,6 +16,7 @@ using AccommodationBooking.Infrastructure.Users.Repositories;
 using AccommodationBooking.Domain.Users.Models;
 using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Application.User.Mappers;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,27 +25,47 @@ builder.Services
     .LoadDatabaseConfiguration(builder)
     .LoadAuthenticationConfiguration(builder);
 
-var authenticationConfiguration = new AuthenticationOptions();
-var databaseOptions = 
-//builder.Services.AddAuthentication(k =>
-//{
-//    k.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    k.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//}).AddJwtBearer(p =>
-//{
-//    var key = Encoding.UTF8.GetBytes(authenticationConfiguration.Key);
-//    p.SaveToken = true;
-//    p.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = false,
-//        ValidateAudience = false,
-//        ValidateLifetime = false,
-//        ValidateIssuerSigningKey = true,
-//        ValidIssuer = authenticationConfiguration.Key,
-//        ValidAudience = authenticationConfiguration.Audience,
-//        IssuerSigningKey = new SymmetricSecurityKey(key)
-//    };
-//});
+builder.Services
+    .AddIdentity<AccommodationBooking.Infrastructure.Users.Models.User, IdentityRole>(options =>
+    {
+        options.Password.RequireLowercase = true;
+        options.Password.RequireDigit = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequiredLength = 8;
+
+    })
+    .AddEntityFrameworkStores<AccommodationBookingContext>();
+
+var authenticationConfiguration = builder
+    .Services.
+    BuildServiceProvider()
+    .GetRequiredService<IOptions<AuthenticationOptions>>()
+    .Value;
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme =
+    options.DefaultChallengeScheme =
+    options.DefaultForbidScheme =
+    options.DefaultScheme =
+    options.DefaultSignInScheme =
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(p =>
+{
+    var key = Encoding.UTF8.GetBytes(authenticationConfiguration.Key);
+    p.SaveToken = true;
+    p.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = authenticationConfiguration.Issuer,
+        ValidateAudience = true,
+        ValidAudience = authenticationConfiguration.Audience,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
 
 // Add DbContext to the container
 builder.Services.AddDbContext<AccommodationBookingContext>(options =>
@@ -60,6 +81,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IValidator<User>, UserValidator>();
 builder.Services.AddScoped<IValidator<LoginRequest>, LoginValidator>();
+builder.Services.AddScoped<UserManager<AccommodationBooking.Infrastructure.Users.Models.User>>();
 
 // Add mappers
 builder.Services.AddScoped<UserMapper>();
@@ -68,6 +90,9 @@ builder.Services.AddScoped<ApplicationDomainUserMapper>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
