@@ -49,7 +49,8 @@ public class UserRepository : IUserRepository
     public async Task<Domain.Users.Models.User> Register(Domain.Users.Models.User domainModel)
     {
         var model = _mapper.ToInfrastructureUser(domainModel);
-        var users = await _context.Users.ToListAsync();
+        model.Id = Guid.NewGuid().ToString();
+
         var similarUser = await _context.Users
             .FirstOrDefaultAsync(x =>
                 x.Email == model.Email || x.UserName == model.UserName
@@ -57,7 +58,6 @@ public class UserRepository : IUserRepository
 
         if (similarUser != null)
         {
-            Console.WriteLine("similar: ", similarUser);
             return null;
         }
 
@@ -65,6 +65,7 @@ public class UserRepository : IUserRepository
         if (createdUser.Succeeded)
         {
             var roleResult = await _userManager.AddToRoleAsync(model, "User");
+
             if (roleResult.Succeeded)
             {
                 return _mapper.ToDomainUser(model);

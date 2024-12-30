@@ -16,8 +16,5 @@ public class UserValidator: AbstractValidator<Users.Models.User>
 
         RuleFor(user => user.Password)
             .NotEmpty();
-        
-        RuleFor(user => user.Role)
-            .NotNull();
     }
 }

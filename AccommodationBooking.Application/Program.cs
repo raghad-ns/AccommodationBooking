@@ -17,6 +17,7 @@ using AccommodationBooking.Domain.Users.Models;
 using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Application.User.Mappers;
 using Microsoft.AspNetCore.Identity;
+using AccommodationBooking.Application.Configuration.Authentication.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .LoadDatabaseConfiguration(builder)
     .LoadAuthenticationConfiguration(builder);
+
+
+// Add DbContext to the container
+builder.Services.AddDbContext<AccommodationBookingContext>(options =>
+{
+    var serviceProvider = builder.Services.BuildServiceProvider();
+    var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+    Console.WriteLine("connection: ", databaseOptions.ConnectionString);
+    options.UseSqlServer(databaseOptions.ConnectionString);
+});
 
 builder.Services
     .AddIdentity<AccommodationBooking.Infrastructure.Users.Models.User, IdentityRole>(options =>
@@ -37,8 +48,8 @@ builder.Services
     .AddEntityFrameworkStores<AccommodationBookingContext>();
 
 var authenticationConfiguration = builder
-    .Services.
-    BuildServiceProvider()
+    .Services
+    .BuildServiceProvider()
     .GetRequiredService<IOptions<AuthenticationOptions>>()
     .Value;
 
@@ -57,7 +68,7 @@ builder.Services.AddAuthentication(options =>
     p.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidIssuer = authenticationConfiguration.Issuer,
+        ValidIssuer = authenticationConfiguration.Issuer ,
         ValidateAudience = true,
         ValidAudience = authenticationConfiguration.Audience,
         ValidateLifetime = true,
@@ -66,17 +77,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
-// Add DbContext to the container
-builder.Services.AddDbContext<AccommodationBookingContext>(options =>
-{
-    var serviceProvider = builder.Services.BuildServiceProvider();
-    var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-    options.UseSqlServer(databaseOptions.ConnectionString);
-});
-
 // Add services
+builder.Services.AddScoped<AuthenticationOptions>();
 builder.Services.AddScoped<AccommodationBookingContext>();
+builder.Services.AddScoped<SymmetricSecurityKey>();
+builder.Services.AddScoped<ITokensService, TokensService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IValidator<User>, UserValidator>();

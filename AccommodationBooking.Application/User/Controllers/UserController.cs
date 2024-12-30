@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Application.User.Mappers;
+﻿using AccommodationBooking.Application.Configuration.Authentication.Services;
+using AccommodationBooking.Application.User.Mappers;
 using AccommodationBooking.Application.User.Models;
 using AccommodationBooking.Domain.User.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +11,16 @@ public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly ApplicationDomainUserMapper _mapper;
+    private readonly ITokensService _tokenService;
 
     public UserController(
         IUserService userService,
+        ITokensService tokenService,
         ApplicationDomainUserMapper mapper
         )
     {
         _userService = userService;
+        _tokenService = tokenService;
         _mapper = mapper;
     }
 
@@ -31,6 +35,7 @@ public class UserController : ControllerBase
     public async Task<ActionResult<Domain.Users.Models.User>> Register([FromBody] Domain.Users.Models.User userDTO)
     {
         var user = await _userService.Register(userDTO);
+        
         if (user == null)
             return BadRequest();
 
@@ -46,6 +51,16 @@ public class UserController : ControllerBase
         if (user == null)
             return Unauthorized();
 
-        return Ok(user);
+        return Ok(new
+        {
+            UserName= user.UserName, 
+            Email =user.Email, 
+            Token= _tokenService.GenerateToken(new Infrastructure.Users.Models.User { 
+                UserName = user.UserName,
+                Email = user.Email,
+                PasswordHash = user.Password,
+                NormalizedUserName = user.FirstName + " " + user.LastName,
+            })
+        });
     }
 }
