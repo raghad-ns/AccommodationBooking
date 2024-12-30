@@ -1,6 +1,6 @@
 ﻿
 using AccommodationBooking.Application.Configuration.Authentication.Models;
-//using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -13,19 +13,19 @@ public class TokensService : ITokensService
     private readonly AuthenticationOptions _authenticationOptions;
     private readonly SymmetricSecurityKey _symmetricSecurityKey;
 
-    public TokensService(AuthenticationOptions authenticationOptions)
+    public TokensService(IOptions<AuthenticationOptions> authenticationOptions)
     {
-        _authenticationOptions = authenticationOptions;
-        Console.WriteLine("options: ", authenticationOptions.Issuer);
-        _symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationOptions.Key ?? "This is alternative key"));
+        _authenticationOptions = authenticationOptions.Value;
+        var secretKey = _authenticationOptions.Key;
+        _symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
     }
 
     string ITokensService.GenerateToken(Infrastructure.Users.Models.User user)
     {
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName ?? ""),
         };
 
         var signinCredentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha256);

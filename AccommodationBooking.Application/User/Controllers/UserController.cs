@@ -50,16 +50,19 @@ public class UserController : ControllerBase
 
         if (user == null)
             return Unauthorized();
-
         return Ok(new
         {
+            Id = user.Id,
             UserName= user.UserName, 
             Email =user.Email, 
-            Token= _tokenService.GenerateToken(new Infrastructure.Users.Models.User { 
+            NormalizedUserName = user.FirstName + " " + user.LastName,
+            Token= _tokenService.GenerateToken(new Infrastructure.Users.Models.User
+            {
+                Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                PasswordHash = user.Password,
                 NormalizedUserName = user.FirstName + " " + user.LastName,
+                
             })
         });
     }

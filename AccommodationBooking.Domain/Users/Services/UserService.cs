@@ -30,7 +30,6 @@ namespace AccommodationBooking.Domain.User.Services
         {
             if (!_loginValidator.Validate(login).IsValid)
             {
-                Console.WriteLine("Invalid login");
                 return null;
             }
             return _userRepository.Login(login);

@@ -12,12 +12,18 @@ public class UserRepository : IUserRepository
     private readonly AccommodationBookingContext _context;
     private readonly UserMapper _mapper;
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signinManager;
 
-    public UserRepository(AccommodationBookingContext context, UserMapper mapper, UserManager<User> userManager)
+    public UserRepository(
+        AccommodationBookingContext context,
+        UserMapper mapper,
+        UserManager<User> userManager,
+        SignInManager<User> signinManager)
     {
         _context = context;
         _mapper = mapper;
         _userManager = userManager;
+        _signinManager = signinManager;
     }
     public Task<List<Domain.Users.Models.User>> GetAllUsers()
     {
@@ -29,12 +35,13 @@ public class UserRepository : IUserRepository
 
     public async Task<Domain.Users.Models.User> Login(Domain.Users.Models.LoginRequest loginDTO)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == loginDTO.UserName);
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDTO.UserName);
         if (user == null)
         {
             return null;
         }
-        if (user.PasswordHash != loginDTO.Password)
+        var result = _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
+        if (!result.IsCompletedSuccessfully)
         {
             return null;
         }

@@ -32,7 +32,6 @@ builder.Services.AddDbContext<AccommodationBookingContext>(options =>
 {
     var serviceProvider = builder.Services.BuildServiceProvider();
     var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-    Console.WriteLine("connection: ", databaseOptions.ConnectionString);
     options.UseSqlServer(databaseOptions.ConnectionString);
 });
 
@@ -87,6 +86,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IValidator<User>, UserValidator>();
 builder.Services.AddScoped<IValidator<LoginRequest>, LoginValidator>();
 builder.Services.AddScoped<UserManager<AccommodationBooking.Infrastructure.Users.Models.User>>();
+builder.Services.AddScoped<SignInManager<AccommodationBooking.Infrastructure.Users.Models.User>>();
 
 // Add mappers
 builder.Services.AddScoped<UserMapper>();
