@@ -25,12 +25,19 @@ public class UserRepository : IUserRepository
         _userManager = userManager;
         _signinManager = signinManager;
     }
-    public Task<List<Domain.Users.Models.User>> GetAllUsers()
+    public async Task<List<Domain.Users.Models.User>> GetAllUsers()
     {
-        //var users = await _context.Users.ToListAsync();
-        return _context.Users
-            .Select(user => _mapper.ToDomainUser(user))
-            .ToListAsync();
+        var users = await _userManager.Users.ToListAsync(); 
+
+        var domainUsers = await Task.WhenAll(
+            users.Select(async user =>
+            {
+                var role = await _mapper.ToDomainRole(user);
+                return _mapper.ToDomainUser(user, role);
+            })
+        );
+
+        return domainUsers.ToList(); 
     }
 
     public async Task<Domain.Users.Models.User> Login(Domain.Users.Models.LoginRequest loginDTO)
@@ -40,12 +47,15 @@ public class UserRepository : IUserRepository
         {
             return null;
         }
+
         var result = _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
         if (!result.IsCompletedSuccessfully)
         {
             return null;
         }
-        return _mapper.ToDomainUser(user);
+
+        var role = await _mapper.ToDomainRole(user);
+        return _mapper.ToDomainUser(user, role);
     }
 
     //public Task Logout(string token)
@@ -75,7 +85,10 @@ public class UserRepository : IUserRepository
 
             if (roleResult.Succeeded)
             {
-                return _mapper.ToDomainUser(model);
+                var role = await _mapper.ToDomainRole(
+                    await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id)
+                    );
+                return _mapper.ToDomainUser(model, role);
             }
             else
             {
