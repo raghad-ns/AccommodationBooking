@@ -78,8 +78,8 @@ builder.Services.AddAuthentication(options =>
 
 // Add services
 builder.Services.AddScoped<AuthenticationOptions>();
+builder.Services.AddScoped<DatabaseOptions>();
 builder.Services.AddScoped<AccommodationBookingContext>();
-builder.Services.AddScoped<SymmetricSecurityKey>();
 builder.Services.AddScoped<ITokensService, TokensService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
