@@ -8,5 +8,5 @@ public class City
     public string Name { get; set; }
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
-    public List<Hotel> Hotels { get; set; }
+    public List<Hotel> Hotels { get; set; } = new();
 }

@@ -12,19 +12,19 @@ public class CityService : ICityService
         _cityRepository = cityRepository;
     }
 
-    Task ICityService.CreateCity(City city)
+    Task<City> ICityService.CreateCity(City city)
     {
-        throw new NotImplementedException();
+        return _cityRepository.CreateCity(city);
     }
 
     Task ICityService.DeleteCityById(int cityId)
     {
-        throw new NotImplementedException();
+        return _cityRepository.DeleteCityById(cityId);
     }
 
     Task ICityService.DeleteCityByName(string name)
     {
-        throw new NotImplementedException();
+        return _cityRepository.DeleteCityByName(name);
     }
 
     async Task<List<City>> ICityService.GetCities()
@@ -42,8 +42,8 @@ public class CityService : ICityService
         return await _cityRepository.GetCityByName(name);
     }
 
-    Task ICityService.UpdateCity(int cityId, City newCity)
+    async Task<City> ICityService.UpdateCity(int cityId, City newCity)
     {
-        throw new NotImplementedException();
+        return await _cityRepository.UpdateCity(cityId, newCity);
     }
 }

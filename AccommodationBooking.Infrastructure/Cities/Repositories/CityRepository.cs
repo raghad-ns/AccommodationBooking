@@ -17,14 +17,27 @@ public class CityRepository : ICityRepository
         _mapper = mapper;
     }
 
-    Task ICityRepository.CreateCity(Domain.Cities.Models.City city)
+    async Task<Domain.Cities.Models.City> ICityRepository.CreateCity(Domain.Cities.Models.City city)
     {
-        throw new NotImplementedException();
+        var infraCity = _mapper.ToInfrastructureCity(city);
+        infraCity.CreatedAt = DateTime.UtcNow;
+        infraCity.UpdatedAt = DateTime.UtcNow;
+
+        _context.Cities.Add(infraCity);
+        await _context.SaveChangesAsync();
+
+        var createdCity = await _context.Cities.FirstOrDefaultAsync(c => c.Name.Equals(city.Name));
+        return _mapper.ToDomainCity(createdCity);
     }
 
-    Task ICityRepository.DeleteCityById(int cityId)
+    async Task ICityRepository.DeleteCityById(int cityId)
     {
-        throw new NotImplementedException();
+        var city = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
+        if (city != null)
+        {
+            _context.Cities.Remove(city);
+            await _context.SaveChangesAsync();
+        }
     }
 
     Task ICityRepository.DeleteCityByName(string name)
@@ -49,8 +62,18 @@ public class CityRepository : ICityRepository
         return _mapper.ToDomainCity(returnedCity);
     }
 
-    Task ICityRepository.UpdateCity(int cityId, Domain.Cities.Models.City city)
+    async Task<Domain.Cities.Models.City> ICityRepository.UpdateCity(int cityId, Domain.Cities.Models.City city)
     {
-        throw new NotImplementedException();
+        var infraCity = _mapper.ToInfrastructureCity(city);
+        var cityToUpdate = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
+        
+        cityToUpdate.Name = city.Name;
+        cityToUpdate.Country = city.Country;
+        cityToUpdate.PostOfficeCode = city.PostOfficeCode;
+        cityToUpdate.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        var updatedCity = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
+        return _mapper.ToDomainCity(updatedCity);
     }
 }
