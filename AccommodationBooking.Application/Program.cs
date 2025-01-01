@@ -18,6 +18,10 @@ using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Application.User.Mappers;
 using Microsoft.AspNetCore.Identity;
 using AccommodationBooking.Application.Configuration.Authentication.Services;
+using AccommodationBooking.Domain.Cities.Repositories;
+using AccommodationBooking.Infrastructure.Cities.Repositories;
+using AccommodationBooking.Domain.Cities.Services;
+using AccommodationBooking.Infrastructure.Cities.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,6 +91,10 @@ builder.Services.AddScoped<IValidator<User>, UserValidator>();
 builder.Services.AddScoped<IValidator<LoginRequest>, LoginValidator>();
 builder.Services.AddScoped<UserManager<AccommodationBooking.Infrastructure.Users.Models.User>>();
 builder.Services.AddScoped<SignInManager<AccommodationBooking.Infrastructure.Users.Models.User>>();
+
+builder.Services.AddScoped<InfrastructureDomainCityMapper>();
+builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
 
 // Add mappers
 builder.Services.AddScoped<UserMapper>();

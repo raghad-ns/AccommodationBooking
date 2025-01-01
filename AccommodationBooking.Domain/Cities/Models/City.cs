@@ -1,4 +1,6 @@
-﻿namespace AccommodationBooking.Infrastructure.Cities.Models;
+﻿using AccommodationBooking.Domain.Hotels.Models;
+
+namespace AccommodationBooking.Domain.Cities.Models;
 
 public class City
 {
@@ -6,7 +8,5 @@ public class City
     public string Name { get; set; }
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
-    public int HotelsNo { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public List<Hotel> Hotels { get; set; }
 }
