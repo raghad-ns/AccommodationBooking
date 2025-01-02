@@ -22,6 +22,10 @@ using AccommodationBooking.Domain.Cities.Repositories;
 using AccommodationBooking.Infrastructure.Cities.Repositories;
 using AccommodationBooking.Domain.Cities.Services;
 using AccommodationBooking.Infrastructure.Cities.Mappers;
+using AccommodationBooking.Infrastructure.Hotels.Mappers;
+using AccommodationBooking.Domain.Hotels.Services;
+using AccommodationBooking.Domain.Hotels.Repositories;
+using AccommodationBooking.Infrastructure.Hotels.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +99,10 @@ builder.Services.AddScoped<SignInManager<AccommodationBooking.Infrastructure.Use
 builder.Services.AddScoped<InfrastructureDomainCityMapper>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
+
+builder.Services.AddScoped<InfrastructureDomainHotelMapper>();
+builder.Services.AddScoped<IHotelService, HotelService>();
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 
 // Add mappers
 builder.Services.AddScoped<UserMapper>();

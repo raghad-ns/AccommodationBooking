@@ -47,7 +47,7 @@ public class CityRepository : ICityRepository
 
     Task<List<Domain.Cities.Models.City>> ICityRepository.GetCities()
     {
-        return _context.Cities.Select(city => _mapper.ToDomainCity(city)).ToListAsync();
+        return _context.Cities.Include(c => c.Hotels).Select(city => _mapper.ToDomainCityIncludeHotels(city)).ToListAsync();
     }
 
     async Task<Domain.Cities.Models.City> ICityRepository.GetCityById(int id)
