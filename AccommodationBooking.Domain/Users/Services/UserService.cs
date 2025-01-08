@@ -1,18 +1,18 @@
-﻿using AccommodationBooking.Domain.User.Repositories;
-using AccommodationBooking.Domain.User.Validators;
+﻿using AccommodationBooking.Domain.Users.Validators;
 using AccommodationBooking.Domain.Users.Models;
+using AccommodationBooking.Domain.Users.Repositories;
 using FluentValidation;
 
-namespace AccommodationBooking.Domain.User.Services
+namespace AccommodationBooking.Domain.Users.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IValidator<Users.Models.User> _userValidator;
+        private readonly IValidator<User> _userValidator;
         private readonly IValidator<LoginRequest> _loginValidator;
         public UserService(
             IUserRepository userRepository,
-            IValidator<Users.Models.User> userValidator,
+            IValidator<User> userValidator,
             IValidator<LoginRequest> loginValidator
             )
         {
@@ -21,17 +21,14 @@ namespace AccommodationBooking.Domain.User.Services
             _loginValidator = loginValidator;
         }
 
-        public Task<List<Users.Models.User>> GetUsers()
+        public Task<List<User>> GetUsers(int page, int pageSize)
         {
-            return _userRepository.GetAllUsers();
+            return _userRepository.GetAllUsers(page, pageSize);
         }
 
-        public Task<Users.Models.User> Login(LoginRequest login)
+        public Task<User> Login(LoginRequest login)
         {
-            if (!_loginValidator.Validate(login).IsValid)
-            {
-                return null;
-            }
+            _loginValidator.ValidateAndThrow(login);
             return _userRepository.Login(login);
         }
 
@@ -40,12 +37,9 @@ namespace AccommodationBooking.Domain.User.Services
         //     throw new NotImplementedException();
         // }
 
-        public Task<Users.Models.User> Register(Users.Models.User model)
+        public Task<User> Register(User model)
         {
-            if (!_userValidator.Validate(model).IsValid)
-            {
-                return null;
-            }
+            _userValidator.ValidateAndThrow(model);
             return _userRepository.Register(model);
         }
     }

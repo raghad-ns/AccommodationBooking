@@ -2,11 +2,11 @@
 using AccommodationBooking.Domain.Hotels.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AccommodationBooking.Application.Cities.Controllers;
+namespace AccommodationBooking.Application.Hotels.Controllers;
 
 [ApiController]
 [Route("api/hotels")]
-public class HotelController: ControllerBase
+public class HotelController : ControllerBase
 {
     private readonly IHotelService _hotelService;
 

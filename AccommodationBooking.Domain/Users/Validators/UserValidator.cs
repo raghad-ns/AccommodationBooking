@@ -1,10 +1,11 @@
-﻿using AccommodationBooking.Domain.User.Services;
+﻿using AccommodationBooking.Domain.Users.Services;
 using FluentValidation;
-namespace AccommodationBooking.Domain.User.Validators;
+namespace AccommodationBooking.Domain.Users.Validators;
 
-public class UserValidator: AbstractValidator<Users.Models.User>
+public class UserValidator : AbstractValidator<Models.User>
 {
-    public UserValidator() {
+    public UserValidator()
+    {
         RuleFor(user => user.Email)
             .NotEmpty()
             .EmailAddress();

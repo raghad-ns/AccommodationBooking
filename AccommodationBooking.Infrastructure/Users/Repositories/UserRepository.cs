@@ -1,9 +1,11 @@
-﻿using AccommodationBooking.Domain.User.Repositories;
+﻿using AccommodationBooking.Domain.Users.Exceptions;
+using AccommodationBooking.Domain.Users.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Infrastructure.Users.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
 namespace AccommodationBooking.Infrastructure.Users.Repositories;
 
@@ -25,17 +27,21 @@ public class UserRepository : IUserRepository
         _userManager = userManager;
         _signinManager = signinManager;
     }
-    public async Task<List<Domain.Users.Models.User>> GetAllUsers()
+    public async Task<List<Domain.Users.Models.User>> GetAllUsers(int page, int pageSize)
     {
-        var users = await _userManager.Users.ToListAsync(); 
-
-        var domainUsers = await Task.WhenAll(
-            users.Select(async user =>
+        var users = await _userManager.Users
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Select(user => new
             {
-                var role = await _mapper.ToDomainRole(user);
-                return _mapper.ToDomainUser(user, role);
+                User = user,
+                Roles = _userManager.GetRolesAsync(user).Result
             })
-        );
+            .ToListAsync(); 
+
+        var domainUsers = users
+            .Select(user => _mapper.ToDomain(user.User, user.Roles.FirstOrDefault()))
+            .ToList();
 
         return domainUsers.ToList(); 
     }
@@ -44,18 +50,15 @@ public class UserRepository : IUserRepository
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDTO.UserName);
         if (user == null)
-        {
-            return null;
-        }
+            throw new InvalidLoginCredentialsException();
 
-        var result = _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
-        if (!result.IsCompletedSuccessfully)
-        {
-            return null;
-        }
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault();
 
-        var role = await _mapper.ToDomainRole(user);
-        return _mapper.ToDomainUser(user, role);
+        var result = await _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
+        if (result == null) throw new InvalidLoginCredentialsException(); ;
+
+        return _mapper.ToDomain(user, role);
     }
 
     //public Task Logout(string token)
@@ -65,7 +68,8 @@ public class UserRepository : IUserRepository
 
     public async Task<Domain.Users.Models.User> Register(Domain.Users.Models.User domainModel)
     {
-        var model = _mapper.ToInfrastructureUser(domainModel);
+        var model = _mapper.ToInfrastructure(domainModel);
+        model.NormalizedUserName = domainModel.FirstName + " " + domainModel.LastName;
         model.Id = Guid.NewGuid().ToString();
 
         var similarUser = await _context.Users
@@ -74,30 +78,30 @@ public class UserRepository : IUserRepository
             );
 
         if (similarUser != null)
-        {
-            return null;
-        }
+            throw new UserAlreadyExistedException();
 
-        var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
-        if (createdUser.Succeeded)
+        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
-            var roleResult = await _userManager.AddToRoleAsync(model, "User");
+            var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
+            if (createdUser.Succeeded)
+            {
+                var roleResult = await _userManager.AddToRoleAsync(model, "User");
 
-            if (roleResult.Succeeded)
-            {
-                var role = await _mapper.ToDomainRole(
-                    await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id)
-                    );
-                return _mapper.ToDomainUser(model, role);
+                if (roleResult.Succeeded)
+                {
+                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var role = roles.FirstOrDefault();
+
+                    // Commit the transaction
+                    transaction.Complete();
+
+                    return _mapper.ToDomain(model, role);
+                }
             }
-            else
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return null;
+
+            // If anything fails, the transaction will roll back automatically
+            throw new Exception();
         }
     }
 }

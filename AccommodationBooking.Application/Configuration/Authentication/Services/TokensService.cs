@@ -1,5 +1,4 @@
-﻿
-using AccommodationBooking.Application.Configuration.Authentication.Models;
+﻿using AccommodationBooking.Application.Configuration.Authentication.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -34,7 +33,7 @@ public class TokensService : ITokensService
         {
             SigningCredentials = signinCredentials,
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(_authenticationOptions.ExpiresIn),
+            Expires = DateTime.UtcNow.AddMinutes(ParseDuration(_authenticationOptions.ExpiresIn)),
             Issuer = _authenticationOptions.Issuer,
             Audience = _authenticationOptions.Audience,
         };
@@ -44,5 +43,25 @@ public class TokensService : ITokensService
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);
+    }
+
+    private static int ParseDuration(string duration)
+    {
+        if (string.IsNullOrWhiteSpace(duration))
+            throw new ArgumentException("Duration string cannot be null or empty");
+
+        var unit = duration[^1]; // Get the last character (e.g., 'h', 'm', 'd')
+        var value = duration[..^1]; // Get everything except the last character
+
+        if (!int.TryParse(value, out var numericValue))
+            throw new ArgumentException($"Invalid duration value: {duration}");
+
+        return unit switch
+        {
+            'm' => numericValue,  // Minutes
+            'h' => numericValue * 60,    // Hours
+            'd' => numericValue * 60 * 24,     // Days
+            _ => throw new ArgumentException($"Invalid duration unit: {unit}")
+        };
     }
 }
