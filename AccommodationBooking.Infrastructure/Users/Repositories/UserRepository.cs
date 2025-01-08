@@ -1,4 +1,4 @@
-﻿using AccommodationBooking.Domain.User.Repositories;
+﻿using AccommodationBooking.Domain.Users.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Infrastructure.Users.Models;
@@ -27,15 +27,17 @@ public class UserRepository : IUserRepository
     }
     public async Task<List<Domain.Users.Models.User>> GetAllUsers()
     {
-        var users = await _userManager.Users.ToListAsync(); 
-
-        var domainUsers = await Task.WhenAll(
-            users.Select(async user =>
+        var users = await _userManager.Users
+            .Select(user => new
             {
-                var role = await _mapper.ToDomainRole(user);
-                return _mapper.ToDomainUser(user, role);
+                User = user,
+                Roles = _userManager.GetRolesAsync(user).Result
             })
-        );
+            .ToListAsync(); 
+
+        var domainUsers = users
+            .Select(user => _mapper.ToDomain(user.User, user.Roles.FirstOrDefault()))
+            .ToList();
 
         return domainUsers.ToList(); 
     }
@@ -47,15 +49,14 @@ public class UserRepository : IUserRepository
         {
             return null;
         }
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault();
 
-        var result = _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
-        if (!result.IsCompletedSuccessfully)
-        {
-            return null;
-        }
+        var result = await _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
 
-        var role = await _mapper.ToDomainRole(user);
-        return _mapper.ToDomainUser(user, role);
+        if (result == null) return null;
+
+        return _mapper.ToDomain(user, role);
     }
 
     //public Task Logout(string token)
@@ -65,7 +66,8 @@ public class UserRepository : IUserRepository
 
     public async Task<Domain.Users.Models.User> Register(Domain.Users.Models.User domainModel)
     {
-        var model = _mapper.ToInfrastructureUser(domainModel);
+        var model = _mapper.ToInfrastructure(domainModel);
+        model.NormalizedUserName = domainModel.FirstName + " " + domainModel.LastName;
         model.Id = Guid.NewGuid().ToString();
 
         var similarUser = await _context.Users
@@ -85,10 +87,10 @@ public class UserRepository : IUserRepository
 
             if (roleResult.Succeeded)
             {
-                var role = await _mapper.ToDomainRole(
-                    await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id)
-                    );
-                return _mapper.ToDomainUser(model, role);
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id);
+                var roles = await _userManager.GetRolesAsync(user);
+                var role = roles.FirstOrDefault();
+                return _mapper.ToDomain(model, role);
             }
             else
             {

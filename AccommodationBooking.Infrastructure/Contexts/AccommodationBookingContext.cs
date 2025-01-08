@@ -8,7 +8,7 @@ namespace AccommodationBooking.Infrastructure.Contexts
     public class AccommodationBookingContext : IdentityDbContext<User>
     {
         public DbSet<User> Users { get; set; }
-        public AccommodationBookingContext(DbContextOptions options) : base(options)
+        public AccommodationBookingContext(DbContextOptions<AccommodationBookingContext> options) : base(options)
         {
         }
 

@@ -1,7 +1,7 @@
 ﻿using AccommodationBooking.Domain.Users.Models;
 using FluentValidation;
 
-namespace AccommodationBooking.Domain.User.Validators;
+namespace AccommodationBooking.Domain.Users.Validators;
 
 public class LoginValidator : AbstractValidator<LoginRequest>
 {

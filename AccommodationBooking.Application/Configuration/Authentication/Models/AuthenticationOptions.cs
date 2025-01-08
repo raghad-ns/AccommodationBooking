@@ -3,8 +3,8 @@
 public class AuthenticationOptions
 {
     public const string Authentication = "Authentication";
-    public string Key { get; set; }
-    public string Issuer { get; set; }
-    public string Audience { get; set; }
-    public int ExpiresIn { get; set; }
+    public string Key { get; init; }
+    public string Issuer { get; init; }
+    public string Audience { get; init; }
+    public string ExpiresIn { get; init; }
 }
