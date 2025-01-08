@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using AccommodationBooking.Application.Configuration.Authentication.Extensions;
 using AccommodationBooking.Application.Dependencies;
+using AccommodationBooking.Application.Middlewares.ExceptionsHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,17 +14,10 @@ builder.Services
     .LoadDatabaseConfiguration(builder)
     .LoadAuthenticationConfiguration(builder);
 
-
 var serviceProvider = builder.Services.BuildServiceProvider();
-// Add DbContext to the container
-builder.Services.AddDbContext<AccommodationBookingContext>(options =>
-{
-    var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-    options.UseSqlServer(databaseOptions.ConnectionString);
-});
 
 builder.Services
-    //.AddDatabaseConfiguration(serviceProvider)
+    .AddDatabaseConfiguration(serviceProvider)
     .ConfigureAuthentication(serviceProvider);
 
 // Register dependencies
@@ -31,22 +25,21 @@ builder.Services
     .RegisterAuthenticationDependencies()
     .RegisterMappers()
     .RegisterRepositories()
-    .RegisterValidators()
-    .RegisterServices();
+    .RegisterValidators();
+
+builder.Services.AddScoped<RequestDelegate>();
 
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.UseDeveloperExceptionPage();
+app.UseMiddleware<ExceptionsHandler>();
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
-
-//using var scope = serviceProvider.CreateScope();
-//var context = scope.ServiceProvider.GetRequiredService<AccommodationBookingContext>();
-//Console.WriteLine(context != null ? "DbContext registered successfully" : "DbContext registration failed");
-
 
 app.MapGet("/", () => "Hello World!");
 

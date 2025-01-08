@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Domain.Users.Repositories;
+﻿using AccommodationBooking.Domain.Users.Exceptions;
+using AccommodationBooking.Domain.Users.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Infrastructure.Users.Models;
@@ -48,15 +49,13 @@ public class UserRepository : IUserRepository
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDTO.UserName);
         if (user == null)
-        {
-            return null;
-        }
+            throw new InvalidLoginCredentialsException();
+
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles.FirstOrDefault();
 
         var result = await _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
-
-        if (result == null) return null;
+        if (result == null) throw new InvalidLoginCredentialsException(); ;
 
         return _mapper.ToDomain(user, role);
     }
@@ -78,9 +77,7 @@ public class UserRepository : IUserRepository
             );
 
         if (similarUser != null)
-        {
-            return null;
-        }
+            throw new UserAlreadyExistedException();
 
         var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
         if (createdUser.Succeeded)

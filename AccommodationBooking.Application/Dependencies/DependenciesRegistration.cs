@@ -9,30 +9,20 @@ using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Infrastructure.Users.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace AccommodationBooking.Application.Dependencies;
 
 public static class DependenciesRegistration
 {
-    public static IServiceCollection RegisterServices(this IServiceCollection services)
-    {
-        services
-            .AddScoped<ITokensService, TokensService>()
-            .AddScoped<IUserService, UserService>();
-
-        return services;
-    }
-
     public static IServiceCollection RegisterAuthenticationDependencies(this IServiceCollection services)
     {
         services
             .AddScoped<AuthenticationOptions>()
             .AddScoped<AccommodationBookingContext>()
-            .AddScoped<SymmetricSecurityKey>()
             .AddScoped<UserManager<Infrastructure.Users.Models.User>>()
-            .AddScoped<SignInManager<Infrastructure.Users.Models.User>>();
+            .AddScoped<SignInManager<Infrastructure.Users.Models.User>>()
+            .AddScoped<ITokensService, TokensService>()
+            .AddScoped<IUserService, UserService>();
 
         return services;
     }
