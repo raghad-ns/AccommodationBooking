@@ -21,9 +21,9 @@ namespace AccommodationBooking.Domain.Users.Services
             _loginValidator = loginValidator;
         }
 
-        public Task<List<User>> GetUsers()
+        public Task<List<User>> GetUsers(int page, int pageSize)
         {
-            return _userRepository.GetAllUsers();
+            return _userRepository.GetAllUsers(page, pageSize);
         }
 
         public Task<User> Login(LoginRequest login)

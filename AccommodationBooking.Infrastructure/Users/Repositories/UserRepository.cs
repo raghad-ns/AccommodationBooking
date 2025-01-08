@@ -25,9 +25,11 @@ public class UserRepository : IUserRepository
         _userManager = userManager;
         _signinManager = signinManager;
     }
-    public async Task<List<Domain.Users.Models.User>> GetAllUsers()
+    public async Task<List<Domain.Users.Models.User>> GetAllUsers(int page, int pageSize)
     {
         var users = await _userManager.Users
+            .Skip(page * pageSize)
+            .Take(pageSize)
             .Select(user => new
             {
                 User = user,

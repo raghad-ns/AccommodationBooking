@@ -25,9 +25,9 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Models.User>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<Models.User>>> GetUsers([FromQuery] int page, [FromQuery] int pageSize)
     {
-        var users = await _userService.GetUsers();
+        var users = await _userService.GetUsers(page, pageSize);
         var applicationUsers = users.Select(user => _mapper.ToApplication(user)).ToList();
         return Ok(applicationUsers);
     }
@@ -37,7 +37,7 @@ public class UserController : ControllerBase
     {
         var domainUser = _mapper.ToDomain(userDTO);
         var user = await _userService.Register(domainUser);
-        
+
         if (user == null)
             return BadRequest();
 

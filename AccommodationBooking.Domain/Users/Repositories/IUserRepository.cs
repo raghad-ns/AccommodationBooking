@@ -7,6 +7,6 @@ namespace AccommodationBooking.Domain.Users.Repositories
         Task<User> Login(LoginRequest loginDTO);
         //Task Logout(string token);
         Task<User> Register(User model);
-        Task<List<User>> GetAllUsers();
+        Task<List<User>> GetAllUsers(int page, int pageSize);
     }
 }
