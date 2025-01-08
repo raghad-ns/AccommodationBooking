@@ -5,6 +5,7 @@ using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Infrastructure.Users.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
 namespace AccommodationBooking.Infrastructure.Users.Repositories;
 
@@ -79,26 +80,28 @@ public class UserRepository : IUserRepository
         if (similarUser != null)
             throw new UserAlreadyExistedException();
 
-        var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
-        if (createdUser.Succeeded)
+        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
-            var roleResult = await _userManager.AddToRoleAsync(model, "User");
+            var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
+            if (createdUser.Succeeded)
+            {
+                var roleResult = await _userManager.AddToRoleAsync(model, "User");
 
-            if (roleResult.Succeeded)
-            {
-                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id);
-                var roles = await _userManager.GetRolesAsync(user);
-                var role = roles.FirstOrDefault();
-                return _mapper.ToDomain(model, role);
+                if (roleResult.Succeeded)
+                {
+                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var role = roles.FirstOrDefault();
+
+                    // Commit the transaction
+                    transaction.Complete();
+
+                    return _mapper.ToDomain(model, role);
+                }
             }
-            else
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return null;
+
+            // If anything fails, the transaction will roll back automatically
+            throw new Exception();
         }
     }
 }
