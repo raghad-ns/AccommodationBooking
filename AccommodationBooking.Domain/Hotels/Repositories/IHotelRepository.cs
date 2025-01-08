@@ -5,7 +5,7 @@ namespace AccommodationBooking.Domain.Hotels.Repositories;
 
 public interface IHotelRepository
 {
-    Task<List<Hotel>> GetHotels();
+    Task<List<Hotel>> GetHotels(int page, int pageSize);
     Task<Hotel> GetHotelById(int id);
     Task<Hotel> GetHotelByName(string name);
     Task<Hotel> CreateHotel(Hotel hotel);

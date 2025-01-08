@@ -32,6 +32,9 @@ builder.Services.AddScoped<RequestDelegate>();
 
 builder.Services.AddControllers();
 
+//builder.Services.AddSwaggerGen();
+//app.UseSwagger();
+//app.UseSwaggerUI();
 var app = builder.Build();
 
 app.UseDeveloperExceptionPage();

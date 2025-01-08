@@ -37,9 +37,9 @@ public class HotelService : IHotelService
         return await _hotelRepository.GetHotelByName(name);
     }
 
-    async Task<List<Hotel>> IHotelService.GetHotels()
+    async Task<List<Hotel>> IHotelService.GetHotels(int page, int pageSize)
     {
-        return await _hotelRepository.GetHotels();
+        return await _hotelRepository.GetHotels(page, pageSize);
     }
 
     async Task<Hotel> IHotelService.UpdateHotel(int hotelId, Hotel hotel)

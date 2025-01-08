@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Repositories;
 
-public class HotelRepository: IHotelRepository
+public class HotelRepository : IHotelRepository
 {
     private readonly AccommodationBookingContext _context;
     private readonly InfrastructureDomainHotelMapper _mapper;
@@ -18,7 +18,7 @@ public class HotelRepository: IHotelRepository
 
     async Task<Domain.Hotels.Models.Hotel> IHotelRepository.CreateHotel(Domain.Hotels.Models.Hotel hotel)
     {
-        var infraHotel = _mapper.ToInfrastructureHotel(hotel);
+        var infraHotel = _mapper.ToInfrastructure(hotel);
         var hotelCity = await _context.Cities.FirstOrDefaultAsync(c => c.Id == infraHotel.Id);
         infraHotel.City = hotelCity;
         infraHotel.CreatedAt = DateTime.UtcNow;
@@ -28,7 +28,7 @@ public class HotelRepository: IHotelRepository
         await _context.SaveChangesAsync();
 
         var createdHotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Name.Equals(hotel.Name));
-        return _mapper.ToDomainHotel(createdHotel);
+        return _mapper.ToDomain(createdHotel);
     }
 
     async Task IHotelRepository.DeleteHotelById(int hotellId)
@@ -46,26 +46,31 @@ public class HotelRepository: IHotelRepository
         throw new NotImplementedException();
     }
 
-    Task<List<Domain.Hotels.Models.Hotel>> IHotelRepository.GetHotels()
+    Task<List<Domain.Hotels.Models.Hotel>> IHotelRepository.GetHotels(int page, int pageSize)
     {
-        return _context.Hotels.Include(h => h.City).Select(hotel => _mapper.ToDomainHotel(hotel)).ToListAsync();
+        return _context.Hotels
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Include(h => h.City)
+            .Select(hotel => _mapper.ToDomain(hotel))
+            .ToListAsync();
     }
 
     async Task<Domain.Hotels.Models.Hotel> IHotelRepository.GetHotelById(int id)
     {
         var returnedHotel = await _context.Hotels.FirstOrDefaultAsync(hotel => hotel.Id == id);
-        return _mapper.ToDomainHotel(returnedHotel);
+        return _mapper.ToDomain(returnedHotel);
     }
 
     async Task<Domain.Hotels.Models.Hotel> IHotelRepository.GetHotelByName(string name)
     {
         var returnedHotel = await _context.Hotels.FirstOrDefaultAsync(Hotel => Hotel.Name.Equals(name));
-        return _mapper.ToDomainHotel(returnedHotel);
+        return _mapper.ToDomain(returnedHotel);
     }
 
     async Task<Domain.Hotels.Models.Hotel> IHotelRepository.UpdateHotel(int hotelId, Domain.Hotels.Models.Hotel hotel)
     {
-        var infraHotel = _mapper.ToInfrastructureHotel(hotel);
+        var infraHotel = _mapper.ToInfrastructure(hotel);
         var hotelToUpdate = await _context.Hotels.FirstOrDefaultAsync(c => c.Id == hotelId);
 
         hotelToUpdate.Name = hotel.Name;
@@ -77,6 +82,6 @@ public class HotelRepository: IHotelRepository
 
         await _context.SaveChangesAsync();
         var updatedHotel = await _context.Hotels.FirstOrDefaultAsync(c => c.Id == hotelId);
-        return _mapper.ToDomainHotel(updatedHotel);
+        return _mapper.ToDomain(updatedHotel);
     }
 }

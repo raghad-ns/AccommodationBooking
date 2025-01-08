@@ -8,7 +8,7 @@ namespace AccommodationBooking.Infrastructure.Hotels.Mappers;
 public partial class InfrastructureDomainHotelMapper
 {
 
-    public Domain.Hotels.Models.Hotel ToDomainHotel(Hotel hotel) =>
+    public Domain.Hotels.Models.Hotel ToDomain(Hotel hotel) =>
         new Domain.Hotels.Models.Hotel
         {
             Id = hotel.Id,
@@ -21,7 +21,7 @@ public partial class InfrastructureDomainHotelMapper
             StarRating = hotel.StarRating,
         };
 
-    public Hotel ToInfrastructureHotel(Domain.Hotels.Models.Hotel hotel) => 
+    public Hotel ToInfrastructure(Domain.Hotels.Models.Hotel hotel) => 
         new Hotel
         {
             Id = hotel.Id,
