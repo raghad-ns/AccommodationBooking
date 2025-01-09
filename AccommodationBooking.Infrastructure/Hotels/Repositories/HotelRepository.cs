@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Domain.Hotels.Repositories;
+﻿using AccommodationBooking.Domain.Hotels.Models;
+using AccommodationBooking.Domain.Hotels.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Hotels.Mappers;
 using Microsoft.EntityFrameworkCore;
@@ -46,9 +47,22 @@ public class HotelRepository : IHotelRepository
         throw new NotImplementedException();
     }
 
-    Task<List<Domain.Hotels.Models.Hotel>> IHotelRepository.GetHotels(int page, int pageSize)
+    Task<List<Domain.Hotels.Models.Hotel>> IHotelRepository.GetHotels(int page, int pageSize, HotelFilters hotelFilters)
     {
         return _context.Hotels
+            .Where(h => (
+                (hotelFilters.Id != null ? h.Id == hotelFilters.Id : true) &&
+
+                (hotelFilters.Name != null ? h.Name.ToLower().Contains(hotelFilters.Name.ToLower()) : true) &&
+
+                (hotelFilters.Description != null ? h.Description.ToLower().Contains(hotelFilters.Description.ToLower()) : true) &&
+
+                (hotelFilters.City != null ? h.City.Name.ToLower().Contains(hotelFilters.City.ToLower()) : true) &&
+
+                (hotelFilters.StarRatingGreaterThanOrEqual != null ? h.StarRating >= hotelFilters.StartRatingLessThanOrEqual : true) &&
+
+                (hotelFilters.StartRatingLessThanOrEqual != null ? h.StarRating <= hotelFilters.StartRatingLessThanOrEqual : true)
+            ))
             .Skip(page * pageSize)
             .Take(pageSize)
             .Include(h => h.City)

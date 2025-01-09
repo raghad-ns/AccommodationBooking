@@ -20,9 +20,32 @@ public class HotelController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Hotel>>> GetCities([FromQuery] int page=0, [FromQuery] int pageSize=10)
+    public async Task<ActionResult<List<Hotel>>> GetCities(
+        [FromQuery] int page=0, 
+        [FromQuery] int pageSize=10, 
+        [FromQuery] int? id=null,
+        [FromQuery] string? name = null,
+        [FromQuery] string? description = null,
+        [FromQuery] string? address = null,
+        [FromQuery] string? cityName = null,
+        [FromQuery] double? starRatingGreaterThanOrEqual = null,
+        [FromQuery] double? starRatingLessThanOrEqual = null,
+        [FromQuery] List<string> amenities= null
+        )
     {
-        var hotels = await _hotelService.GetHotels(page, pageSize);
+        var filters = new HotelFilters
+        {
+            Id = id,
+            Name = name,
+            Description = description,
+            Address = address,
+            Amenities = amenities,
+            StarRatingGreaterThanOrEqual = starRatingGreaterThanOrEqual,
+            StartRatingLessThanOrEqual = starRatingLessThanOrEqual,
+            City = cityName
+        };
+
+        var hotels = await _hotelService.GetHotels(page, pageSize, _mapper.ToDomain(filters));
         
         return Ok(hotels.Select(hotel => _mapper.ToApplication(hotel)));
     }
@@ -31,14 +54,14 @@ public class HotelController : ControllerBase
     public async Task<ActionResult<Hotel>> AddCity([FromBody] Hotel hotel)
     {
         var createdHotel = await _hotelService.CreateHotel(_mapper.ToDomain(hotel));
-        return Ok(createdHotel);
+        return Ok(_mapper.ToApplication(createdHotel));
     }
 
     [HttpPut("update")]
     public async Task<ActionResult<Hotel>> UpdateHotel([FromBody] Hotel hotel)
     {
         var updatedHotel = await _hotelService.UpdateHotel(hotel.Id, _mapper.ToDomain(hotel));
-        return Ok(updatedHotel);
+        return Ok(_mapper.ToApplication(updatedHotel));
     }
 
     [HttpDelete("{id}")]

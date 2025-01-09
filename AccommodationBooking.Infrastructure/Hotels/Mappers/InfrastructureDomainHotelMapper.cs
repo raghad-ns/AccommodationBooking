@@ -1,4 +1,6 @@
-﻿using AccommodationBooking.Infrastructure.Cities.Mappers;
+﻿using DomainHotel = AccommodationBooking.Domain.Hotels.Models.Hotel;
+using DomainHotelFilters = AccommodationBooking.Domain.Hotels.Models.HotelFilters;
+using AccommodationBooking.Infrastructure.Cities.Mappers;
 using AccommodationBooking.Infrastructure.Hotels.Models;
 using Riok.Mapperly.Abstractions;
 
@@ -8,8 +10,8 @@ namespace AccommodationBooking.Infrastructure.Hotels.Mappers;
 public partial class InfrastructureDomainHotelMapper
 {
 
-    public Domain.Hotels.Models.Hotel ToDomain(Hotel hotel) =>
-        new Domain.Hotels.Models.Hotel
+    public DomainHotel ToDomain(Hotel hotel) =>
+        new DomainHotel
         {
             Id = hotel.Id,
             Name = hotel.Name,
@@ -21,7 +23,7 @@ public partial class InfrastructureDomainHotelMapper
             StarRating = hotel.StarRating,
         };
 
-    public Hotel ToInfrastructure(Domain.Hotels.Models.Hotel hotel) => 
+    public Hotel ToInfrastructure(DomainHotel hotel) => 
         new Hotel
         {
             Id = hotel.Id,
@@ -33,4 +35,6 @@ public partial class InfrastructureDomainHotelMapper
             Images = hotel.Images,
             StarRating = hotel.StarRating,
         };
+
+    public partial HotelFilters ToInfrastructure(DomainHotelFilters hotelFilters);
 }

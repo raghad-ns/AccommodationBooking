@@ -22,4 +22,5 @@ public enum Amenity
     FitnessCenter = 17,
     Spa = 18,
     Pool = 19,
+    None = 20,
 }

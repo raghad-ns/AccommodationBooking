@@ -9,11 +9,6 @@
   <ItemGroup>
     <Folder Include="Rooms\Controllers\" />
     <Folder Include="Rooms\Mappers\" />
-    <Folder Include="Rooms\Models\" />
-    <Folder Include="Hotels\Controllers\" />
-    <Folder Include="Hotels\Mappers\" />
-    <Folder Include="Hotels\Models\" />
-    <Folder Include="Cities\Models\" />
     <Folder Include="Cities\Mappers\" />
     <Folder Include="Middlewares\" />
   </ItemGroup>
