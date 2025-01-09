@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Application.Configuration.Authentication.Models;
+﻿using AccommodationBooking.Application.Cities.Mappers;
+using AccommodationBooking.Application.Configuration.Authentication.Models;
 using AccommodationBooking.Application.Configuration.Authentication.Services;
 using AccommodationBooking.Application.Hotels.Mappers;
 using AccommodationBooking.Application.User.Mappers;
@@ -56,7 +57,8 @@ public static class DependenciesRegistration
             .AddScoped<InfrastructureDomainHotelMapper>()
             .AddScoped<InfrastructureDomainCityMapper>()
             .AddScoped<InfrastructureDomainHotelMapper>()
-            .AddScoped<HotelMapper>();
+            .AddScoped<HotelMapper>()
+            .AddScoped<CityMapper>();
 
         return services;
     }

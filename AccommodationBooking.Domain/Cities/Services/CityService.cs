@@ -27,9 +27,9 @@ public class CityService : ICityService
         return _cityRepository.DeleteCityByName(name);
     }
 
-    async Task<List<City>> ICityService.GetCities()
+    async Task<List<City>> ICityService.GetCities(int page, int pageSize, CityFilters cityFilters)
     {
-        return await _cityRepository.GetCities();
+        return await _cityRepository.GetCities(page, pageSize, cityFilters);
     }
 
     async Task<City> ICityService.GetCityById(int id)

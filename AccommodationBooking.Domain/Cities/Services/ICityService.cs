@@ -4,7 +4,7 @@ namespace AccommodationBooking.Domain.Cities.Services;
 
 public interface ICityService
 {
-    Task<List<City>> GetCities();
+    Task<List<City>> GetCities(int page, int pageSize, CityFilters cityFilters);
     Task<City> GetCityById(int id);
     Task<City> GetCityByName(string name);
     Task<City> CreateCity(City city);

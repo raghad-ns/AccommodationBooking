@@ -1,5 +1,7 @@
 ﻿using AccommodationBooking.Infrastructure.Cities.Models;
 using AccommodationBooking.Infrastructure.Hotels.Mappers;
+using DomainCity = AccommodationBooking.Domain.Cities.Models.City;
+using DomainCityFilters = AccommodationBooking.Domain.Cities.Models.CityFilters;
 using Riok.Mapperly.Abstractions;
 
 namespace AccommodationBooking.Infrastructure.Cities.Mappers;
@@ -13,8 +15,8 @@ public partial class InfrastructureDomainCityMapper
     {
         _hotelMapper = mapper;
     }
-    public Domain.Cities.Models.City ToDomainCity(City city) =>
-        new Domain.Cities.Models.City
+    public DomainCity ToDomainCity(City city) =>
+        new DomainCity
         {
             Id = city.Id,
             Name = city.Name,
@@ -22,15 +24,17 @@ public partial class InfrastructureDomainCityMapper
             PostOfficeCode = city.PostOfficeCode,
         };
 
-    public Domain.Cities.Models.City ToDomainCityIncludeHotels(City city) =>
-        new Domain.Cities.Models.City
+    public DomainCity ToDomainCityIncludeHotels(City city) =>
+        new DomainCity
         {
             Id = city.Id,
             Name = city.Name,
             Country = city.Country,
             PostOfficeCode = city.PostOfficeCode,
-            Hotels = city.Hotels.Select(h => _hotelMapper.ToDomainHotel(h)).ToList()
+            Hotels = city.Hotels.Select(h => _hotelMapper.ToDomain(h)).ToList()
         };
 
-    public partial City ToInfrastructureCity(Domain.Cities.Models.City city);
+    public partial City ToInfrastructureCity(DomainCity city);
+
+    public partial CityFilters ToInfrastructure(DomainCityFilters cityFilters);
 }

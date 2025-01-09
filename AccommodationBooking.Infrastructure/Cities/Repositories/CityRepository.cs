@@ -1,4 +1,7 @@
-﻿using AccommodationBooking.Domain.Cities.Repositories;
+﻿using AccommodationBooking.Infrastructure.Cities.Mappers;
+using DomainCity = AccommodationBooking.Domain.Cities.Models.City;
+using DomainCityFilters = AccommodationBooking.Domain.Cities.Models.CityFilters;
+using AccommodationBooking.Domain.Cities.Repositories;
 using AccommodationBooking.Infrastructure.Cities.Mappers;
 using AccommodationBooking.Infrastructure.Cities.Models;
 using AccommodationBooking.Infrastructure.Contexts;
@@ -17,7 +20,7 @@ public class CityRepository : ICityRepository
         _mapper = mapper;
     }
 
-    async Task<Domain.Cities.Models.City> ICityRepository.CreateCity(Domain.Cities.Models.City city)
+    async Task<DomainCity> ICityRepository.CreateCity(DomainCity city)
     {
         var infraCity = _mapper.ToInfrastructureCity(city);
         infraCity.CreatedAt = DateTime.UtcNow;
@@ -45,28 +48,40 @@ public class CityRepository : ICityRepository
         throw new NotImplementedException();
     }
 
-    Task<List<Domain.Cities.Models.City>> ICityRepository.GetCities()
+    Task<List<DomainCity>> ICityRepository.GetCities(int page, int pageSize, DomainCityFilters cityFilters)
     {
-        return _context.Cities.Include(c => c.Hotels).Select(city => _mapper.ToDomainCityIncludeHotels(city)).ToListAsync();
+        var infraFilters = _mapper.ToInfrastructure(cityFilters);
+        return _context.Cities
+            .Where(c => (
+                (infraFilters.Id != null ? c.Id == infraFilters.Id : true) &&
+                (infraFilters.Name != null ? c.Name.ToLower().Contains(infraFilters.Name.ToLower()) : true) &&
+                (infraFilters.Country != null ? c.Country.ToLower().Contains(infraFilters.Country.ToLower()) : true) &&
+                (infraFilters.PostOfficeCode != null ? c.PostOfficeCode.ToLower().Contains(infraFilters.PostOfficeCode.ToLower()) : true)
+            ))
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Include(c => c.Hotels)
+            .Select(city => _mapper.ToDomainCityIncludeHotels(city))
+            .ToListAsync();
     }
 
-    async Task<Domain.Cities.Models.City> ICityRepository.GetCityById(int id)
+    async Task<DomainCity> ICityRepository.GetCityById(int id)
     {
         var returnedCity = await _context.Cities.FirstOrDefaultAsync(city => city.Id == id);
         return _mapper.ToDomainCity(returnedCity);
     }
 
-    async Task<Domain.Cities.Models.City> ICityRepository.GetCityByName(string name)
+    async Task<DomainCity> ICityRepository.GetCityByName(string name)
     {
         var returnedCity = await _context.Cities.FirstOrDefaultAsync(city => city.Name.Equals(name));
         return _mapper.ToDomainCity(returnedCity);
     }
 
-    async Task<Domain.Cities.Models.City> ICityRepository.UpdateCity(int cityId, Domain.Cities.Models.City city)
+    async Task<DomainCity> ICityRepository.UpdateCity(int cityId, DomainCity city)
     {
         var infraCity = _mapper.ToInfrastructureCity(city);
         var cityToUpdate = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
-        
+
         cityToUpdate.Name = city.Name;
         cityToUpdate.Country = city.Country;
         cityToUpdate.PostOfficeCode = city.PostOfficeCode;
