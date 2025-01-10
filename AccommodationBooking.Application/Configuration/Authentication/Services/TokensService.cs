@@ -19,12 +19,13 @@ public class TokensService : ITokensService
         _symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
     }
 
-    string ITokensService.GenerateToken(Infrastructure.Users.Models.User user)
+    string ITokensService.GenerateToken(User.Models.User user)
     {
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
             new Claim(JwtRegisteredClaimNames.GivenName, user.UserName ?? ""),
+            new Claim(ClaimTypes.Role, Enum.GetName(user.Role) ?? "User") // Add the role claim
         };
 
         var signinCredentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha256);

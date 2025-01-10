@@ -1,6 +1,7 @@
 ﻿using AccommodationBooking.Application.Hotels.Mappers;
 using AccommodationBooking.Application.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccommodationBooking.Application.Hotels.Controllers;
@@ -16,6 +17,7 @@ public class HotelController : ControllerBase
         _hotelService = hotelService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Hotel>>> GetCities(
         [FromQuery] int page=0, 
@@ -47,6 +49,7 @@ public class HotelController : ControllerBase
         return Ok(hotels.Select(hotel => hotel.ToApplication()));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("add")]
     public async Task<ActionResult<Hotel>> AddCity([FromBody] Hotel hotel)
     {
@@ -54,6 +57,7 @@ public class HotelController : ControllerBase
         return Ok(createdHotel.ToApplication());
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("update")]
     public async Task<ActionResult<Hotel>> UpdateHotel([FromBody] Hotel hotel)
     {
@@ -61,6 +65,7 @@ public class HotelController : ControllerBase
         return Ok(updatedHotel.ToApplication());
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteHotel(int id)
     {

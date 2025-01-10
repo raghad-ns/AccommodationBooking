@@ -1,6 +1,8 @@
-﻿namespace AccommodationBooking.Application.Configuration.Authentication.Services;
+﻿using AccommodationBooking.Application.User.Models;
+
+namespace AccommodationBooking.Application.Configuration.Authentication.Services;
 
 public interface ITokensService
 {
-    string GenerateToken(Infrastructure.Users.Models.User user);
+    string GenerateToken(User.Models.User user);
 }

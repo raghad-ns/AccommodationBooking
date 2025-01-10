@@ -2,6 +2,7 @@
 using AccommodationBooking.Domain.Cities.Services;
 using Microsoft.AspNetCore.Mvc;
 using AccommodationBooking.Application.Cities.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccommodationBooking.Application.Cities.Controllers;
 
@@ -16,6 +17,7 @@ public class CitiesController: ControllerBase
         _cityService = cityService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<City>>> GetCities(
         [FromQuery] int page=0, 
@@ -39,6 +41,7 @@ public class CitiesController: ControllerBase
         return Ok(cities.Select(c => c.ToApplication()));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("add")]
     public async Task<ActionResult<City>> AddCity([FromBody] City city)
     {
@@ -46,6 +49,7 @@ public class CitiesController: ControllerBase
         return Ok(createdCity);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("update")]
     public async Task<ActionResult<City>> UpdateCity([FromBody] City city)
     {
@@ -53,6 +57,7 @@ public class CitiesController: ControllerBase
         return Ok(updatedCity);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteCity( int id)
     {

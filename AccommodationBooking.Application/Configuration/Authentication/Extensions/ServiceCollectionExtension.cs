@@ -1,6 +1,7 @@
 ﻿using AccommodationBooking.Application.Configuration.Authentication.Models;
 using AccommodationBooking.Application.Configuration.Database.Models;
 using AccommodationBooking.Infrastructure.Contexts;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -62,6 +63,17 @@ public static class ServiceCollectionExtension
                 };
             });
 
+        return services;
+    }
+
+    public static IServiceCollection ConfigureAuthorization(this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+
+            options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
+        });
         return services;
     }
 }

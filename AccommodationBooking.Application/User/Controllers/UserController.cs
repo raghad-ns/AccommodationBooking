@@ -51,17 +51,17 @@ public class UserController : ControllerBase
         var user = await _userService.Login(domainLogin);
         var applicationUser = _mapper.ToApplication(user);
 
-        var token = _tokenService.GenerateToken(new Infrastructure.Users.Models.User
-        {
-            Id = user.Id,
-            UserName = user.UserName,
-            Email = user.Email,
-            NormalizedUserName = user.FirstName + " " + user.LastName,
-
-        });
+        var token = _tokenService.GenerateToken(applicationUser);
 
         if (user == null)
             return Unauthorized();
+
+        HttpContext.Response.Cookies.Append("Token", token, new CookieOptions
+        {
+            Expires = DateTimeOffset.UtcNow.AddHours(8),
+            HttpOnly = true, // Accessible only by the server
+            IsEssential = true // Required for GDPR compliance
+        });
 
         return Ok(new LoginResponse(applicationUser, token));
     }
