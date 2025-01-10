@@ -10,7 +10,6 @@ public class Hotel
     public string Name { get; set; }
     public string? Description { get; set; }
     public string Address { get; set; }
-    public City? City { get; set; }
     public int? CityId { get; set; }
     public double StarRating { get; set; }
     public List<string> Images { get; set; } = new List<string>();

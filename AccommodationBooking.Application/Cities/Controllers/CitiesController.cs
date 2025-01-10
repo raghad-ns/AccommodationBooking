@@ -1,6 +1,4 @@
 ﻿using AccommodationBooking.Application.Cities.Mappers;
-using DoaminCity = AccommodationBooking.Domain.Cities.Models.City;
-using DoaminCityFilters = AccommodationBooking.Domain.Cities.Models.CityFilters;
 using AccommodationBooking.Domain.Cities.Services;
 using Microsoft.AspNetCore.Mvc;
 using AccommodationBooking.Application.Cities.Models;
@@ -12,12 +10,10 @@ namespace AccommodationBooking.Application.Cities.Controllers;
 public class CitiesController: ControllerBase
 {
     private readonly ICityService _cityService;
-    private readonly CityMapper _mapper;
 
-    public CitiesController(ICityService cityService, CityMapper mapper)
+    public CitiesController(ICityService cityService)
     {
         _cityService = cityService;
-        _mapper = mapper;
     }
 
     [HttpGet]
@@ -38,22 +34,22 @@ public class CitiesController: ControllerBase
             PostOfficeCode = postOfficeCode
         };
 
-        var cities = await _cityService.GetCities(page, pageSize, _mapper.ToDomain(filters));
+        var cities = await _cityService.GetCities(page, pageSize, filters.ToDomain());
 
-        return Ok(cities.Select(c => _mapper.ToApplication(c)));
+        return Ok(cities.Select(c => c.ToApplication()));
     }
 
     [HttpPost("add")]
     public async Task<ActionResult<City>> AddCity([FromBody] City city)
     {
-        var createdCity = await _cityService.CreateCity(_mapper.ToDomain(city));
+        var createdCity = await _cityService.CreateCity(city.ToDomain());
         return Ok(createdCity);
     }
 
     [HttpPut("update")]
     public async Task<ActionResult<City>> UpdateCity([FromBody] City city)
     {
-        var updatedCity = await _cityService.UpdateCity(city.Id,_mapper.ToDomain(city));
+        var updatedCity = await _cityService.UpdateCity(city.Id,city.ToDomain());
         return Ok(updatedCity);
     }
 

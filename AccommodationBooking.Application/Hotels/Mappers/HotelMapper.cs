@@ -6,9 +6,9 @@ using DomainHotelFilters = AccommodationBooking.Domain.Hotels.Models.HotelFilter
 namespace AccommodationBooking.Application.Hotels.Mappers;
 
 [Mapper]
-public partial class HotelMapper
+public static partial class HotelMapper
 {
-    public partial DomainHotel ToDomain(Hotel hotel);
-    public partial Hotel ToApplication(DomainHotel hotel);
-    public partial DomainHotelFilters ToDomain(HotelFilters hotelFilters);
+    public static partial DomainHotel ToDomain(this Hotel hotel);
+    public static partial Hotel ToApplication(this DomainHotel hotel);
+    public static partial DomainHotelFilters ToDomain(this HotelFilters hotelFilters);
 }

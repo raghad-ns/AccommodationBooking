@@ -29,9 +29,15 @@ public class ExceptionsHandler
             response.StatusCode = 400;
             await response.WriteAsync(ex.Message);
         }
+        catch (InvalidOperationException ex)
+        {
+            var response = httpContext.Response;
+            response.StatusCode = 404;
+            await response.WriteAsync(ex.Message);
+        }
         catch(Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.Message);
             var response = httpContext.Response;
             response.StatusCode = 500;
             await response.WriteAsync("Something went wrong, please try again later");

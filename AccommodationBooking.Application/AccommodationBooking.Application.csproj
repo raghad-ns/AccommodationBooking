@@ -7,9 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Rooms\Controllers\" />
-    <Folder Include="Rooms\Mappers\" />
-    <Folder Include="Cities\Mappers\" />
     <Folder Include="Middlewares\" />
   </ItemGroup>
 

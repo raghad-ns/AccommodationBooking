@@ -28,8 +28,6 @@ builder.Services
     .RegisterRepositories()
     .RegisterValidators();
 
-builder.Services.AddScoped<RequestDelegate>();
-
 builder.Services.AddControllers();
 
 //builder.Services.AddSwaggerGen();

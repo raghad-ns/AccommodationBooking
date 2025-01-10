@@ -1,5 +1,4 @@
-﻿//using AccommodationBooking.Domain.Hotels.Models;
-using AccommodationBooking.Application.Hotels.Mappers;
+﻿using AccommodationBooking.Application.Hotels.Mappers;
 using AccommodationBooking.Application.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +10,10 @@ namespace AccommodationBooking.Application.Hotels.Controllers;
 public class HotelController : ControllerBase
 {
     private readonly IHotelService _hotelService;
-    private readonly HotelMapper _mapper;
 
-    public HotelController(IHotelService hotelService, HotelMapper hotelMapper)
+    public HotelController(IHotelService hotelService)
     {
         _hotelService = hotelService;
-        _mapper = hotelMapper;
     }
 
     [HttpGet]
@@ -45,23 +42,23 @@ public class HotelController : ControllerBase
             City = cityName
         };
 
-        var hotels = await _hotelService.GetHotels(page, pageSize, _mapper.ToDomain(filters));
+        var hotels = await _hotelService.GetHotels(page, pageSize, filters.ToDomain());
         
-        return Ok(hotels.Select(hotel => _mapper.ToApplication(hotel)));
+        return Ok(hotels.Select(hotel => hotel.ToApplication()));
     }
 
     [HttpPost("add")]
     public async Task<ActionResult<Hotel>> AddCity([FromBody] Hotel hotel)
     {
-        var createdHotel = await _hotelService.CreateHotel(_mapper.ToDomain(hotel));
-        return Ok(_mapper.ToApplication(createdHotel));
+        var createdHotel = await _hotelService.CreateHotel(hotel.ToDomain());
+        return Ok(createdHotel.ToApplication());
     }
 
     [HttpPut("update")]
     public async Task<ActionResult<Hotel>> UpdateHotel([FromBody] Hotel hotel)
     {
-        var updatedHotel = await _hotelService.UpdateHotel(hotel.Id, _mapper.ToDomain(hotel));
-        return Ok(_mapper.ToApplication(updatedHotel));
+        var updatedHotel = await _hotelService.UpdateHotel(hotel.Id, hotel.ToDomain());
+        return Ok(updatedHotel.ToApplication());
     }
 
     [HttpDelete("{id}")]

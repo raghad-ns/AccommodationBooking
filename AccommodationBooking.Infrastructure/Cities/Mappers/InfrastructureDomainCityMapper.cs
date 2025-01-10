@@ -7,34 +7,9 @@ using Riok.Mapperly.Abstractions;
 namespace AccommodationBooking.Infrastructure.Cities.Mappers;
 
 [Mapper]
-public partial class InfrastructureDomainCityMapper
+public static partial class InfrastructureDomainCityMapper
 {
-    private readonly InfrastructureDomainHotelMapper _hotelMapper;
+    public static partial DomainCity ToDomain(this City city);
 
-    public InfrastructureDomainCityMapper(InfrastructureDomainHotelMapper mapper)
-    {
-        _hotelMapper = mapper;
-    }
-    public DomainCity ToDomainCity(City city) =>
-        new DomainCity
-        {
-            Id = city.Id,
-            Name = city.Name,
-            Country = city.Country,
-            PostOfficeCode = city.PostOfficeCode,
-        };
-
-    public DomainCity ToDomainCityIncludeHotels(City city) =>
-        new DomainCity
-        {
-            Id = city.Id,
-            Name = city.Name,
-            Country = city.Country,
-            PostOfficeCode = city.PostOfficeCode,
-            Hotels = city.Hotels.Select(h => _hotelMapper.ToDomain(h)).ToList()
-        };
-
-    public partial City ToInfrastructureCity(DomainCity city);
-
-    public partial CityFilters ToInfrastructure(DomainCityFilters cityFilters);
+    public static partial City ToInfrastructure(this DomainCity city);
 }
