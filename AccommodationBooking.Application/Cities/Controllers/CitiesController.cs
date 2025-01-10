@@ -34,7 +34,7 @@ public class CitiesController: ControllerBase
             PostOfficeCode = postOfficeCode
         };
 
-        var cities = await _cityService.GetCities(page, pageSize, filters.ToDomain());
+        var cities = await _cityService.Search(page, pageSize, filters.ToDomain());
 
         return Ok(cities.Select(c => c.ToApplication()));
     }
@@ -42,22 +42,21 @@ public class CitiesController: ControllerBase
     [HttpPost("add")]
     public async Task<ActionResult<City>> AddCity([FromBody] City city)
     {
-        var createdCity = await _cityService.CreateCity(city.ToDomain());
+        var createdCity = await _cityService.AddOne(city.ToDomain());
         return Ok(createdCity);
     }
 
     [HttpPut("update")]
     public async Task<ActionResult<City>> UpdateCity([FromBody] City city)
     {
-        var updatedCity = await _cityService.UpdateCity(city.Id,city.ToDomain());
+        var updatedCity = await _cityService.UpdateOne(city.Id,city.ToDomain());
         return Ok(updatedCity);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteCity( int id)
     {
-        await _cityService.DeleteCityById(id);
-        //HttpContext.Session.SetInt32("StatusCode", 200);
+        await _cityService.DeleteOne(id);
         return Ok(new {Message= "Deleted successfully", StatusCode = 200 });
     }
 }

@@ -42,7 +42,7 @@ public class HotelController : ControllerBase
             City = cityName
         };
 
-        var hotels = await _hotelService.GetHotels(page, pageSize, filters.ToDomain());
+        var hotels = await _hotelService.Search(page, pageSize, filters.ToDomain());
         
         return Ok(hotels.Select(hotel => hotel.ToApplication()));
     }
@@ -50,22 +50,21 @@ public class HotelController : ControllerBase
     [HttpPost("add")]
     public async Task<ActionResult<Hotel>> AddCity([FromBody] Hotel hotel)
     {
-        var createdHotel = await _hotelService.CreateHotel(hotel.ToDomain());
+        var createdHotel = await _hotelService.AddOne(hotel.ToDomain());
         return Ok(createdHotel.ToApplication());
     }
 
     [HttpPut("update")]
     public async Task<ActionResult<Hotel>> UpdateHotel([FromBody] Hotel hotel)
     {
-        var updatedHotel = await _hotelService.UpdateHotel(hotel.Id, hotel.ToDomain());
+        var updatedHotel = await _hotelService.UpdateOne(hotel.Id, hotel.ToDomain());
         return Ok(updatedHotel.ToApplication());
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteHotel(int id)
     {
-        await _hotelService.DeleteHotelById(id);
-        //HttpContext.Session.SetInt32("StatusCode", 200);
+        await _hotelService.DeleteOne(id);
         return Ok(new { Message = "Deleted successfully", StatusCode = 200 });
     }
 }

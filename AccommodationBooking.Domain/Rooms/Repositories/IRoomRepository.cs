@@ -5,10 +5,10 @@ namespace AccommodationBooking.Domain.Rooms.Repositories;
 
 public interface IRoomRepository
 {
-    Task<List<DomainRoom>> GetRooms(int page, int pageSize, DomainRoomFilters roomFilters);
-    Task<DomainRoom> GetRoomById(int id);
-    Task<DomainRoom> GetRoomByNumber(string number);
-    Task<DomainRoom> CreateRoom(DomainRoom room);
-    Task<DomainRoom> UpdateRoom(int roomId, DomainRoom room);
-    Task DeleteRoomById(int roomId);
+    Task<List<DomainRoom>> Search(int page, int pageSize, DomainRoomFilters roomFilters);
+    Task<DomainRoom> GetOne(int id);
+    Task<DomainRoom> GetOneByNumber(string number);
+    Task<DomainRoom> AddOne(DomainRoom room);
+    Task<DomainRoom> UpdateOne(int roomId, DomainRoom room);
+    Task DeleteOne(int roomId);
 }

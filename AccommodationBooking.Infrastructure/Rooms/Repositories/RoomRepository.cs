@@ -15,7 +15,7 @@ public class RoomRepository : IRoomRepository
         _context = context;
     }
 
-    async Task<Room> IRoomRepository.CreateRoom(Room room)
+    async Task<Room> IRoomRepository.AddOne(Room room)
     {
         var infraRoom = room.ToInfrastructure();
         var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == room.HotelId);
@@ -30,7 +30,7 @@ public class RoomRepository : IRoomRepository
         return createdRoom.ToDomain();
     }
 
-    async Task IRoomRepository.DeleteRoomById(int roomId)
+    async Task IRoomRepository.DeleteOne(int roomId)
     {
         var roomToBeDeleted = await _context.Rooms.FindAsync(roomId);
         if (roomToBeDeleted != null)
@@ -40,19 +40,19 @@ public class RoomRepository : IRoomRepository
         }
     }
 
-    async Task<Room> IRoomRepository.GetRoomById(int id)
+    async Task<Room> IRoomRepository.GetOne(int id)
     {
         var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
         return room.ToDomain();
     }
 
-    async Task<Room> IRoomRepository.GetRoomByNumber(string number)
+    async Task<Room> IRoomRepository.GetOneByNumber(string number)
     {
         var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNo == number);
         return room.ToDomain();
     }
 
-    async Task<List<Room>> IRoomRepository.GetRooms(int page, int pageSize, RoomFilters roomFilters)
+    async Task<List<Room>> IRoomRepository.Search(int page, int pageSize, RoomFilters roomFilters)
     {
         return await _context.Rooms
             .Where( r => (
@@ -70,7 +70,7 @@ public class RoomRepository : IRoomRepository
             .ToListAsync();
     }
 
-    async Task<Room> IRoomRepository.UpdateRoom(int roomId, Room room)
+    async Task<Room> IRoomRepository.UpdateOne(int roomId, Room room)
     {
         var roomToUpdate = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == roomId);
         if (roomToUpdate != null)

@@ -45,7 +45,7 @@ public class RoomController: ControllerBase
             ChildrenCapacityTo = childrenCapacityTo
         };
 
-        var rooms = await _roomService.GetRooms(page, pageSize, filters.ToDomain());
+        var rooms = await _roomService.Search(page, pageSize, filters.ToDomain());
 
         return Ok(rooms.Select(c => c.ToApplication()));
     }
@@ -53,21 +53,21 @@ public class RoomController: ControllerBase
     [HttpPost("add")]
     public async Task<ActionResult<Room>> AddCity([FromBody] Room room)
     {
-        var createdRoom = await _roomService.CreateRoom(room.ToDomain());
+        var createdRoom = await _roomService.AddOne(room.ToDomain());
         return Ok(createdRoom);
     }
 
     [HttpPut("update")]
     public async Task<ActionResult<Room>> UpdateCity([FromBody] Room room)
     {
-        var updatedRoom = await _roomService.UpdateRoom(room.Id, room.ToDomain());
+        var updatedRoom = await _roomService.UpdateOne(room.Id, room.ToDomain());
         return Ok(updatedRoom);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteRoom(int id)
     {
-        await _roomService.DeleteRoomById(id);
+        await _roomService.DeleteOne(id);
         return Ok(new { Message = "Deleted successfully", StatusCode = 200 });
     }
 }

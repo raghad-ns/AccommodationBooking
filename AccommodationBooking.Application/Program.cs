@@ -1,8 +1,4 @@
 using AccommodationBooking.Application.Configuration.Database.Extensions;
-using AccommodationBooking.Application.Configuration.Database.Models;
-using AccommodationBooking.Infrastructure.Contexts;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using AccommodationBooking.Application.Configuration.Authentication.Extensions;
 using AccommodationBooking.Application.Dependencies;
 using AccommodationBooking.Application.Middlewares.ExceptionsHandler;

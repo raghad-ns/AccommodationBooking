@@ -16,7 +16,7 @@ public class CityRepository : ICityRepository
         _context = context;
     }
 
-    async Task<DomainCity> ICityRepository.CreateCity(DomainCity city)
+    async Task<DomainCity> ICityRepository.AddOne(DomainCity city)
     {
         var infraCity = city.ToInfrastructure();
         infraCity.CreatedAt = DateTime.UtcNow;
@@ -29,7 +29,7 @@ public class CityRepository : ICityRepository
         return createdCity.ToDomain();
     }
 
-    async Task ICityRepository.DeleteCityById(int cityId)
+    async Task ICityRepository.DeleteOne(int cityId)
     {
         var city = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
         if (city != null)
@@ -39,12 +39,7 @@ public class CityRepository : ICityRepository
         }
     }
 
-    Task ICityRepository.DeleteCityByName(string name)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<List<DomainCity>> ICityRepository.GetCities(int page, int pageSize, DomainCityFilters cityFilters)
+    Task<List<DomainCity>> ICityRepository.Search(int page, int pageSize, DomainCityFilters cityFilters)
     {
         return _context.Cities
             .Where(c => (
@@ -60,29 +55,26 @@ public class CityRepository : ICityRepository
             .ToListAsync();
     }
 
-    async Task<DomainCity> ICityRepository.GetCityById(int id)
+    async Task<DomainCity> ICityRepository.GetOne(int id)
     {
         var returnedCity = await _context.Cities.FirstOrDefaultAsync(city => city.Id == id);
         return returnedCity.ToDomain();
     }
 
-    async Task<DomainCity> ICityRepository.GetCityByName(string name)
+    async Task<DomainCity> ICityRepository.GetOneByName(string name)
     {
         var returnedCity = await _context.Cities.FirstOrDefaultAsync(city => city.Name.Equals(name));
         return returnedCity.ToDomain();
     }
 
-    async Task<DomainCity> ICityRepository.UpdateCity(int cityId, DomainCity city)
+    async Task<DomainCity> ICityRepository.UpdateOne(int cityId, DomainCity city)
     {
-        var infraCity = city.ToInfrastructure();
         var cityToUpdate = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
 
-        cityToUpdate.Name = city.Name;
-        cityToUpdate.Country = city.Country;
-        cityToUpdate.PostOfficeCode = city.PostOfficeCode;
-        cityToUpdate.UpdatedAt = DateTime.UtcNow;
+        city.ToInfrastructureUpdate(cityToUpdate);
 
         await _context.SaveChangesAsync();
+
         var updatedCity = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
         return updatedCity.ToDomain();
     }

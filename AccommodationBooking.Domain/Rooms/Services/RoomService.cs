@@ -11,32 +11,32 @@ public class RoomService : IRoomService
     {
         _roomRepository = roomRepository;
     }
-    async Task<Room> IRoomService.CreateRoom(Room room)
+    async Task<Room> IRoomService.AddOne(Room room)
     {
         return await _roomRepository.CreateRoom(room);
     }
 
-    async Task IRoomService.DeleteRoomById(int roomId)
+    async Task IRoomService.DeleteOne(int roomId)
     {
         await _roomRepository.DeleteRoomById(roomId);
     }
 
-    async Task<Room> IRoomService.GetRoomById(int id)
+    async Task<Room> IRoomService.GetOne(int id)
     {
         return await _roomRepository.GetRoomById(id);
     }
 
-    async Task<Room> IRoomService.GetRoomByNumber(string number)
+    async Task<Room> IRoomService.GetOneByNumber(string number)
     {
         return await _roomRepository.GetRoomByNumber(number);
     }
 
-    async Task<List<Room>> IRoomService.GetRooms(int page, int pageSize, RoomFilters roomFilters)
+    async Task<List<Room>> IRoomService.Search(int page, int pageSize, RoomFilters roomFilters)
     {
         return await _roomRepository.GetRooms(page, pageSize, roomFilters);
     }
 
-    async Task<Room> IRoomService.UpdateRoom(int roomId, Room room)
+    async Task<Room> IRoomService.UpdateOne(int roomId, Room room)
     {
         return await _roomRepository.UpdateRoom(roomId, room);
     }
