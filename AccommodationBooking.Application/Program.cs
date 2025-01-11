@@ -27,13 +27,22 @@ builder.Services
 
 builder.Services.AddControllers();
 
-//builder.Services.AddSwaggerGen();
-//app.UseSwagger();
-//app.UseSwaggerUI();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+app.MapSwagger().RequireAuthorization();
 
 app.UseDeveloperExceptionPage();
 app.UseMiddleware<ExceptionsHandler>();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseAuthentication();
 
 app.UseAuthorization();
