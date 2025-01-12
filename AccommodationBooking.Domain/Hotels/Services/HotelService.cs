@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Domain.Hotels.Models;
+﻿using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Domain.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Repositories;
 
 namespace AccommodationBooking.Domain.Hotels.Services;
@@ -32,7 +33,7 @@ public class HotelService : IHotelService
         return await _hotelRepository.GetOneByName(name);
     }
 
-    async Task<List<Hotel>> IHotelService.Search(int page, int pageSize, HotelFilters hotelFilters)
+    async Task<PaginatedData<Hotel>> IHotelService.Search(int page, int pageSize, HotelFilters hotelFilters)
     {
         return await _hotelRepository.Search(page, pageSize, hotelFilters);
     }

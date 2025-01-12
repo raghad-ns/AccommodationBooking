@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Domain.Rooms.Models;
+﻿using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Domain.Rooms.Models;
 using AccommodationBooking.Domain.Rooms.Repositories;
 
 namespace AccommodationBooking.Domain.Rooms.Services;
@@ -31,7 +32,7 @@ public class RoomService : IRoomService
         return await _roomRepository.GetOneByNumber(number);
     }
 
-    async Task<List<Room>> IRoomService.Search(int page, int pageSize, RoomFilters roomFilters)
+    async Task<PaginatedData<Room>> IRoomService.Search(int page, int pageSize, RoomFilters roomFilters)
     {
         return await _roomRepository.Search(page, pageSize, roomFilters);
     }

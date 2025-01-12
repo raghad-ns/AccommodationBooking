@@ -1,5 +1,6 @@
 ﻿using AccommodationBooking.Domain.Cities.Models;
 using AccommodationBooking.Domain.Cities.Repositories;
+using AccommodationBooking.Domain.Common;
 
 namespace AccommodationBooking.Domain.Cities.Services;
 
@@ -22,7 +23,7 @@ public class CityService : ICityService
         return _cityRepository.DeleteOne(cityId);
     }
 
-    async Task<List<City>> ICityService.Search(int page, int pageSize, CityFilters cityFilters)
+    async Task<PaginatedData<City>> ICityService.Search(int page, int pageSize, CityFilters cityFilters)
     {
         return await _cityRepository.Search(page, pageSize, cityFilters);
     }

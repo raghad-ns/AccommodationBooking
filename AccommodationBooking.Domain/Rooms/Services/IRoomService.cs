@@ -1,10 +1,11 @@
-﻿using AccommodationBooking.Domain.Rooms.Models;
+﻿using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Domain.Rooms.Models;
 
 namespace AccommodationBooking.Domain.Rooms.Services;
 
 public interface IRoomService
 {
-    Task<List<Room>> Search(int page, int pageSize, RoomFilters roomFilters);
+    Task<PaginatedData<Room>> Search(int page, int pageSize, RoomFilters roomFilters);
     Task<Room> GetOne(int id);
     Task<Room> GetOneByNumber(string number);
     Task<Room> AddOne(Room room);

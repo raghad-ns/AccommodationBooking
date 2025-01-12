@@ -1,11 +1,12 @@
-﻿using DomainRoom = AccommodationBooking.Domain.Rooms.Models.Room;
+﻿using AccommodationBooking.Domain.Common;
+using DomainRoom = AccommodationBooking.Domain.Rooms.Models.Room;
 using DomainRoomFilters = AccommodationBooking.Domain.Rooms.Models.RoomFilters;
 
 namespace AccommodationBooking.Domain.Rooms.Repositories;
 
 public interface IRoomRepository
 {
-    Task<List<DomainRoom>> Search(int page, int pageSize, DomainRoomFilters roomFilters);
+    Task<PaginatedData<DomainRoom>> Search(int page, int pageSize, DomainRoomFilters roomFilters);
     Task<DomainRoom> GetOne(int id);
     Task<DomainRoom> GetOneByNumber(string number);
     Task<DomainRoom> AddOne(DomainRoom room);

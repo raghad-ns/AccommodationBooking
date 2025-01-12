@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Application.Hotels.Mappers;
+﻿using AccommodationBooking.Application.Common.Pagination;
+using AccommodationBooking.Application.Hotels.Mappers;
 using AccommodationBooking.Application.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ public class HotelController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<List<Hotel>>> GetCities(
+    public async Task<ActionResult<PaginatedData<Hotel>>> GetCities(
         [FromQuery] int page=0, 
         [FromQuery] int pageSize=10, 
         [FromQuery] int? id=null,
@@ -45,8 +46,12 @@ public class HotelController : ControllerBase
         };
 
         var hotels = await _hotelService.Search(page, pageSize, filters.ToDomain());
-        
-        return Ok(hotels.Select(hotel => hotel.ToApplication()));
+
+        return Ok(new PaginatedData<Hotel>
+        {
+            Total = hotels.Total,
+            Data = hotels.Data.Select(hotel => hotel.ToApplication()).ToList().AsReadOnly()
+        });
     }
 
     [Authorize(Roles = "Admin")]

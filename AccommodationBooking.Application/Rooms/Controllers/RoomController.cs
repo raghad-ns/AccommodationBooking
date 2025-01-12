@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Application.Rooms.Mappers;
+﻿using AccommodationBooking.Application.Common.Pagination;
+using AccommodationBooking.Application.Rooms.Mappers;
 using AccommodationBooking.Application.Rooms.Models;
 using AccommodationBooking.Domain.Rooms.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ public class RoomController: ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<List<Room>>> GetRooms(
+    public async Task<ActionResult<PaginatedData<Room>>> GetRooms(
         [FromQuery] int page = 0,
         [FromQuery] int pageSize = 10,
         [FromQuery] int? id = null,
@@ -49,7 +50,11 @@ public class RoomController: ControllerBase
 
         var rooms = await _roomService.Search(page, pageSize, filters.ToDomain());
 
-        return Ok(rooms.Select(c => c.ToApplication()));
+        return Ok(new PaginatedData<Room>
+        {
+            Total = rooms.Total,
+            Data = rooms.Data.Select(room => room.ToApplication()).ToList().AsReadOnly()
+        });
     }
 
     [Authorize(Roles = "Admin")]

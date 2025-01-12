@@ -1,11 +1,12 @@
 ﻿using AccommodationBooking.Domain.Cities.Models;
+using AccommodationBooking.Domain.Common;
 using AccommodationBooking.Domain.Hotels.Models;
 
 namespace AccommodationBooking.Domain.Hotels.Repositories;
 
 public interface IHotelRepository
 {
-    Task<List<Hotel>> Search(int page, int pageSize, HotelFilters hotelFilters);
+    Task<PaginatedData<Hotel>> Search(int page, int pageSize, HotelFilters hotelFilters);
     Task<Hotel> GetOne(int id);
     Task<Hotel> GetOneByName(string name);
     Task<Hotel> AddOne(Hotel hotel);

@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Domain.Rooms.Models;
+﻿using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Domain.Rooms.Models;
 using AccommodationBooking.Domain.Rooms.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Rooms.Mappers;
@@ -52,9 +53,9 @@ public class RoomRepository : IRoomRepository
         return room.ToDomain();
     }
 
-    async Task<List<Room>> IRoomRepository.Search(int page, int pageSize, RoomFilters roomFilters)
+    async Task<PaginatedData<Room>> IRoomRepository.Search(int page, int pageSize, RoomFilters roomFilters)
     {
-        return await _context.Rooms
+        var rooms = await _context.Rooms
             .Where( r => (
                 (roomFilters.Id != null? r.Id == roomFilters.Id : true) &&
                 (roomFilters.RoomNo != null? r.RoomNo.ToLower().Contains(roomFilters.RoomNo.ToLower()) : true) &&
@@ -68,6 +69,12 @@ public class RoomRepository : IRoomRepository
             .Take(pageSize)
             .Select(r => r.ToDomain())
             .ToListAsync();
+
+        return new PaginatedData<Room>
+        {
+            Total = _context.Rooms.Count(),
+            Data = rooms.AsReadOnly()
+        };
     }
 
     async Task<Room> IRoomRepository.UpdateOne(int roomId, Room room)

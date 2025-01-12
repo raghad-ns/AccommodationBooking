@@ -4,6 +4,7 @@ using DomainCityFilters = AccommodationBooking.Domain.Cities.Models.CityFilters;
 using AccommodationBooking.Domain.Cities.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
+using AccommodationBooking.Domain.Common;
 
 namespace AccommodationBooking.Infrastructure.Cities.Repositories;
 
@@ -39,9 +40,9 @@ public class CityRepository : ICityRepository
         }
     }
 
-    Task<List<DomainCity>> ICityRepository.Search(int page, int pageSize, DomainCityFilters cityFilters)
+    async Task<PaginatedData<DomainCity>> ICityRepository.Search(int page, int pageSize, DomainCityFilters cityFilters)
     {
-        return _context.Cities
+        var cities = await _context.Cities
             .Where(c => (
                 (cityFilters.Id != null ? c.Id == cityFilters.Id : true) &&
                 (cityFilters.Name != null ? c.Name.ToLower().Contains(cityFilters.Name.ToLower()) : true) &&
@@ -53,6 +54,12 @@ public class CityRepository : ICityRepository
             .Include(c => c.Hotels)
             .Select(city => city.ToDomain())
             .ToListAsync();
+
+        return new PaginatedData<DomainCity>
+        {
+            Total = _context.Cities.Count(),
+            Data = cities.AsReadOnly()
+        };
     }
 
     async Task<DomainCity> ICityRepository.GetOne(int id)

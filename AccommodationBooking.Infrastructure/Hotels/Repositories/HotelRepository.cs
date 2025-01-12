@@ -4,6 +4,7 @@ using AccommodationBooking.Domain.Hotels.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Hotels.Mappers;
 using Microsoft.EntityFrameworkCore;
+using AccommodationBooking.Domain.Common;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Repositories;
 
@@ -41,9 +42,9 @@ public class HotelRepository : IHotelRepository
         }
     }
 
-    Task<List<DomainHotel>> IHotelRepository.Search(int page, int pageSize, DomainHotelFilters hotelFilters)
+    async Task<PaginatedData<DomainHotel>> IHotelRepository.Search(int page, int pageSize, DomainHotelFilters hotelFilters)
     {
-        return _context.Hotels
+        var hotels = await _context.Hotels
             .Where(h => (
                 (hotelFilters.Id != null ? h.Id == hotelFilters.Id : true) &&
 
@@ -62,6 +63,12 @@ public class HotelRepository : IHotelRepository
             .Include(h => h.Rooms)
             .Select(hotel => hotel.ToDomain())
             .ToListAsync();
+
+        return new PaginatedData<DomainHotel>
+        {
+            Total = _context.Hotels.Count(),
+            Data = hotels.AsReadOnly()
+        };
     }
 
     async Task<DomainHotel> IHotelRepository.GetOne(int id)

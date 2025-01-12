@@ -3,12 +3,13 @@ using AccommodationBooking.Domain.Cities.Services;
 using Microsoft.AspNetCore.Mvc;
 using AccommodationBooking.Application.Cities.Models;
 using Microsoft.AspNetCore.Authorization;
+using AccommodationBooking.Application.Common.Pagination;
 
 namespace AccommodationBooking.Application.Cities.Controllers;
 
 [ApiController]
 [Route("api/cities")]
-public class CitiesController: ControllerBase
+public class CitiesController : ControllerBase
 {
     private readonly ICityService _cityService;
 
@@ -19,9 +20,9 @@ public class CitiesController: ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<List<City>>> GetCities(
-        [FromQuery] int page=0, 
-        [FromQuery] int pageSize=10,
+    public async Task<ActionResult<PaginatedData<City>>> GetCities(
+        [FromQuery] int page = 0,
+        [FromQuery] int pageSize = 10,
         [FromQuery] int? id = null,
         [FromQuery] string? name = null,
         [FromQuery] string? country = null,
@@ -38,7 +39,11 @@ public class CitiesController: ControllerBase
 
         var cities = await _cityService.Search(page, pageSize, filters.ToDomain());
 
-        return Ok(cities.Select(c => c.ToApplication()));
+        return Ok(new PaginatedData<City>
+        {
+            Total = cities.Total,
+            Data = cities.Data.Select(city => city.ToApplication()).ToList().AsReadOnly()
+        });
     }
 
     [Authorize(Roles = "Admin")]
@@ -53,15 +58,15 @@ public class CitiesController: ControllerBase
     [HttpPut("update")]
     public async Task<ActionResult<City>> UpdateCity([FromBody] City city)
     {
-        var updatedCity = await _cityService.UpdateOne(city.Id,city.ToDomain());
+        var updatedCity = await _cityService.UpdateOne(city.Id, city.ToDomain());
         return Ok(updatedCity);
     }
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteCity( int id)
+    public async Task<ActionResult> DeleteCity(int id)
     {
         await _cityService.DeleteOne(id);
-        return Ok(new {Message= "Deleted successfully", StatusCode = 200 });
+        return Ok(new { Message = "Deleted successfully", StatusCode = 200 });
     }
 }
