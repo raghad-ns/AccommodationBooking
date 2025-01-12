@@ -23,11 +23,8 @@ builder.Services
 // Register dependencies
 builder.Services
     .RegisterAuthenticationDependencies()
-    .RegisterMappers()
     .RegisterRepositories()
     .RegisterValidators();
-
-builder.Services.AddScoped<RequestDelegate>();
 
 builder.Services.AddControllers();
 

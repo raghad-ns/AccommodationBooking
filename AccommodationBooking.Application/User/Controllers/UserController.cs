@@ -10,32 +10,21 @@ namespace AccommodationBooking.Application.User.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly ApplicationDomainUserMapper _mapper;
     private readonly ITokensService _tokenService;
 
     public UserController(
         IUserService userService,
-        ITokensService tokenService,
-        ApplicationDomainUserMapper mapper
+        ITokensService tokenService
         )
     {
         _userService = userService;
         _tokenService = tokenService;
-        _mapper = mapper;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Models.User>>> GetUsers([FromQuery] int page, [FromQuery] int pageSize)
-    {
-        var users = await _userService.GetUsers(page, pageSize);
-        var applicationUsers = users.Select(user => _mapper.ToApplication(user)).ToList();
-        return Ok(applicationUsers);
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<Models.User>> Register([FromBody] Models.User userDTO)
     {
-        var domainUser = _mapper.ToDomain(userDTO);
+        var domainUser = userDTO.ToDomain();
         var user = await _userService.Register(domainUser);
 
         if (user == null)
@@ -47,9 +36,9 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest loginDTO)
     {
-        var domainLogin = _mapper.ToDomain(loginDTO);
+        var domainLogin = loginDTO.ToDomain();
         var user = await _userService.Login(domainLogin);
-        var applicationUser = _mapper.ToApplication(user);
+        var applicationUser = user.ToApplication();
 
         var token = _tokenService.GenerateToken(new Infrastructure.Users.Models.User
         {

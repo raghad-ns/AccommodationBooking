@@ -27,15 +27,6 @@ public static class DependenciesRegistration
         return services;
     }
 
-    public static IServiceCollection RegisterMappers(this IServiceCollection services)
-    {
-        services
-            .AddScoped<UserMapper>()
-            .AddScoped<ApplicationDomainUserMapper>();
-
-        return services;
-    }
-
     public static IServiceCollection RegisterRepositories(this IServiceCollection services)
     {
         services

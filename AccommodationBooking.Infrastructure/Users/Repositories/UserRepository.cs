@@ -12,38 +12,17 @@ namespace AccommodationBooking.Infrastructure.Users.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly AccommodationBookingContext _context;
-    private readonly UserMapper _mapper;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signinManager;
 
     public UserRepository(
         AccommodationBookingContext context,
-        UserMapper mapper,
         UserManager<User> userManager,
         SignInManager<User> signinManager)
     {
         _context = context;
-        _mapper = mapper;
         _userManager = userManager;
         _signinManager = signinManager;
-    }
-    public async Task<List<Domain.Users.Models.User>> GetAllUsers(int page, int pageSize)
-    {
-        var users = await _userManager.Users
-            .Skip(page * pageSize)
-            .Take(pageSize)
-            .Select(user => new
-            {
-                User = user,
-                Roles = _userManager.GetRolesAsync(user).Result
-            })
-            .ToListAsync(); 
-
-        var domainUsers = users
-            .Select(user => _mapper.ToDomain(user.User, user.Roles.FirstOrDefault()))
-            .ToList();
-
-        return domainUsers.ToList(); 
     }
 
     public async Task<Domain.Users.Models.User> Login(Domain.Users.Models.LoginRequest loginDTO)
@@ -58,7 +37,7 @@ public class UserRepository : IUserRepository
         var result = await _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
         if (result == null) throw new InvalidLoginCredentialsException(); ;
 
-        return _mapper.ToDomain(user, role);
+        return user.ToDomain(role);
     }
 
     //public Task Logout(string token)
@@ -68,7 +47,7 @@ public class UserRepository : IUserRepository
 
     public async Task<Domain.Users.Models.User> Register(Domain.Users.Models.User domainModel)
     {
-        var model = _mapper.ToInfrastructure(domainModel);
+        var model = domainModel.ToInfrastructure();
         model.NormalizedUserName = domainModel.FirstName + " " + domainModel.LastName;
         model.Id = Guid.NewGuid().ToString();
 
@@ -96,7 +75,7 @@ public class UserRepository : IUserRepository
                     // Commit the transaction
                     transaction.Complete();
 
-                    return _mapper.ToDomain(model, role);
+                    return model.ToDomain(role);
                 }
             }
 
