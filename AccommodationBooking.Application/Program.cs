@@ -1,25 +1,41 @@
+using AccommodationBooking.Application.Configuration.Database.Extensions;
+using AccommodationBooking.Application.Configuration.Database.Models;
+using AccommodationBooking.Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using AccommodationBooking.Application.Configuration.Authentication.Extensions;
+using AccommodationBooking.Application.Dependencies;
+using AccommodationBooking.Application.Middlewares.ExceptionsHandler;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+// Add authentication services to the container.
+builder.Services
+    .LoadDatabaseConfiguration(builder)
+    .LoadAuthenticationConfiguration(builder);
+
+builder.Services
+    .AddDatabaseConfiguration()
+    .ConfigureAuthentication();
+
+// Register dependencies
+builder.Services
+    .RegisterAuthenticationDependencies()
+    .RegisterRepositories()
+    .RegisterValidators();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
+app.UseDeveloperExceptionPage();
+app.UseMiddleware<ExceptionsHandler>();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.MapControllers();
+
+app.MapGet("/", () => "Hello World!");
 
 app.Run();
