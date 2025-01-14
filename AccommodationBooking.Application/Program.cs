@@ -10,17 +10,14 @@ builder.Services
     .LoadDatabaseConfiguration(builder)
     .LoadAuthenticationConfiguration(builder);
 
-var serviceProvider = builder.Services.BuildServiceProvider();
-
 builder.Services
-    .AddDatabaseConfiguration(serviceProvider)
-    .ConfigureAuthentication(serviceProvider)
+    .AddDatabaseConfiguration()
+    .ConfigureAuthentication()
     .ConfigureAuthorization();
 
 // Register dependencies
 builder.Services
     .RegisterAuthenticationDependencies()
-    .RegisterMappers()
     .RegisterServices()
     .RegisterRepositories()
     .RegisterValidators();

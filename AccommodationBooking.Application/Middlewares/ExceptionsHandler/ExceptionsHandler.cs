@@ -1,5 +1,4 @@
 ﻿using AccommodationBooking.Domain.Users.Exceptions;
-using System;
 
 namespace AccommodationBooking.Application.Middlewares.ExceptionsHandler;
 
@@ -37,7 +36,6 @@ public class ExceptionsHandler
         }
         catch(Exception ex)
         {
-            Console.WriteLine(ex.Message);
             var response = httpContext.Response;
             response.StatusCode = 500;
             await response.WriteAsync("Something went wrong, please try again later");

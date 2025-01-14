@@ -12,38 +12,17 @@ namespace AccommodationBooking.Infrastructure.Users.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly AccommodationBookingContext _context;
-    private readonly UserMapper _mapper;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signinManager;
 
     public UserRepository(
         AccommodationBookingContext context,
-        UserMapper mapper,
         UserManager<User> userManager,
         SignInManager<User> signinManager)
     {
         _context = context;
-        _mapper = mapper;
         _userManager = userManager;
         _signinManager = signinManager;
-    }
-    public async Task<List<Domain.Users.Models.User>> GetAllUsers(int page, int pageSize)
-    {
-        var users = await _userManager.Users
-            .Skip(page * pageSize)
-            .Take(pageSize)
-            .Select(user => new
-            {
-                User = user,
-                Roles = _userManager.GetRolesAsync(user).Result
-            })
-            .ToListAsync(); 
-
-        var domainUsers = users
-            .Select(user => _mapper.ToDomain(user.User, user.Roles.FirstOrDefault()))
-            .ToList();
-
-        return domainUsers.ToList(); 
     }
 
     public async Task<Domain.Users.Models.User> Login(Domain.Users.Models.LoginRequest loginDTO)
@@ -58,7 +37,7 @@ public class UserRepository : IUserRepository
         var result = await _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
         if (result == null) throw new InvalidLoginCredentialsException(); ;
 
-        return _mapper.ToDomain(user, role);
+        return user.ToDomain(role);
     }
 
     //public Task Logout(string token)
@@ -68,9 +47,8 @@ public class UserRepository : IUserRepository
 
     public async Task<Domain.Users.Models.User> Register(Domain.Users.Models.User domainModel)
     {
-        var model = _mapper.ToInfrastructure(domainModel);
+        var model = domainModel.ToInfrastructure();
         model.NormalizedUserName = domainModel.FirstName + " " + domainModel.LastName;
-        model.Id = Guid.NewGuid().ToString();
 
         var similarUser = await _context.Users
             .FirstOrDefaultAsync(x =>
@@ -80,7 +58,7 @@ public class UserRepository : IUserRepository
         if (similarUser != null)
             throw new UserAlreadyExistedException();
 
-        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        return await _context.PerformTransaction<Domain.Users.Models.User>(async transaction =>
         {
             var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
             if (createdUser.Succeeded)
@@ -93,15 +71,16 @@ public class UserRepository : IUserRepository
                     var roles = await _userManager.GetRolesAsync(user);
                     var role = roles.FirstOrDefault();
 
-                    // Commit the transaction
-                    transaction.Complete();
+                    await transaction.CommitAsync();
 
-                    return _mapper.ToDomain(model, role);
+                    return model.ToDomain(role);
                 }
-            }
 
-            // If anything fails, the transaction will roll back automatically
-            throw new Exception();
-        }
+                await transaction.RollbackAsync();
+                throw new InvalidOperationException("Failed to create user or assign role.");
+            }
+            await transaction.RollbackAsync();
+            throw new InvalidOperationException("Failed to create user or assign role.");
+        });
     }
 }

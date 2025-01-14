@@ -9,7 +9,7 @@ using System.Reflection.Emit;
 
 namespace AccommodationBooking.Infrastructure.Contexts
 {
-    public class AccommodationBookingContext : IdentityDbContext<User>
+    public class AccommodationBookingContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Hotel> Hotels { get; set; }

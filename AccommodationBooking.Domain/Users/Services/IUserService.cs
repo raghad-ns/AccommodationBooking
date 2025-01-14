@@ -7,5 +7,4 @@ public interface IUserService
     Task<Models.User> Login(LoginRequest loginDTO);
     //Task Logout(string token);
     Task<Models.User> Register(Models.User model);
-    Task<List<Models.User>> GetUsers(int page, int pageSize);
 }

@@ -17,11 +17,11 @@ public static class ServiceCollectionExtension
         return services;
     }
 
-    public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services, IServiceProvider serviceProvider)
+    public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services)
     {
         services.AddDbContext<AccommodationBookingContext>(options =>
         {
-            var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+            var databaseOptions = services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>().Value;
             options.UseSqlServer(databaseOptions.ConnectionString);
         });
 

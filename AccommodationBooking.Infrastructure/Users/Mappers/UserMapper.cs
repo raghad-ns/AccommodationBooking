@@ -5,11 +5,11 @@ namespace AccommodationBooking.Infrastructure.Users.Mappers;
 
 [Mapper]
 
-public partial class UserMapper
+public static partial class UserMapper
 {
-    public partial User ToDomain(Models.User user);
+    public static partial User ToDomain(this Models.User user);
 
-    public partial Models.User ToInfrastructure(User user);
+    public static partial Models.User ToInfrastructure(this User user);
 
-    public partial User ToDomain(Models.User user, string Role);
+    public static partial User ToDomain(this Models.User user, string Role);
 }

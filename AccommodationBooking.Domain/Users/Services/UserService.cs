@@ -1,5 +1,4 @@
-﻿using AccommodationBooking.Domain.Users.Validators;
-using AccommodationBooking.Domain.Users.Models;
+﻿using AccommodationBooking.Domain.Users.Models;
 using AccommodationBooking.Domain.Users.Repositories;
 using FluentValidation;
 
@@ -19,11 +18,6 @@ namespace AccommodationBooking.Domain.Users.Services
             _userRepository = userRepository;
             _userValidator = userValidator;
             _loginValidator = loginValidator;
-        }
-
-        public Task<List<User>> GetUsers(int page, int pageSize)
-        {
-            return _userRepository.GetAllUsers(page, pageSize);
         }
 
         public Task<User> Login(LoginRequest login)
