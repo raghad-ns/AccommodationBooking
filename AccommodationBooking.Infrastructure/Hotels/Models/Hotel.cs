@@ -3,6 +3,8 @@ using AccommodationBooking.Infrastructure.Cities.Models;
 using AccommodationBooking.Infrastructure.Rooms.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Models;
 
@@ -20,4 +22,16 @@ public class Hotel : BaseEntity.Models.BaseEntity
     public List<string> Images { get; set; } = new();
     public List<Amenity> Amenities { get; set; } = new();
     public List<Room> Rooms { get; set; } // Navigation property
+
+    public class CityEntityTypeConfiguration : IEntityTypeConfiguration<Hotel>
+    {
+        public void Configure(EntityTypeBuilder<Hotel> builder)
+        {
+            builder
+                .HasMany(hotel => hotel.Rooms)
+                .WithOne(room => room.Hotel)
+                .HasForeignKey(room => room.HotelId)
+                .HasPrincipalKey(hotel => hotel.Id);
+        }
+    }
 }

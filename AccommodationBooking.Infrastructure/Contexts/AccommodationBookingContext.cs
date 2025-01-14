@@ -57,24 +57,6 @@ namespace AccommodationBooking.Infrastructure.Contexts
                 },
             };
             builder.Entity<IdentityRole>().HasData(roles);
-
-            builder.Entity<City>(entity =>
-            {
-                entity
-                .HasMany(city => city.Hotels)
-                .WithOne(hotel => hotel.City)
-                .HasForeignKey(hotel => hotel.CityId)
-                .HasPrincipalKey(city => city.Id);
-            });
-
-            builder.Entity<Hotel>(entity =>
-            {
-                entity
-                .HasMany(hotel => hotel.Rooms)
-                .WithOne(room => room.Hotel)
-                .HasForeignKey(room => room.HotelId)
-                .HasPrincipalKey(hotel => hotel.Id);
-            });
         }
     }
 }
