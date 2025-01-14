@@ -49,7 +49,6 @@ public class UserRepository : IUserRepository
     {
         var model = domainModel.ToInfrastructure();
         model.NormalizedUserName = domainModel.FirstName + " " + domainModel.LastName;
-        model.Id = Guid.NewGuid().ToString();
 
         var similarUser = await _context.Users
             .FirstOrDefaultAsync(x =>
@@ -59,7 +58,7 @@ public class UserRepository : IUserRepository
         if (similarUser != null)
             throw new UserAlreadyExistedException();
 
-        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        return await _context.PerformTransaction<Domain.Users.Models.User>(async transaction =>
         {
             var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
             if (createdUser.Succeeded)
@@ -72,15 +71,16 @@ public class UserRepository : IUserRepository
                     var roles = await _userManager.GetRolesAsync(user);
                     var role = roles.FirstOrDefault();
 
-                    // Commit the transaction
-                    transaction.Complete();
+                    await transaction.CommitAsync();
 
                     return model.ToDomain(role);
                 }
-            }
 
-            // If anything fails, the transaction will roll back automatically
-            throw new Exception();
-        }
+                await transaction.RollbackAsync();
+                throw new InvalidOperationException("Failed to create user or assign role.");
+            }
+            await transaction.RollbackAsync();
+            throw new InvalidOperationException("Failed to create user or assign role.");
+        });
     }
 }
