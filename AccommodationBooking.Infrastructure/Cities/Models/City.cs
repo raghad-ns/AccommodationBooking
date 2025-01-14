@@ -1,10 +1,11 @@
 ﻿using AccommodationBooking.Infrastructure.Hotels.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Cities.Models;
 
-public class City
+public class City: BaseEntity.Models.BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,6 +14,4 @@ public class City
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
     public List<Hotel>? Hotels { get; set; } = new();
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
 }

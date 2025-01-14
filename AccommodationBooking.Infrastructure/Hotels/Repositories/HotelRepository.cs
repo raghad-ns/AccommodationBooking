@@ -22,11 +22,9 @@ public class HotelRepository : IHotelRepository
         var infraHotel = hotel.ToInfrastructure();
         var hotelCity = await _context.Cities.FirstOrDefaultAsync(c => c.Id == infraHotel.Id);
         infraHotel.City = hotelCity;
-        infraHotel.CreatedAt = DateTime.UtcNow;
-        infraHotel.UpdatedAt = DateTime.UtcNow;
 
         _context.Hotels.Add(infraHotel);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(new CancellationToken());
 
         var createdHotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Name.Equals(hotel.Name));
         return createdHotel.ToDomain();
@@ -38,7 +36,7 @@ public class HotelRepository : IHotelRepository
         if (hotel != null)
         {
             _context.Hotels.Remove(hotel);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(new CancellationToken());
         }
     }
 
@@ -89,7 +87,7 @@ public class HotelRepository : IHotelRepository
 
         hotel.ToInfrastructureUpdate(hotelToUpdate);
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(new CancellationToken());
 
         var updatedHotel = await _context.Hotels.FirstOrDefaultAsync(c => c.Id == hotelId);
         return updatedHotel.ToDomain();

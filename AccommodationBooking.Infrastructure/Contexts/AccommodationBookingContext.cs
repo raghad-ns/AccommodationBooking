@@ -5,7 +5,6 @@ using AccommodationBooking.Infrastructure.Users.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace AccommodationBooking.Infrastructure.Contexts
 {
@@ -19,6 +18,27 @@ namespace AccommodationBooking.Infrastructure.Contexts
         {
         }
 
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            var entities = ChangeTracker.Entries()
+            .Where(x =>
+                (x.Entity is BaseEntity.Models.BaseEntity) &&
+                (x.State == EntityState.Added || x.State == EntityState.Modified)
+                );
+
+            foreach (var entity in entities)
+            {
+                var now = DateTime.UtcNow;
+
+                if (entity.State == EntityState.Added)
+                {
+                    ((BaseEntity.Models.BaseEntity)entity.Entity).CreatedAt = now;
+                }
+                ((BaseEntity.Models.BaseEntity)entity.Entity).UpdatedAt = now;
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -46,7 +66,7 @@ namespace AccommodationBooking.Infrastructure.Contexts
                 .HasForeignKey(hotel => hotel.CityId)
                 .HasPrincipalKey(city => city.Id);
             });
-            
+
             builder.Entity<Hotel>(entity =>
             {
                 entity

@@ -63,7 +63,7 @@ public class UserRepository : IUserRepository
             var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
             if (createdUser.Succeeded)
             {
-                var roleResult = await _userManager.AddToRoleAsync(model, "User");
+                var roleResult = await _userManager.AddToRoleAsync(model, "Admin");
 
                 if (roleResult.Succeeded)
                 {

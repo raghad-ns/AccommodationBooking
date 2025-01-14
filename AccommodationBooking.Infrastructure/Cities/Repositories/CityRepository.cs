@@ -20,11 +20,9 @@ public class CityRepository : ICityRepository
     async Task<DomainCity> ICityRepository.AddOne(DomainCity city)
     {
         var infraCity = city.ToInfrastructure();
-        infraCity.CreatedAt = DateTime.UtcNow;
-        infraCity.UpdatedAt = DateTime.UtcNow;
 
         _context.Cities.Add(infraCity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(new CancellationToken());
 
         var createdCity = await _context.Cities.FirstOrDefaultAsync(c => c.Name.Equals(city.Name));
         return createdCity.ToDomain();
@@ -36,7 +34,7 @@ public class CityRepository : ICityRepository
         if (city != null)
         {
             _context.Cities.Remove(city);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(new CancellationToken());
         }
     }
 
@@ -80,7 +78,7 @@ public class CityRepository : ICityRepository
 
         city.ToInfrastructureUpdate(cityToUpdate);
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(new CancellationToken());
 
         var updatedCity = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
         return updatedCity.ToDomain();

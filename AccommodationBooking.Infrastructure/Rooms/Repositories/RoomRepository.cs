@@ -21,11 +21,9 @@ public class RoomRepository : IRoomRepository
         var infraRoom = room.ToInfrastructure();
         var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == room.HotelId);
         infraRoom.Hotel = hotel;
-        infraRoom.CreatedAt = DateTime.UtcNow;
-        infraRoom.UpdatedAt = DateTime.UtcNow;
 
         _context.Rooms.Add(infraRoom);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(new CancellationToken());
 
         var createdRoom = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNo.Equals(room.RoomNo));
         return createdRoom.ToDomain();
@@ -37,7 +35,7 @@ public class RoomRepository : IRoomRepository
         if (roomToBeDeleted != null)
         {
             _context.Rooms.Remove(roomToBeDeleted);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(new CancellationToken());
         }
     }
 
@@ -84,7 +82,7 @@ public class RoomRepository : IRoomRepository
         {
             room.updateFromDomain(roomToUpdate);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(new CancellationToken());
 
             var updatedRoom = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == roomId);
             return updatedRoom.ToDomain();

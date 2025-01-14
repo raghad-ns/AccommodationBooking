@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Models;
 
-public class Hotel
+public class Hotel : BaseEntity.Models.BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -20,6 +20,4 @@ public class Hotel
     public List<string> Images { get; set; } = new();
     public List<Amenity> Amenities { get; set; } = new();
     public List<Room> Rooms { get; set; } // Navigation property
-    public DateTime CreatedAt  { get; set; }
-    public DateTime UpdatedAt { get; set; }
 }
