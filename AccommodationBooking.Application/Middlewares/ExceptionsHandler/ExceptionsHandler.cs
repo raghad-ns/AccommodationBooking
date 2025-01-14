@@ -31,6 +31,7 @@ public class ExceptionsHandler
         }
         catch(Exception ex)
         {
+            Console.WriteLine(ex.ToString());
             var response = httpContext.Response;
             response.StatusCode = 500;
             await response.WriteAsync("Something went wrong, please try again later");

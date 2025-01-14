@@ -14,11 +14,9 @@ builder.Services
     .LoadDatabaseConfiguration(builder)
     .LoadAuthenticationConfiguration(builder);
 
-var serviceProvider = builder.Services.BuildServiceProvider();
-
 builder.Services
-    .AddDatabaseConfiguration(serviceProvider)
-    .ConfigureAuthentication(serviceProvider);
+    .AddDatabaseConfiguration()
+    .ConfigureAuthentication();
 
 // Register dependencies
 builder.Services

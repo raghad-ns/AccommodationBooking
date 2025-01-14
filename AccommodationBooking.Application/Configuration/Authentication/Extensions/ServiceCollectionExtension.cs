@@ -21,10 +21,10 @@ public static class ServiceCollectionExtension
         return services;
     }
 
-    public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, IServiceProvider serviceProvider)
+    public static IServiceCollection ConfigureAuthentication(this IServiceCollection services)
     {
         services
-            .AddIdentity<Infrastructure.Users.Models.User, IdentityRole>(options =>
+            .AddIdentity<Infrastructure.Users.Models.User, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequireLowercase = true;
                 options.Password.RequireDigit = true;
@@ -34,7 +34,7 @@ public static class ServiceCollectionExtension
             })
             .AddEntityFrameworkStores<AccommodationBookingContext>();
 
-        var authenticationConfiguration = serviceProvider.GetRequiredService<IOptions<AuthenticationOptions>>().Value;
+        var authenticationConfiguration = services.BuildServiceProvider().GetRequiredService<IOptions<AuthenticationOptions>>().Value;
 
         services
             .AddAuthentication(options =>

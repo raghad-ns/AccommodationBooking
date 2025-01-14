@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AccommodationBooking.Infrastructure.Contexts
 {
-    public class AccommodationBookingContext : IdentityDbContext<User>
+    public class AccommodationBookingContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public DbSet<User> Users { get; set; }
         public AccommodationBookingContext(DbContextOptions<AccommodationBookingContext> options) : base(options)
