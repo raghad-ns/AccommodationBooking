@@ -5,6 +5,8 @@ using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Hotels.Mappers;
 using Microsoft.EntityFrameworkCore;
 using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Domain.Rooms.Models;
+using AccommodationBooking.Infrastructure.Rooms.Mappers;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Repositories;
 
@@ -71,8 +73,21 @@ public class HotelRepository : IHotelRepository
 
     async Task<DomainHotel> IHotelRepository.GetOne(int id)
     {
-        var returnedHotel = await _context.Hotels.FirstOrDefaultAsync(hotel => hotel.Id == id);
+        var returnedHotel = await _context.Hotels
+            .Where(hotel => hotel.Id == id)
+            .Include(h => h.Rooms)
+            .FirstOrDefaultAsync();
         return returnedHotel.ToDomain();
+    }
+
+    async Task<List<Room>> IHotelRepository.GetRooms(int id)
+    {
+        var returnedRooms = await _context.Hotels
+            .Where(h => h.Id == id)
+            .Include(h => h.Rooms)
+            .SelectMany(h => h.Rooms.Select(r => r.ToDomain()).ToList())
+            .ToListAsync();
+        return returnedRooms;
     }
 
     async Task<DomainHotel> IHotelRepository.GetOneByName(string name)

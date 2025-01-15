@@ -13,5 +13,5 @@ public class Room
     public bool IsAvailable { get; set; } = true;
     public string? Description { get; set; }
     public List<string> Images { get; set; } = new List<string>();
-    public RoomType RoomType { get; set; }
+    public string RoomType { get; set; }
 }

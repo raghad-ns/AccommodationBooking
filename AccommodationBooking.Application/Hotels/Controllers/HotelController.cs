@@ -1,6 +1,8 @@
 ﻿using AccommodationBooking.Application.Common.Pagination;
 using AccommodationBooking.Application.Hotels.Mappers;
 using AccommodationBooking.Application.Hotels.Models;
+using AccommodationBooking.Application.Rooms.Mappers;
+using AccommodationBooking.Application.Rooms.Models;
 using AccommodationBooking.Domain.Hotels.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +70,22 @@ public class HotelController : ControllerBase
     {
         var updatedHotel = await _hotelService.UpdateOne(hotel.Id, hotel.ToDomain());
         return Ok(updatedHotel.ToApplication());
+    }
+
+    [Authorize()]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Hotel>> GetHotel(int id)
+    {
+        var hotel = await _hotelService.GetOne(id);
+        return Ok(hotel);
+    }
+
+    [Authorize()]
+    [HttpGet("{hotelId}/rooms")]
+    public async Task<ActionResult<List<Room>>> GetRooms(int hotelId)
+    {
+        var rooms = await _hotelService.GetRooms(hotelId);
+        return Ok(rooms.Select(r => r.ToApplication()));
     }
 
     [Authorize(Roles = "Admin")]

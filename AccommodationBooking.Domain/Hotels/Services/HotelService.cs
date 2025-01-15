@@ -1,6 +1,7 @@
 ﻿using AccommodationBooking.Domain.Common;
 using AccommodationBooking.Domain.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Repositories;
+using AccommodationBooking.Domain.Rooms.Models;
 
 namespace AccommodationBooking.Domain.Hotels.Services;
 
@@ -26,6 +27,12 @@ public class HotelService : IHotelService
     async Task<Hotel> IHotelService.GetOne(int id)
     {
         return await _hotelRepository.GetOne(id);
+    }
+
+
+    async Task<List<Room>> IHotelService.GetRooms(int id)
+    {
+        return await _hotelRepository.GetRooms(id);
     }
 
     async Task<Hotel> IHotelService.GetOneByName(string name)
