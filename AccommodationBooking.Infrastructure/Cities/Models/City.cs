@@ -14,7 +14,7 @@ public class City: BaseEntity.Models.BaseEntity
     public string Name { get; set; }
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
-    public List<Hotel>? Hotels { get; set; } = new();
+    public List<Hotel> Hotels { get; set; } = new();
 
     public class CityEntityTypeConfiguration : IEntityTypeConfiguration<City>
     {

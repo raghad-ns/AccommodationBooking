@@ -1,5 +1,6 @@
 ﻿using AccommodationBooking.Infrastructure.Cities.Models;
 using AccommodationBooking.Infrastructure.Hotels.Models;
+using AccommodationBooking.Infrastructure.Reviews.Models;
 using AccommodationBooking.Infrastructure.Rooms.Models;
 using AccommodationBooking.Infrastructure.Users.Models;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +15,7 @@ namespace AccommodationBooking.Infrastructure.Contexts
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public AccommodationBookingContext(DbContextOptions<AccommodationBookingContext> options) : base(options)
         {
         }
@@ -42,6 +44,11 @@ namespace AccommodationBooking.Infrastructure.Contexts
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ApplyConfiguration(new City.CityEntityTypeConfiguration());
+            builder.ApplyConfiguration(new Hotel.HotelEntityTypeConfiguration());
+            builder.ApplyConfiguration(new Room.RoomEntityTypeConfiguration());
+            builder.ApplyConfiguration(new User.UserEntityTypeConfiguration());
+
             base.OnModelCreating(builder);
             List<IdentityRole> roles = new List<IdentityRole>
             {

@@ -2,6 +2,9 @@
 using AccommodationBooking.Infrastructure.Hotels.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using AccommodationBooking.Infrastructure.Reviews.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccommodationBooking.Infrastructure.Rooms.Models;
 
@@ -19,4 +22,17 @@ public class Room : BaseEntity.Models.BaseEntity
     public string Description { get; set; }
     public List<string> Images { get; set; }
     public RoomType RoomType { get; set; }
+    public List<Review> Reviews { get; set; } = new List<Review>();
+
+    public class RoomEntityTypeConfiguration : IEntityTypeConfiguration<Room>
+    {
+        public void Configure(EntityTypeBuilder<Room> builder)
+        {
+            builder
+                .HasMany(room => room.Reviews)
+                .WithOne(review => review.Room)
+                .HasForeignKey(review => review.RoomId)
+                .HasPrincipalKey(room => room.Id);
+        }
+    }
 }

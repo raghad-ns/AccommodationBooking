@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using AccommodationBooking.Infrastructure.Reviews.Models;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Models;
 
@@ -21,9 +22,10 @@ public class Hotel : BaseEntity.Models.BaseEntity
     public double StarRating { get; set; }
     public List<string> Images { get; set; } = new();
     public List<Amenity> Amenities { get; set; } = new();
-    public List<Room> Rooms { get; set; } // Navigation property
+    public List<Room> Rooms { get; set; } = new List<Room>(); // Navigation property
+    public List<Review> Reviews { get; set; } = new List<Review>();
 
-    public class CityEntityTypeConfiguration : IEntityTypeConfiguration<Hotel>
+    public class HotelEntityTypeConfiguration : IEntityTypeConfiguration<Hotel>
     {
         public void Configure(EntityTypeBuilder<Hotel> builder)
         {
@@ -31,6 +33,12 @@ public class Hotel : BaseEntity.Models.BaseEntity
                 .HasMany(hotel => hotel.Rooms)
                 .WithOne(room => room.Hotel)
                 .HasForeignKey(room => room.HotelId)
+                .HasPrincipalKey(hotel => hotel.Id);
+
+            builder
+                .HasMany(hotel => hotel.Reviews)
+                .WithOne(review => review.Hotel)
+                .HasForeignKey(review => review.HotelId)
                 .HasPrincipalKey(hotel => hotel.Id);
         }
     }
