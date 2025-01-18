@@ -17,17 +17,16 @@ public class HotelRepository : IHotelRepository
         _context = context;
     }
 
-    async Task<DomainHotel> IHotelRepository.AddOne(DomainHotel hotel)
+    async Task<int> IHotelRepository.InsertOne(DomainHotel hotel)
     {
         var infraHotel = hotel.ToInfrastructure();
         var hotelCity = await _context.Cities.FirstOrDefaultAsync(c => c.Id == infraHotel.Id);
         infraHotel.City = hotelCity;
 
         _context.Hotels.Add(infraHotel);
-        await _context.SaveChangesAsync(new CancellationToken());
+        await _context.SaveChangesAsync(CancellationToken.None);
 
-        var createdHotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Name.Equals(hotel.Name));
-        return createdHotel.ToDomain();
+        return infraHotel.Id;
     }
 
     async Task IHotelRepository.DeleteOne(int hotellId)
@@ -36,11 +35,16 @@ public class HotelRepository : IHotelRepository
         if (hotel != null)
         {
             _context.Hotels.Remove(hotel);
-            await _context.SaveChangesAsync(new CancellationToken());
+            await _context.SaveChangesAsync(CancellationToken.None);
         }
     }
 
-    async Task<PaginatedData<DomainHotel>> IHotelRepository.Search(int page, int pageSize, DomainHotelFilters hotelFilters)
+    async Task<PaginatedData<DomainHotel>> IHotelRepository.Search(
+        int page, 
+        int pageSize, 
+        DomainHotelFilters hotelFilters, 
+        CancellationToken cancellationToken
+        )
     {
         var hotels = await _context.Hotels
             .Where(h => (
@@ -60,7 +64,7 @@ public class HotelRepository : IHotelRepository
             .Take(pageSize)
             .Include(h => h.Rooms)
             .Select(hotel => hotel.ToDomain())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return new PaginatedData<DomainHotel>
         {
@@ -69,15 +73,15 @@ public class HotelRepository : IHotelRepository
         };
     }
 
-    async Task<DomainHotel> IHotelRepository.GetOne(int id)
+    async Task<DomainHotel> IHotelRepository.GetOne(int id, CancellationToken cancellationToken)
     {
-        var returnedHotel = await _context.Hotels.FirstOrDefaultAsync(hotel => hotel.Id == id);
+        var returnedHotel = await _context.Hotels.FirstOrDefaultAsync(hotel => hotel.Id == id, cancellationToken);
         return returnedHotel.ToDomain();
     }
 
-    async Task<DomainHotel> IHotelRepository.GetOneByName(string name)
+    async Task<DomainHotel> IHotelRepository.GetOneByName(string name, CancellationToken cancellationToken)
     {
-        var returnedHotel = await _context.Hotels.FirstOrDefaultAsync(Hotel => Hotel.Name.Equals(name));
+        var returnedHotel = await _context.Hotels.FirstOrDefaultAsync(Hotel => Hotel.Name.Equals(name), cancellationToken);
         return returnedHotel.ToDomain();
     }
 
@@ -85,11 +89,10 @@ public class HotelRepository : IHotelRepository
     {
         var hotelToUpdate = await _context.Hotels.FirstOrDefaultAsync(c => c.Id == hotelId);
 
-        hotel.ToInfrastructureUpdate(hotelToUpdate);
+        HotelMapper.ToInfrastructureUpdate(hotel, hotelToUpdate);
 
-        await _context.SaveChangesAsync(new CancellationToken());
+        await _context.SaveChangesAsync(CancellationToken.None);
 
-        var updatedHotel = await _context.Hotels.FirstOrDefaultAsync(c => c.Id == hotelId);
-        return updatedHotel.ToDomain();
+        return hotelToUpdate.ToDomain();
     }
 }

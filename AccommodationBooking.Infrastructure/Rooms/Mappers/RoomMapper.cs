@@ -9,8 +9,8 @@ namespace AccommodationBooking.Infrastructure.Rooms.Mappers;
 public static partial class RoomMapper
 {
     public static partial Room ToInfrastructure(this DomainRoom room);
-    public static partial void updateFromDomain(this DomainRoom source, Room target);
-    public static partial void updateFromInfrastructure(this Room source, Room target);
+    public static partial void updateFromDomain(DomainRoom source, Room target);
+    public static partial void updateFromInfrastructure(Room source, Room target);
 
     public static partial DomainRoom ToDomain(this Room room);
 

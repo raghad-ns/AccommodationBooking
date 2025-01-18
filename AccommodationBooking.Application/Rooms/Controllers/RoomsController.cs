@@ -7,21 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AccommodationBooking.Application.Rooms.Controllers;
 
-
 [ApiController]
 [Route("api/rooms")]
-public class RoomController: ControllerBase
+public class RoomsController: ControllerBase
 {
     private readonly IRoomService _roomService;
 
-    public RoomController(IRoomService roomService)
+    public RoomsController(IRoomService roomService)
     {
         _roomService = roomService;
     }
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<Room>>> GetRooms(
+    public async Task<ActionResult<PaginatedData<Room>>> GetMany(
+        CancellationToken cancellationToken,
         [FromQuery] int page = 0,
         [FromQuery] int pageSize = 10,
         [FromQuery] int? id = null,
@@ -48,7 +48,7 @@ public class RoomController: ControllerBase
             ChildrenCapacityTo = childrenCapacityTo
         };
 
-        var rooms = await _roomService.Search(page, pageSize, filters.ToDomain());
+        var rooms = await _roomService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
         return Ok(new PaginatedData<Room>
         {
@@ -58,16 +58,16 @@ public class RoomController: ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("add")]
-    public async Task<ActionResult<Room>> AddCity([FromBody] Room room)
+    [HttpPost]
+    public async Task<ActionResult<Room>> CreateOne([FromBody] Room room, CancellationToken cancellationToken)
     {
-        var createdRoom = await _roomService.AddOne(room.ToDomain());
+        var createdRoom = await _roomService.InsertOne(room.ToDomain(), cancellationToken);
         return Ok(createdRoom);
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("update")]
-    public async Task<ActionResult<Room>> UpdateCity([FromBody] Room room)
+    [HttpPut]
+    public async Task<ActionResult<Room>> UpdateOne([FromBody] Room room)
     {
         var updatedRoom = await _roomService.UpdateOne(room.Id, room.ToDomain());
         return Ok(updatedRoom);
@@ -75,9 +75,9 @@ public class RoomController: ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteRoom(int id)
+    public async Task<ActionResult> DeleteOne(int id)
     {
         await _roomService.DeleteOne(id);
-        return Ok(new { Message = "Deleted successfully", StatusCode = 200 });
+        return NoContent();
     }
 }

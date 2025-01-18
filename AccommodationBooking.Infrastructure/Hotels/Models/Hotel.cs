@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Models;
 
-public class Hotel : BaseEntity.Models.BaseEntity
+public class Hotel : AuditEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

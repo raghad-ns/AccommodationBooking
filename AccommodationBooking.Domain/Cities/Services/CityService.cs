@@ -13,9 +13,10 @@ public class CityService : ICityService
         _cityRepository = cityRepository;
     }
 
-    Task<City> ICityService.AddOne(City city)
+    async Task<City> ICityService.InsertOne(City city, CancellationToken cancellationToken)
     {
-        return _cityRepository.AddOne(city);
+        var id = await _cityRepository.InsertOne(city);
+        return await _cityRepository.GetOne(id, cancellationToken);
     }
 
     Task ICityService.DeleteOne(int cityId)
@@ -23,23 +24,23 @@ public class CityService : ICityService
         return _cityRepository.DeleteOne(cityId);
     }
 
-    async Task<PaginatedData<City>> ICityService.Search(int page, int pageSize, CityFilters cityFilters)
+    Task<PaginatedData<City>> ICityService.Search(int page, int pageSize, CityFilters cityFilters, CancellationToken cancellationToken)
     {
-        return await _cityRepository.Search(page, pageSize, cityFilters);
+        return _cityRepository.Search(page, pageSize, cityFilters, cancellationToken);
     }
 
-    async Task<City> ICityService.GetOne(int id)
+    Task<City> ICityService.GetOne(int id, CancellationToken cancellationToken)
     {
-        return await _cityRepository.GetOne(id);
+        return _cityRepository.GetOne(id, cancellationToken);
     }
 
-    async Task<City> ICityService.GetOneByName(string name)
+    Task<City> ICityService.GetOneByName(string name, CancellationToken cancellationToken)
     {
-        return await _cityRepository.GetOneByName(name);
+        return _cityRepository.GetOneByName(name, cancellationToken);
     }
 
-    async Task<City> ICityService.UpdateOne(int cityId, City newCity)
+    Task<City> ICityService.UpdateOne(int cityId, City newCity)
     {
-        return await _cityRepository.UpdateOne(cityId, newCity);
+        return _cityRepository.UpdateOne(cityId, newCity);
     }
 }

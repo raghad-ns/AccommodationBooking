@@ -5,10 +5,10 @@ namespace AccommodationBooking.Domain.Rooms.Services;
 
 public interface IRoomService
 {
-    Task<PaginatedData<Room>> Search(int page, int pageSize, RoomFilters roomFilters);
-    Task<Room> GetOne(int id);
-    Task<Room> GetOneByNumber(string number);
-    Task<Room> AddOne(Room room);
+    Task<PaginatedData<Room>> Search(int page, int pageSize, RoomFilters roomFilters, CancellationToken cancellationToken);
+    Task<Room> GetOne(int id, CancellationToken cancellationToken);
+    Task<Room> GetOneByNumber(string number, CancellationToken cancellationToken);
+    Task<Room> InsertOne(Room room, CancellationToken cancellationToken);
     Task<Room> UpdateOne(int roomId, Room room);
     Task DeleteOne(int roomId);
 }

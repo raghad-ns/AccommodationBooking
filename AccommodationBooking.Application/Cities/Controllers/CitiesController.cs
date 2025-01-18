@@ -20,7 +20,8 @@ public class CitiesController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<City>>> GetCities(
+    public async Task<ActionResult<PaginatedData<City>>> GetMany(
+        CancellationToken cancellationToken,
         [FromQuery] int page = 0,
         [FromQuery] int pageSize = 10,
         [FromQuery] int? id = null,
@@ -37,7 +38,7 @@ public class CitiesController : ControllerBase
             PostOfficeCode = postOfficeCode
         };
 
-        var cities = await _cityService.Search(page, pageSize, filters.ToDomain());
+        var cities = await _cityService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
         return Ok(new PaginatedData<City>
         {
@@ -47,16 +48,16 @@ public class CitiesController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("add")]
-    public async Task<ActionResult<City>> AddCity([FromBody] City city)
+    [HttpPost]
+    public async Task<ActionResult<City>> CreateOne([FromBody] City city, CancellationToken cancellationToken)
     {
-        var createdCity = await _cityService.AddOne(city.ToDomain());
+        var createdCity = await _cityService.InsertOne(city.ToDomain(), cancellationToken);
         return Ok(createdCity);
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("update")]
-    public async Task<ActionResult<City>> UpdateCity([FromBody] City city)
+    [HttpPut]
+    public async Task<ActionResult<City>> UpdateOne([FromBody] City city)
     {
         var updatedCity = await _cityService.UpdateOne(city.Id, city.ToDomain());
         return Ok(updatedCity);
@@ -64,9 +65,9 @@ public class CitiesController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteCity(int id)
+    public async Task<ActionResult> DeleteOne(int id)
     {
         await _cityService.DeleteOne(id);
-        return Ok(new { Message = "Deleted successfully", StatusCode = 200 });
+        return NoContent();
     }
 }

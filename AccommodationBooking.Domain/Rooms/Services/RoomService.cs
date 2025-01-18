@@ -12,33 +12,34 @@ public class RoomService : IRoomService
     {
         _roomRepository = roomRepository;
     }
-    async Task<Room> IRoomService.AddOne(Room room)
+    async Task<Room> IRoomService.InsertOne(Room room, CancellationToken cancellationToken)
     {
-        return await _roomRepository.AddOne(room);
+        var id = await _roomRepository.InsertOne(room);
+        return await _roomRepository.GetOne(id, cancellationToken);
     }
 
-    async Task IRoomService.DeleteOne(int roomId)
+    Task IRoomService.DeleteOne(int roomId)
     {
-        await _roomRepository.DeleteOne(roomId);
+        return _roomRepository.DeleteOne(roomId);
     }
 
-    async Task<Room> IRoomService.GetOne(int id)
+    Task<Room> IRoomService.GetOne(int id, CancellationToken cancellationToken)
     {
-        return await _roomRepository.GetOne(id);
+        return _roomRepository.GetOne(id, cancellationToken);
     }
 
-    async Task<Room> IRoomService.GetOneByNumber(string number)
+    Task<Room> IRoomService.GetOneByNumber(string number, CancellationToken cancellationToken)
     {
-        return await _roomRepository.GetOneByNumber(number);
+        return _roomRepository.GetOneByNumber(number, cancellationToken);
     }
 
-    async Task<PaginatedData<Room>> IRoomService.Search(int page, int pageSize, RoomFilters roomFilters)
+    Task<PaginatedData<Room>> IRoomService.Search(int page, int pageSize, RoomFilters roomFilters, CancellationToken cancellationToken)
     {
-        return await _roomRepository.Search(page, pageSize, roomFilters);
+        return _roomRepository.Search(page, pageSize, roomFilters, cancellationToken);
     }
 
-    async Task<Room> IRoomService.UpdateOne(int roomId, Room room)
+    Task<Room> IRoomService.UpdateOne(int roomId, Room room)
     {
-        return await _roomRepository.UpdateOne(roomId, room);
+        return _roomRepository.UpdateOne(roomId, room);
     }
 }

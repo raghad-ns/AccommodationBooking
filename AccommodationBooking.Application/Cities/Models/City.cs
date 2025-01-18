@@ -4,9 +4,8 @@ namespace AccommodationBooking.Application.Cities.Models;
 
 public class City
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Country { get; set; }
-    public string? PostOfficeCode { get; set; }
-    public List<HotelSummary> Hotels { get; set; } = new();
+    public int Id { get; init; }
+    public string Name { get; init; }
+    public string Country { get; init; }
+    public string? PostOfficeCode { get; init; }
 }

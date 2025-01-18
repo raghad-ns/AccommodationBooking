@@ -17,15 +17,14 @@ public class CityRepository : ICityRepository
         _context = context;
     }
 
-    async Task<DomainCity> ICityRepository.AddOne(DomainCity city)
+    async Task<int> ICityRepository.InsertOne(DomainCity city)
     {
         var infraCity = city.ToInfrastructure();
 
         _context.Cities.Add(infraCity);
-        await _context.SaveChangesAsync(new CancellationToken());
+        await _context.SaveChangesAsync(CancellationToken.None);
 
-        var createdCity = await _context.Cities.FirstOrDefaultAsync(c => c.Name.Equals(city.Name));
-        return createdCity.ToDomain();
+        return infraCity.Id;
     }
 
     async Task ICityRepository.DeleteOne(int cityId)
@@ -34,11 +33,16 @@ public class CityRepository : ICityRepository
         if (city != null)
         {
             _context.Cities.Remove(city);
-            await _context.SaveChangesAsync(new CancellationToken());
+            await _context.SaveChangesAsync(CancellationToken.None);
         }
     }
 
-    async Task<PaginatedData<DomainCity>> ICityRepository.Search(int page, int pageSize, DomainCityFilters cityFilters)
+    async Task<PaginatedData<DomainCity>> ICityRepository.Search(
+        int page,
+        int pageSize,
+        DomainCityFilters cityFilters,
+        CancellationToken cancellationToken
+        )
     {
         var cities = await _context.Cities
             .Where(c => (
@@ -51,7 +55,7 @@ public class CityRepository : ICityRepository
             .Take(pageSize)
             .Include(c => c.Hotels)
             .Select(city => city.ToDomain())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return new PaginatedData<DomainCity>
         {
@@ -60,15 +64,15 @@ public class CityRepository : ICityRepository
         };
     }
 
-    async Task<DomainCity> ICityRepository.GetOne(int id)
+    async Task<DomainCity> ICityRepository.GetOne(int id, CancellationToken cancellationToken)
     {
-        var returnedCity = await _context.Cities.FirstOrDefaultAsync(city => city.Id == id);
+        var returnedCity = await _context.Cities.FirstOrDefaultAsync(city => city.Id == id, cancellationToken);
         return returnedCity.ToDomain();
     }
 
-    async Task<DomainCity> ICityRepository.GetOneByName(string name)
+    async Task<DomainCity> ICityRepository.GetOneByName(string name, CancellationToken cancellationToken)
     {
-        var returnedCity = await _context.Cities.FirstOrDefaultAsync(city => city.Name.Equals(name));
+        var returnedCity = await _context.Cities.FirstOrDefaultAsync(city => city.Name.Equals(name), cancellationToken);
         return returnedCity.ToDomain();
     }
 
@@ -76,11 +80,10 @@ public class CityRepository : ICityRepository
     {
         var cityToUpdate = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
 
-        city.ToInfrastructureUpdate(cityToUpdate);
+        CityMapper.ToInfrastructureUpdate(city, cityToUpdate);
 
-        await _context.SaveChangesAsync(new CancellationToken());
+        await _context.SaveChangesAsync(CancellationToken.None);
 
-        var updatedCity = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
-        return updatedCity.ToDomain();
+        return cityToUpdate.ToDomain();
     }
 }

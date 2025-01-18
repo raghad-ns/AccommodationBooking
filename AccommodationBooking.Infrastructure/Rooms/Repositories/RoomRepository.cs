@@ -16,17 +16,16 @@ public class RoomRepository : IRoomRepository
         _context = context;
     }
 
-    async Task<Room> IRoomRepository.AddOne(Room room)
+    async Task<int> IRoomRepository.InsertOne(Room room)
     {
         var infraRoom = room.ToInfrastructure();
         var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == room.HotelId);
         infraRoom.Hotel = hotel;
 
         _context.Rooms.Add(infraRoom);
-        await _context.SaveChangesAsync(new CancellationToken());
+        await _context.SaveChangesAsync(CancellationToken.None);
 
-        var createdRoom = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNo.Equals(room.RoomNo));
-        return createdRoom.ToDomain();
+        return infraRoom.Id;
     }
 
     async Task IRoomRepository.DeleteOne(int roomId)
@@ -35,23 +34,23 @@ public class RoomRepository : IRoomRepository
         if (roomToBeDeleted != null)
         {
             _context.Rooms.Remove(roomToBeDeleted);
-            await _context.SaveChangesAsync(new CancellationToken());
+            await _context.SaveChangesAsync(CancellationToken.None);
         }
     }
 
-    async Task<Room> IRoomRepository.GetOne(int id)
+    async Task<Room> IRoomRepository.GetOne(int id, CancellationToken cancellationToken)
     {
-        var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
+        var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
         return room.ToDomain();
     }
 
-    async Task<Room> IRoomRepository.GetOneByNumber(string number)
+    async Task<Room> IRoomRepository.GetOneByNumber(string number, CancellationToken cancellationToken)
     {
-        var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNo == number);
+        var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNo == number, cancellationToken);
         return room.ToDomain();
     }
 
-    async Task<PaginatedData<Room>> IRoomRepository.Search(int page, int pageSize, RoomFilters roomFilters)
+    async Task<PaginatedData<Room>> IRoomRepository.Search(int page, int pageSize, RoomFilters roomFilters, CancellationToken cancellationToken)
     {
         var rooms = await _context.Rooms
             .Where( r => (
@@ -66,7 +65,7 @@ public class RoomRepository : IRoomRepository
             .Skip(page * pageSize)
             .Take(pageSize)
             .Select(r => r.ToDomain())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return new PaginatedData<Room>
         {
@@ -80,12 +79,11 @@ public class RoomRepository : IRoomRepository
         var roomToUpdate = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == roomId);
         if (roomToUpdate != null)
         {
-            room.updateFromDomain(roomToUpdate);
+            RoomMapper.updateFromDomain(room, roomToUpdate);
 
-            await _context.SaveChangesAsync(new CancellationToken());
+            await _context.SaveChangesAsync(CancellationToken.None);
 
-            var updatedRoom = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == roomId);
-            return updatedRoom.ToDomain();
+            return roomToUpdate.ToDomain();
         }
         else throw new InvalidOperationException("Room not found");
     }

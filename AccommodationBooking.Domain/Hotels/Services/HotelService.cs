@@ -13,33 +13,34 @@ public class HotelService : IHotelService
         _hotelRepository = hotelRepository;
     }
 
-    async Task<Hotel> IHotelService.AddOne(Hotel hotel)
+    async Task<Hotel> IHotelService.InsertOne(Hotel hotel, CancellationToken cancellationToken)
     {
-        return await _hotelRepository.AddOne(hotel);
+        var id = await _hotelRepository.InsertOne(hotel);
+        return await _hotelRepository.GetOne(id, cancellationToken);
     }
 
-    async Task IHotelService.DeleteOne(int hotelId)
+    Task IHotelService.DeleteOne(int hotelId)
     {
-        await _hotelRepository.DeleteOne(hotelId);
+        return _hotelRepository.DeleteOne(hotelId);
     }
 
-    async Task<Hotel> IHotelService.GetOne(int id)
+    Task<Hotel> IHotelService.GetOne(int id, CancellationToken cancellationToken)
     {
-        return await _hotelRepository.GetOne(id);
+        return _hotelRepository.GetOne(id, cancellationToken);
     }
 
-    async Task<Hotel> IHotelService.GetOneByName(string name)
+    Task<Hotel> IHotelService.GetOneByName(string name, CancellationToken cancellationToken)
     {
-        return await _hotelRepository.GetOneByName(name);
+        return _hotelRepository.GetOneByName(name, cancellationToken);
     }
 
-    async Task<PaginatedData<Hotel>> IHotelService.Search(int page, int pageSize, HotelFilters hotelFilters)
+    Task<PaginatedData<Hotel>> IHotelService.Search(int page, int pageSize, HotelFilters hotelFilters, CancellationToken cancellationToken)
     {
-        return await _hotelRepository.Search(page, pageSize, hotelFilters);
+        return _hotelRepository.Search(page, pageSize, hotelFilters, cancellationToken);
     }
 
-    async Task<Hotel> IHotelService.UpdateOne(int hotelId, Hotel hotel)
+    Task<Hotel> IHotelService.UpdateOne(int hotelId, Hotel hotel)
     {
-        return await _hotelRepository.UpdateOne(hotelId, hotel);
+        return _hotelRepository.UpdateOne(hotelId, hotel);
     }
 }

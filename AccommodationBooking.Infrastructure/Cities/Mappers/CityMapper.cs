@@ -12,5 +12,5 @@ public static partial class CityMapper
     public static partial DomainCity ToDomain(this City city);
 
     public static partial City ToInfrastructure(this DomainCity city);
-    public static partial void ToInfrastructureUpdate(this DomainCity source, City target);
+    public static partial void ToInfrastructureUpdate(DomainCity source, City target);
 }

@@ -2,10 +2,11 @@
 using AccommodationBooking.Infrastructure.Hotels.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Rooms.Models;
 
-public class Room : BaseEntity.Models.BaseEntity
+public class Room : AuditEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -9,18 +9,19 @@ namespace AccommodationBooking.Application.Hotels.Controllers;
 
 [ApiController]
 [Route("api/hotels")]
-public class HotelController : ControllerBase
+public class HotelsController : ControllerBase
 {
     private readonly IHotelService _hotelService;
 
-    public HotelController(IHotelService hotelService)
+    public HotelsController(IHotelService hotelService)
     {
         _hotelService = hotelService;
     }
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<Hotel>>> GetCities(
+    public async Task<ActionResult<PaginatedData<Hotel>>> GetMany(
+        CancellationToken cancellationToken,
         [FromQuery] int page=0, 
         [FromQuery] int pageSize=10, 
         [FromQuery] int? id=null,
@@ -45,7 +46,7 @@ public class HotelController : ControllerBase
             City = cityName
         };
 
-        var hotels = await _hotelService.Search(page, pageSize, filters.ToDomain());
+        var hotels = await _hotelService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
         return Ok(new PaginatedData<Hotel>
         {
@@ -55,16 +56,16 @@ public class HotelController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("add")]
-    public async Task<ActionResult<Hotel>> AddCity([FromBody] Hotel hotel)
+    [HttpPost]
+    public async Task<ActionResult<Hotel>> CreateOne([FromBody] Hotel hotel, CancellationToken cancellationToken)
     {
-        var createdHotel = await _hotelService.AddOne(hotel.ToDomain());
+        var createdHotel = await _hotelService.InsertOne(hotel.ToDomain(), cancellationToken);
         return Ok(createdHotel.ToApplication());
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("update")]
-    public async Task<ActionResult<Hotel>> UpdateHotel([FromBody] Hotel hotel)
+    [HttpPut]
+    public async Task<ActionResult<Hotel>> UpdateOne([FromBody] Hotel hotel)
     {
         var updatedHotel = await _hotelService.UpdateOne(hotel.Id, hotel.ToDomain());
         return Ok(updatedHotel.ToApplication());
@@ -72,9 +73,9 @@ public class HotelController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteHotel(int id)
+    public async Task<ActionResult> DeleteOne(int id)
     {
         await _hotelService.DeleteOne(id);
-        return Ok(new { Message = "Deleted successfully", StatusCode = 200 });
+        return NoContent();
     }
 }

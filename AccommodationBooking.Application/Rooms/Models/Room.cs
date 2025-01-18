@@ -5,13 +5,13 @@ namespace AccommodationBooking.Application.Rooms.Models;
 
 public class Room
 {
-    public int Id { get; set; }
-    public string RoomNo { get; set; }
-    public int? HotelId { get; set; }
-    public int AdultsCapacity { get; set; } = 2;
-    public int ChildrenCapacity { get; set; } = 0;
-    public bool IsAvailable { get; set; } = true;
-    public string? Description { get; set; }
-    public List<string> Images { get; set; } = new List<string>();
-    public RoomType RoomType { get; set; }
+    public int Id { get; init; }
+    public string RoomNo { get; init; }
+    public int? HotelId { get; init; }
+    public int AdultsCapacity { get; init; } = 2;
+    public int ChildrenCapacity { get; init; } = 0;
+    public bool IsAvailable { get; init; } = true;
+    public string? Description { get; init; }
+    public IReadOnlyCollection<string> Images { get; init; } = new List<string>();
+    public RoomType RoomType { get; init; }
 }
