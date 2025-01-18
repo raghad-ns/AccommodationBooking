@@ -1,5 +1,5 @@
 ﻿using AccommodationBooking.Domain.Cities.Models;
-using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Domain.Hotels.Models;
 
 namespace AccommodationBooking.Domain.Hotels.Repositories;

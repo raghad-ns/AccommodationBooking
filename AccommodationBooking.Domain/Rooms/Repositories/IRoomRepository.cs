@@ -1,4 +1,4 @@
-﻿using AccommodationBooking.Domain.Common;
+﻿using AccommodationBooking.Library.Pagination.Models;
 using DomainRoom = AccommodationBooking.Domain.Rooms.Models.Room;
 using DomainRoomFilters = AccommodationBooking.Domain.Rooms.Models.RoomFilters;
 

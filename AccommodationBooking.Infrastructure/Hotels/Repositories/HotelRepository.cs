@@ -4,7 +4,7 @@ using AccommodationBooking.Domain.Hotels.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Hotels.Mappers;
 using Microsoft.EntityFrameworkCore;
-using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Library.Pagination.Models;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Repositories;
 

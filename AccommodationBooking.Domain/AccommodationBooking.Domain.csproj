@@ -18,4 +18,8 @@
     <Folder Include="Rooms\Exceptions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AccommodationBooking.Library\AccommodationBooking.Library.csproj" />
+  </ItemGroup>
+
 </Project>

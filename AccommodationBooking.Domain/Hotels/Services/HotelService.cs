@@ -1,4 +1,4 @@
-﻿using AccommodationBooking.Domain.Common;
+﻿using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Domain.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Repositories;
 

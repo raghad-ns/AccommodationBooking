@@ -3,7 +3,7 @@ using AccommodationBooking.Domain.Cities.Services;
 using Microsoft.AspNetCore.Mvc;
 using AccommodationBooking.Application.Cities.Models;
 using Microsoft.AspNetCore.Authorization;
-using AccommodationBooking.Application.Common.Pagination;
+using AccommodationBooking.Library.Pagination.Models;
 
 namespace AccommodationBooking.Application.Cities.Controllers;
 

@@ -4,7 +4,7 @@ using DomainCityFilters = AccommodationBooking.Domain.Cities.Models.CityFilters;
 using AccommodationBooking.Domain.Cities.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
-using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Library.Pagination.Models;
 
 namespace AccommodationBooking.Infrastructure.Cities.Repositories;
 

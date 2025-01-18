@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AccommodationBooking.Domain\AccommodationBooking.Domain.csproj" />
     <ProjectReference Include="..\AccommodationBooking.Infrastructure\AccommodationBooking.Infrastructure.csproj" />
+    <ProjectReference Include="..\AccommodationBooking.Library\AccommodationBooking.Library.csproj" />
   </ItemGroup>
 
 </Project>

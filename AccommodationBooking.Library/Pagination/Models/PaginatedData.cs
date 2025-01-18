@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace AccommodationBooking.Application.Common.Pagination;
+﻿namespace AccommodationBooking.Library.Pagination.Models;
 
 public class PaginatedData<T>
 {

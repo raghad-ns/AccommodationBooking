@@ -1,6 +1,6 @@
 ﻿using AccommodationBooking.Domain.Cities.Models;
 using AccommodationBooking.Domain.Cities.Repositories;
-using AccommodationBooking.Domain.Common;
+using AccommodationBooking.Library.Pagination.Models;
 
 namespace AccommodationBooking.Domain.Cities.Services;
 
