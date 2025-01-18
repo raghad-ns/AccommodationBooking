@@ -22,32 +22,11 @@ public class RoomsController: ControllerBase
     [HttpGet]
     public async Task<ActionResult<PaginatedData<Room>>> GetMany(
         CancellationToken cancellationToken,
+        [FromQuery] RoomFilters? filters,
         [FromQuery] int page = 0,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] int? id = null,
-        [FromQuery] string? roomNo = null,
-        [FromQuery] string? hotelName = null,
-        [FromQuery] string? description = null,
-        [FromQuery] bool? isAvailable = null,
-        [FromQuery] double? adultsCapacityFrom = null,
-        [FromQuery] double? adultsCapacityTo = null,
-        [FromQuery] double? ChildrenCapacityFrom = null,
-        [FromQuery] double? childrenCapacityTo = null
+        [FromQuery] int pageSize = 10
         )
     {
-        var filters = new RoomFilters
-        {
-            Id = id,
-            RoomNo = roomNo,
-            HotelName = hotelName,
-            Description = description,
-            IsAvailable = isAvailable,
-            AdultsCapacityFrom = adultsCapacityFrom,
-            AdultsCapacityTo= adultsCapacityTo,
-            ChildrenCapacityFrom = ChildrenCapacityFrom,
-            ChildrenCapacityTo = childrenCapacityTo
-        };
-
         var rooms = await _roomService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
         return Ok(new PaginatedData<Room>

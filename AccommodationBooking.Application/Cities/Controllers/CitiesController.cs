@@ -22,22 +22,11 @@ public class CitiesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<PaginatedData<City>>> GetMany(
         CancellationToken cancellationToken,
+        [FromQuery] CityFilters? filters,
         [FromQuery] int page = 0,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] int? id = null,
-        [FromQuery] string? name = null,
-        [FromQuery] string? country = null,
-        [FromQuery] string? postOfficeCode = null
+        [FromQuery] int pageSize = 10
         )
     {
-        var filters = new CityFilters
-        {
-            Id = id,
-            Name = name,
-            Country = country,
-            PostOfficeCode = postOfficeCode
-        };
-
         var cities = await _cityService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
         return Ok(new PaginatedData<City>

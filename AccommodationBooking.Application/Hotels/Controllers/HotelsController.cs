@@ -22,30 +22,11 @@ public class HotelsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<PaginatedData<Hotel>>> GetMany(
         CancellationToken cancellationToken,
+        [FromQuery] HotelFilters? filters,
         [FromQuery] int page=0, 
-        [FromQuery] int pageSize=10, 
-        [FromQuery] int? id=null,
-        [FromQuery] string? name = null,
-        [FromQuery] string? description = null,
-        [FromQuery] string? address = null,
-        [FromQuery] string? cityName = null,
-        [FromQuery] double? starRatingGreaterThanOrEqual = null,
-        [FromQuery] double? starRatingLessThanOrEqual = null,
-        [FromQuery] List<string> amenities= null
+        [FromQuery] int pageSize=10
         )
     {
-        var filters = new HotelFilters
-        {
-            Id = id,
-            Name = name,
-            Description = description,
-            Address = address,
-            Amenities = amenities,
-            StarRatingGreaterThanOrEqual = starRatingGreaterThanOrEqual,
-            StartRatingLessThanOrEqual = starRatingLessThanOrEqual,
-            City = cityName
-        };
-
         var hotels = await _hotelService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
         return Ok(new PaginatedData<Hotel>
