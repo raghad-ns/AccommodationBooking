@@ -5,9 +5,12 @@ namespace AccommodationBooking.Application.Middlewares.ExceptionsHandler;
 public class ExceptionsHandler
 {
     private readonly RequestDelegate _next;
-    public ExceptionsHandler(RequestDelegate next)
+    private readonly ILogger<ExceptionsHandler> _logger;
+
+    public ExceptionsHandler(RequestDelegate next, ILogger<ExceptionsHandler> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task Invoke(HttpContext httpContext)
@@ -36,6 +39,8 @@ public class ExceptionsHandler
         }
         catch(Exception ex)
         {
+            _logger.LogError(ex.ToString(), ex);
+
             var response = httpContext.Response;
             response.StatusCode = 500;
             await response.WriteAsync("Something went wrong, please try again later");

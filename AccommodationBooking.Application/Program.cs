@@ -5,6 +5,9 @@ using AccommodationBooking.Application.Middlewares.ExceptionsHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Add authentication services to the container.
 builder.Services
     .LoadDatabaseConfiguration(builder)

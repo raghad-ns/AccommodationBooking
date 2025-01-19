@@ -11,6 +11,7 @@ public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly ITokensService _tokenService;
+    private const int CookieExpireInHours = 8;
 
     public UserController(
         IUserService userService,
@@ -47,7 +48,7 @@ public class UserController : ControllerBase
 
         HttpContext.Response.Cookies.Append("Token", token, new CookieOptions
         {
-            Expires = DateTimeOffset.UtcNow.AddHours(8),
+            Expires = DateTimeOffset.UtcNow.AddHours(CookieExpireInHours),
             HttpOnly = true, // Accessible only by the server
             IsEssential = true // Required for GDPR compliance
         });
