@@ -9,6 +9,7 @@ using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Models;
 
+[Index(nameof(Name), IsUnique = true)]
 public class Hotel : AuditEntity
 {
     [Key]

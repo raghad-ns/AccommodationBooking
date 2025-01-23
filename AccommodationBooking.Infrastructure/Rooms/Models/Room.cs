@@ -3,8 +3,10 @@ using AccommodationBooking.Infrastructure.Hotels.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using AccommodationBooking.Infrastructure.BaseEntity.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccommodationBooking.Infrastructure.Rooms.Models;
+[Index(nameof(RoomNo), nameof(HotelId))]
 
 public class Room : AuditEntity
 {

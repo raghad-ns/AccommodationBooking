@@ -7,6 +7,7 @@ using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Cities.Models;
 
+[Index(nameof(Name), nameof(Country), nameof(PostOfficeCode))]
 public class City: AuditEntity
 {
     [Key]
@@ -15,7 +16,7 @@ public class City: AuditEntity
     public string Name { get; set; }
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
-    public List<Hotel>? Hotels { get; set; } = new();
+    public List<Hotel> Hotels { get; set; } = new();
 
     public class CityEntityTypeConfiguration : IEntityTypeConfiguration<City>
     {
