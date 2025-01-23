@@ -5,6 +5,7 @@ using AccommodationBooking.Domain.Cities.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using AccommodationBooking.Library.Pagination.Models;
+using AccommodationBooking.Infrastructure.Cities.Models;
 
 namespace AccommodationBooking.Infrastructure.Cities.Repositories;
 
@@ -44,13 +45,10 @@ public class CityRepository : ICityRepository
         CancellationToken cancellationToken
         )
     {
-        var cities = await _context.Cities
-            .Where(c => (
-                (cityFilters.Id != null ? c.Id == cityFilters.Id : true) &&
-                (cityFilters.Name != null ? c.Name.ToLower().Contains(cityFilters.Name.ToLower()) : true) &&
-                (cityFilters.Country != null ? c.Country.ToLower().Contains(cityFilters.Country.ToLower()) : true) &&
-                (cityFilters.PostOfficeCode != null ? c.PostOfficeCode.ToLower().Contains(cityFilters.PostOfficeCode.ToLower()) : true)
-            ))
+        IQueryable<City> baseQuery = _context.Cities;
+        baseQuery = ApplySearchFilters(baseQuery, cityFilters);
+
+        var cities = await baseQuery
             .Skip(page * pageSize)
             .Take(pageSize)
             .Include(c => c.Hotels)
@@ -62,6 +60,23 @@ public class CityRepository : ICityRepository
             Total = _context.Cities.Count(),
             Data = cities.AsReadOnly()
         };
+    }
+
+    private IQueryable<City> ApplySearchFilters(IQueryable<City> baseQuery, DomainCityFilters cityFilters)
+    {
+        if (cityFilters.Id is not null)
+            baseQuery = baseQuery.Where(city => city.Id == cityFilters.Id);
+
+        if (cityFilters.Name is not null)
+            baseQuery = baseQuery.Where(city => city.Name.ToLower().Equals(cityFilters.Name.ToLower()));
+
+        if (cityFilters.Country is not null)
+            baseQuery = baseQuery.Where(city => city.Country.ToLower().Equals(cityFilters.Country.ToLower()));
+
+        if (cityFilters.PostOfficeCode is not null)
+            baseQuery = baseQuery.Where(city => city.PostOfficeCode.ToLower().Equals(cityFilters.PostOfficeCode.ToLower()));
+
+        return baseQuery;
     }
 
     async Task<DomainCity> ICityRepository.GetOne(int id, CancellationToken cancellationToken)

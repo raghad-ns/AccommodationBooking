@@ -5,6 +5,7 @@ using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Hotels.Mappers;
 using Microsoft.EntityFrameworkCore;
 using AccommodationBooking.Library.Pagination.Models;
+using AccommodationBooking.Infrastructure.Hotels.Models;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Repositories;
 
@@ -46,20 +47,10 @@ public class HotelRepository : IHotelRepository
         CancellationToken cancellationToken
         )
     {
-        var hotels = await _context.Hotels
-            .Where(h => (
-                (hotelFilters.Id != null ? h.Id == hotelFilters.Id : true) &&
+        IQueryable<Hotel>  baseQuery = _context.Hotels;
+        baseQuery = ApplySearchFilters(baseQuery, hotelFilters);
 
-                (hotelFilters.Name != null ? h.Name.ToLower().Contains(hotelFilters.Name.ToLower()) : true) &&
-
-                (hotelFilters.Description != null ? h.Description.ToLower().Contains(hotelFilters.Description.ToLower()) : true) &&
-
-                (hotelFilters.City != null ? h.City.Name.ToLower().Contains(hotelFilters.City.ToLower()) : true) &&
-
-                (hotelFilters.StarRatingGreaterThanOrEqual != null ? h.StarRating >= hotelFilters.StartRatingLessThanOrEqual : true) &&
-
-                (hotelFilters.StartRatingLessThanOrEqual != null ? h.StarRating <= hotelFilters.StartRatingLessThanOrEqual : true)
-            ))
+        var hotels = await baseQuery
             .Skip(page * pageSize)
             .Take(pageSize)
             .Include(h => h.Rooms)
@@ -71,6 +62,26 @@ public class HotelRepository : IHotelRepository
             Total = _context.Hotels.Count(),
             Data = hotels.AsReadOnly()
         };
+    }
+
+    private IQueryable<Hotel> ApplySearchFilters(IQueryable<Hotel> baseQuery, DomainHotelFilters hotelFilters)
+    {
+        if (hotelFilters.Id is not null)
+            baseQuery = baseQuery.Where(hotel => hotel.Id == hotelFilters.Id);
+
+        if (hotelFilters.Name is not null)
+            baseQuery = baseQuery.Where(hotel => hotel.Name.ToLower().Equals(hotelFilters.Name.ToLower()));
+
+        if (hotelFilters.Address is not null)
+            baseQuery = baseQuery.Where(hotel => hotel.Address.ToLower().Equals(hotelFilters.Address.ToLower()));
+
+        if (hotelFilters.StarRatingGreaterThanOrEqual is not null)
+            baseQuery = baseQuery.Where(hotel => hotel.StarRating <= hotelFilters.StartRatingLessThanOrEqual);
+
+        if (hotelFilters.StartRatingLessThanOrEqual is not null)
+            baseQuery = baseQuery.Where(hotel => hotel.StarRating >= hotelFilters.StartRatingLessThanOrEqual);
+
+        return baseQuery;
     }
 
     async Task<DomainHotel> IHotelRepository.GetOne(int id, CancellationToken cancellationToken)
