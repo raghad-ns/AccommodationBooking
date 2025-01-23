@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AccommodationBooking.Domain.Exceptions.ClientError;
 
 namespace AccommodationBooking.Domain.Users.Exceptions;
 
-public class UserAlreadyExistedException() : Exception("Username or email already existed");
+public class UserAlreadyExistedException() : BusinessException400("Username or email already existed");

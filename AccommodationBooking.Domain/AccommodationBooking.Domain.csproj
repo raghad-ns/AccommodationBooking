@@ -11,14 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hotels\Repositories\" />
-    <Folder Include="Reviews\Mappers\" />
-    <Folder Include="Reviews\Models\" />
-    <Folder Include="Reviews\Repositories\" />
-    <Folder Include="Rooms\Exceptions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AccommodationBooking.Library\AccommodationBooking.Library.csproj" />
   </ItemGroup>
 

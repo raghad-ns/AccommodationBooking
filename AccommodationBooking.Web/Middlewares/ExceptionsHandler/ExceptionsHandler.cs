@@ -1,4 +1,5 @@
-﻿using AccommodationBooking.Domain.Users.Exceptions;
+﻿using AccommodationBooking.Domain.Exceptions.ClientError;
+using AccommodationBooking.Domain.Users.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -21,30 +22,30 @@ public class ExceptionsHandler
         {
             await _next(httpContext); // calling next middleware
         }
-        catch (InvalidLoginCredentialsException ex)
+        catch (Exception e)
+        when (e is BusinessException400)
         {
+            _logger.LogError(e.ToString(), e);
+
             var response = httpContext.Response;
             response.StatusCode = 400;
-            await response.WriteAsync(ex.Message);
+            await response.WriteAsync(e.Message);
         }
-        catch(UserAlreadyExistedException ex)
+        catch (Exception e)
+        when (e is NotFound404)
         {
-            var response = httpContext.Response;
-            response.StatusCode = 400;
-            await response.WriteAsync(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
+            _logger.LogError(e.ToString(), e);
+
             var response = httpContext.Response;
             response.StatusCode = 404;
-            await response.WriteAsync(ex.Message);
+            await response.WriteAsync(e.Message);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex.ToString(), ex);
 
             var response = httpContext.Response;
-            response.StatusCode = 500;
+            response.StatusCode = 503;
             await response.WriteAsync("Something went wrong, please try again later");
         }
     }
