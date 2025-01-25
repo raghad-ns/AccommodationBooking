@@ -1,11 +1,11 @@
-﻿using AccommodationBooking.Domain.Users.Exceptions;
+﻿using AccommodationBooking.Domain.Exceptions.ClientError;
 using AccommodationBooking.Domain.Users.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Users.Mappers;
 using AccommodationBooking.Infrastructure.Users.Models;
+using AccommodationBooking.Library.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Transactions;
 
 namespace AccommodationBooking.Infrastructure.Users.Repositories;
 
@@ -29,13 +29,13 @@ public class UserRepository : IUserRepository
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDTO.UserName);
         if (user == null)
-            throw new InvalidLoginCredentialsException();
+            throw new Unauthorized(ExceptionMessage.InvalidLoginCredentials);
 
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles.FirstOrDefault();
 
         var result = await _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
-        if (result == null) throw new InvalidLoginCredentialsException(); ;
+        if (result == null) throw new Unauthorized(ExceptionMessage.InvalidLoginCredentials);
 
         return user.ToDomain(role);
     }
@@ -56,14 +56,14 @@ public class UserRepository : IUserRepository
             );
 
         if (similarUser != null)
-            throw new UserAlreadyExistedException();
+            throw new UserError(ExceptionMessage.UserAlreadyExisted);
 
         return await _context.PerformTransaction<Domain.Users.Models.User>(async transaction =>
         {
             var createdUser = await _userManager.CreateAsync(model, domainModel.Password);
             if (createdUser.Succeeded)
             {
-                var roleResult = await _userManager.AddToRoleAsync(model, "User");
+                var roleResult = await _userManager.AddToRoleAsync(model, "Admin");
 
                 if (roleResult.Succeeded)
                 {
@@ -77,10 +77,10 @@ public class UserRepository : IUserRepository
                 }
 
                 await transaction.RollbackAsync();
-                throw new InvalidOperationException("Failed to create user or assign role.");
+                throw new UserError(ExceptionMessage.UserCreationFailed);
             }
             await transaction.RollbackAsync();
-            throw new InvalidOperationException("Failed to create user or assign role.");
+            throw new UserError(ExceptionMessage.UserCreationFailed);
         });
     }
 }
