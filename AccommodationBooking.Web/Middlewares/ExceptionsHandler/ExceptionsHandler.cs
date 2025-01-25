@@ -1,5 +1,4 @@
 ﻿using AccommodationBooking.Domain.Exceptions.ClientError;
-using AccommodationBooking.Domain.Users.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +22,7 @@ public class ExceptionsHandler
             await _next(httpContext); // calling next middleware
         }
         catch (Exception e)
-        when (e is BusinessException400)
+        when (e is UserError)
         {
             _logger.LogError(e.ToString(), e);
 
@@ -32,12 +31,21 @@ public class ExceptionsHandler
             await response.WriteAsync(e.Message);
         }
         catch (Exception e)
-        when (e is NotFound404)
+        when (e is NotFound)
         {
             _logger.LogError(e.ToString(), e);
 
             var response = httpContext.Response;
             response.StatusCode = 404;
+            await response.WriteAsync(e.Message);
+        }
+        catch (Exception e)
+        when (e is Unauthorized)
+        {
+            _logger.LogError(e.ToString(), e);
+
+            var response = httpContext.Response;
+            response.StatusCode = 401;
             await response.WriteAsync(e.Message);
         }
         catch (Exception ex)

@@ -30,12 +30,7 @@ public class CityRepository : ICityRepository
 
     async Task ICityRepository.DeleteOne(int cityId)
     {
-        var city = await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId);
-        if (city != null)
-        {
-            _context.Cities.Remove(city);
-            await _context.SaveChangesAsync(CancellationToken.None);
-        }
+        await _context.Cities.Where(c => c.Id == cityId).ExecuteDeleteAsync();
     }
 
     async Task<PaginatedData<DomainCity>> ICityRepository.Search(
