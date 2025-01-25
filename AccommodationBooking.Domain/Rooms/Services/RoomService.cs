@@ -1,19 +1,24 @@
 ﻿using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Domain.Rooms.Models;
 using AccommodationBooking.Domain.Rooms.Repositories;
+using AccommodationBooking.Domain.Rooms.Validators;
+using FluentValidation;
 
 namespace AccommodationBooking.Domain.Rooms.Services;
 
 public class RoomService : IRoomService
 {
     private readonly IRoomRepository _roomRepository;
+    private readonly IValidator<Room> _validator;
 
-    public RoomService(IRoomRepository roomRepository)
+    public RoomService(IRoomRepository roomRepository, IValidator<Room> validator)
     {
         _roomRepository = roomRepository;
+        _validator = validator;
     }
     async Task<Room> IRoomService.InsertOne(Room room, CancellationToken cancellationToken)
     {
+        _validator.ValidateAndThrow(room);
         var id = await _roomRepository.InsertOne(room);
         return await _roomRepository.GetOne(id, cancellationToken);
     }
@@ -40,6 +45,7 @@ public class RoomService : IRoomService
 
     Task<Room> IRoomService.UpdateOne(int roomId, Room room)
     {
+        _validator.ValidateAndThrow(room);
         return _roomRepository.UpdateOne(roomId, room);
     }
 }

@@ -17,6 +17,12 @@ using AccommodationBooking.Domain.Rooms.Services;
 using AccommodationBooking.Domain.Rooms.Repositories;
 using AccommodationBooking.Infrastructure.Rooms.Repositories;
 using AccommodationBooking.Web.Configuration.Authentication.Services;
+using AccommodationBooking.Domain.Cities.Models;
+using AccommodationBooking.Domain.Cities.Validators;
+using AccommodationBooking.Domain.Hotels.Models;
+using AccommodationBooking.Domain.Hotels.Validators;
+using AccommodationBooking.Domain.Rooms.Models;
+using AccommodationBooking.Domain.Rooms.Validators;
 
 namespace AccommodationBooking.Framework.Dependencies;
 
@@ -62,7 +68,10 @@ public static class DependenciesRegistration
     {
         services
             .AddScoped<IValidator<Domain.Users.Models.User>, UserValidator>()
-            .AddScoped<IValidator<Domain.Users.Models.LoginRequest>, LoginValidator>();
+            .AddScoped<IValidator<Domain.Users.Models.LoginRequest>, LoginValidator>()
+            .AddScoped <IValidator <City>, CityValidator>()
+            .AddScoped<IValidator<Hotel>, HotelValidator>()
+            .AddScoped<IValidator<Room>, RoomValidator>();
 
         return services;
     }

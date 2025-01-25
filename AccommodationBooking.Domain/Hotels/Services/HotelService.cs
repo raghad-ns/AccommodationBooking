@@ -1,20 +1,25 @@
 ﻿using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Domain.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Repositories;
+using FluentValidation;
+using AccommodationBooking.Domain.Cities.Models;
 
 namespace AccommodationBooking.Domain.Hotels.Services;
 
 public class HotelService : IHotelService
 {
     private readonly IHotelRepository _hotelRepository;
+    private readonly IValidator<Hotel> _validator;
 
-    public HotelService(IHotelRepository hotelRepository)
+    public HotelService(IHotelRepository hotelRepository, IValidator<Hotel> validator)
     {
         _hotelRepository = hotelRepository;
+        _validator = validator;
     }
 
     async Task<Hotel> IHotelService.InsertOne(Hotel hotel, CancellationToken cancellationToken)
     {
+        _validator.ValidateAndThrow(hotel);
         var id = await _hotelRepository.InsertOne(hotel);
         return await _hotelRepository.GetOne(id, cancellationToken);
     }
@@ -41,6 +46,7 @@ public class HotelService : IHotelService
 
     Task<Hotel> IHotelService.UpdateOne(int hotelId, Hotel hotel)
     {
+        _validator.ValidateAndThrow(hotel);
         return _hotelRepository.UpdateOne(hotelId, hotel);
     }
 }
