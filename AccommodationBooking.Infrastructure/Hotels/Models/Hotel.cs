@@ -21,9 +21,9 @@ public class Hotel : AuditEntity
     public City City { get; set; } // Navigation property
     public int CityId { get; set; } // Foreign key
     public double StarRating { get; set; }
-    public List<string> Images { get; set; } = new();
-    public List<Amenity> Amenities { get; set; } = new();
-    public List<Room> Rooms { get; set; } // Navigation property
+    public IReadOnlyCollection<string> Images { get; set; } = new List<string>();
+    public IReadOnlyCollection<Amenity> Amenities { get; set; } = new List<Amenity>();
+    public IReadOnlyCollection<Room> Rooms { get; set; } // Navigation property
 
     public class CityEntityTypeConfiguration : IEntityTypeConfiguration<Hotel>
     {

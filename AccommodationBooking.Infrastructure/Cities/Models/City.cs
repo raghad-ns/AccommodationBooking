@@ -16,7 +16,7 @@ public class City: AuditEntity
     public string Name { get; set; }
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
-    public List<Hotel> Hotels { get; set; } = new();
+    public IReadOnlyCollection<Hotel> Hotels { get; set; } = new List<Hotel>();
 
     public class CityEntityTypeConfiguration : IEntityTypeConfiguration<City>
     {
