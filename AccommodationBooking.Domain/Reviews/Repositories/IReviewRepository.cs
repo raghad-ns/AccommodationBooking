@@ -7,6 +7,6 @@ public interface IReviewRepository
 {
     Task<int> AddOne(Review review);
     Task<Review> UpdateOne(int id, Review review);
-    Task<PaginatedData<Review>> Search(ReviewFilters filters);
-    Task<Review> GetOne(int id);
+    Task<PaginatedData<Review>> Search(int page, int pageSize, ReviewFilters filters, CancellationToken cancellationToken);
+    Task<Review> GetOne(int id, CancellationToken cancellationToken);
 }

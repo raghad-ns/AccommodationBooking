@@ -5,7 +5,7 @@ namespace AccommodationBooking.Domain.Reviews.Services;
 
 public interface IReviewService
 {
-    Task<Review> AddOne(Review review);
+    Task<Review> AddOne(Review review, CancellationToken cancellationToken);
     Task<Review> UpdateOne(int id, Review review);
-    Task<PaginatedData<Review>> Search(ReviewFilters filters);
+    Task<PaginatedData<Review>> Search(int page, int pageSize, ReviewFilters filters, CancellationToken cancellationToken);
 }

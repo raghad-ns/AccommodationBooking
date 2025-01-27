@@ -12,15 +12,20 @@ public class ReviewService : IReviewService
     {
         _reviewRepository = reviewRepository;
     }
-    async Task<Review> IReviewService.AddOne(Review review)
+    async Task<Review> IReviewService.AddOne(Review review, CancellationToken cancellationToken)
     {
         var id = await _reviewRepository.AddOne(review);
-        return await _reviewRepository.GetOne(id);
+        return await _reviewRepository.GetOne(id, cancellationToken);
     }
 
-    async Task<PaginatedData<Review>> IReviewService.Search(ReviewFilters filters)
+    async Task<PaginatedData<Review>> IReviewService.Search(
+        int page,
+        int pageSize,
+        ReviewFilters filters,
+        CancellationToken cancellationToken
+        )
     {
-        return await _reviewRepository.Search(filters);
+        return await _reviewRepository.Search(page, pageSize, filters, cancellationToken);
     }
 
     async Task<Review> IReviewService.UpdateOne(int id, Review review)

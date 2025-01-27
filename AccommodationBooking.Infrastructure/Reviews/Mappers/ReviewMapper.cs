@@ -9,5 +9,5 @@ public static partial class ReviewsMapper
 {
     public static partial Review ToInfrastructure(this DomainReview review);
     public static partial DomainReview ToDomain(this Review review);
-    public static partial void ToInfrastructureUpdate(this DomainReview source, Review target);
+    public static partial void ToInfrastructureUpdate(DomainReview source, Review target);
 }
