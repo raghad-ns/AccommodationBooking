@@ -5,10 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using AccommodationBooking.Infrastructure.Reviews.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Rooms.Models;
+[Index(nameof(RoomNo), nameof(HotelId))]
 
-public class Room : BaseEntity.Models.BaseEntity
+public class Room : AuditEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -1,6 +1,6 @@
-﻿using AccommodationBooking.Domain.Common;
-using AccommodationBooking.Domain.Reviews.Models;
+﻿using AccommodationBooking.Domain.Reviews.Models;
 using AccommodationBooking.Domain.Reviews.Repositories;
+using AccommodationBooking.Library.Pagination.Models;
 
 namespace AccommodationBooking.Domain.Reviews.Services;
 
@@ -14,7 +14,8 @@ public class ReviewService : IReviewService
     }
     async Task<Review> IReviewService.AddOne(Review review)
     {
-        return await _reviewRepository.AddOne(review);
+        var id = await _reviewRepository.AddOne(review);
+        return await _reviewRepository.GetOne(id);
     }
 
     async Task<PaginatedData<Review>> IReviewService.Search(ReviewFilters filters)

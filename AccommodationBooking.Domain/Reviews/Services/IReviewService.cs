@@ -1,5 +1,5 @@
-﻿using AccommodationBooking.Domain.Common;
-using AccommodationBooking.Domain.Reviews.Models;
+﻿using AccommodationBooking.Domain.Reviews.Models;
+using AccommodationBooking.Library.Pagination.Models;
 
 namespace AccommodationBooking.Domain.Reviews.Services;
 

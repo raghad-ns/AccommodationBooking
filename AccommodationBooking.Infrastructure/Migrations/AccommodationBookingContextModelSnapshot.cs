@@ -32,22 +32,24 @@ namespace AccommodationBooking.Infrastructure.Migrations
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PostOfficeCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name", "Country", "PostOfficeCode");
 
                     b.ToTable("Cities");
                 });
@@ -83,7 +85,7 @@ namespace AccommodationBooking.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("StarRating")
                         .HasColumnType("float");
@@ -94,6 +96,9 @@ namespace AccommodationBooking.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Hotels");
                 });
@@ -171,7 +176,7 @@ namespace AccommodationBooking.Infrastructure.Migrations
 
                     b.Property<string>("RoomNo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RoomType")
                         .HasColumnType("int");
@@ -182,6 +187,8 @@ namespace AccommodationBooking.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("HotelId");
+
+                    b.HasIndex("RoomNo", "HotelId");
 
                     b.ToTable("Rooms");
                 });

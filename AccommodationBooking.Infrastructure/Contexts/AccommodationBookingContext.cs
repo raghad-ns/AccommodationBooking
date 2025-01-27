@@ -24,7 +24,7 @@ namespace AccommodationBooking.Infrastructure.Contexts
         {
             var entities = ChangeTracker.Entries()
             .Where(x =>
-                (x.Entity is BaseEntity.Models.BaseEntity) &&
+                (x.Entity is BaseEntity.Models.AuditEntity) &&
                 (x.State == EntityState.Added || x.State == EntityState.Modified)
                 );
 
@@ -34,9 +34,9 @@ namespace AccommodationBooking.Infrastructure.Contexts
 
                 if (entity.State == EntityState.Added)
                 {
-                    ((BaseEntity.Models.BaseEntity)entity.Entity).CreatedAt = now;
+                    ((BaseEntity.Models.AuditEntity)entity.Entity).CreatedAt = now;
                 }
-                ((BaseEntity.Models.BaseEntity)entity.Entity).UpdatedAt = now;
+                ((BaseEntity.Models.AuditEntity)entity.Entity).UpdatedAt = now;
             }
 
             return await base.SaveChangesAsync(cancellationToken);

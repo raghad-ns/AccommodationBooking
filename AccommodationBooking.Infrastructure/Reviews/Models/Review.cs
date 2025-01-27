@@ -1,15 +1,13 @@
 ﻿using AccommodationBooking.Infrastructure.Hotels.Models;
 using AccommodationBooking.Infrastructure.Rooms.Models;
 using AccommodationBooking.Infrastructure.Users.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Reviews.Models;
 
-public class Review: BaseEntity.Models.BaseEntity
+public class Review: AuditEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

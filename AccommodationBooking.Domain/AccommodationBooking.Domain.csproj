@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hotels\Repositories\" />
-    <Folder Include="Rooms\Exceptions\" />
+    <ProjectReference Include="..\AccommodationBooking.Library\AccommodationBooking.Library.csproj" />
   </ItemGroup>
 
 </Project>

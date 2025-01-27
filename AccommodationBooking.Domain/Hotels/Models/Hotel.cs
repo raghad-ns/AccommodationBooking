@@ -11,7 +11,7 @@ public class Hotel
     public string Address { get; set; }
     public int? CityId { get; set; }
     public double StarRating { get; set; }
-    public List<string> Images { get; set; } = new List<string>();
-    public List<Amenity> Amenities { get; set; } = new();
-    public List<Room> Rooms { get; set; } = new();
+    public IReadOnlyCollection<string> Images { get; set; } = new List<string>();
+    public IReadOnlyCollection<Amenity> Amenities { get; set; } = new List<Amenity>();
+    public IReadOnlyCollection<Room> Rooms { get; set; } = new List<Room>();
 }

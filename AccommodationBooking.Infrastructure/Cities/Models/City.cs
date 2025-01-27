@@ -3,10 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Cities.Models;
 
-public class City: BaseEntity.Models.BaseEntity
+[Index(nameof(Name), nameof(Country), nameof(PostOfficeCode))]
+public class City: AuditEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,7 +16,7 @@ public class City: BaseEntity.Models.BaseEntity
     public string Name { get; set; }
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
-    public List<Hotel> Hotels { get; set; } = new();
+    public List<Hotel> Hotels { get; set; } = new List<Hotel>();
 
     public class CityEntityTypeConfiguration : IEntityTypeConfiguration<City>
     {

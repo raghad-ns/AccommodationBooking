@@ -6,10 +6,12 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using AccommodationBooking.Infrastructure.Reviews.Models;
+using AccommodationBooking.Infrastructure.BaseEntity.Models;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Models;
 
-public class Hotel : BaseEntity.Models.BaseEntity
+[Index(nameof(Name), IsUnique = true)]
+public class Hotel : AuditEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -20,8 +22,8 @@ public class Hotel : BaseEntity.Models.BaseEntity
     public City City { get; set; } // Navigation property
     public int CityId { get; set; } // Foreign key
     public double StarRating { get; set; }
-    public List<string> Images { get; set; } = new();
-    public List<Amenity> Amenities { get; set; } = new();
+    public List<string> Images { get; set; } = new List<string>();
+    public List<Amenity> Amenities { get; set; } = new List<Amenity>();
     public List<Room> Rooms { get; set; } = new List<Room>(); // Navigation property
     public List<Review> Reviews { get; set; } = new List<Review>();
 

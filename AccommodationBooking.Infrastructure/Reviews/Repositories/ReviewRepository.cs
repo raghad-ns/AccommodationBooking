@@ -1,10 +1,10 @@
-﻿using AccommodationBooking.Domain.Common;
-using AccommodationBooking.Domain.Reviews.Models;
+﻿using AccommodationBooking.Domain.Reviews.Models;
 using AccommodationBooking.Domain.Reviews.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Reviews.Mappers;
 using DomainReview = AccommodationBooking.Domain.Reviews.Models.Review;
 using Microsoft.EntityFrameworkCore;
+using AccommodationBooking.Library.Pagination.Models;
 
 namespace AccommodationBooking.Infrastructure.Reviews.Repositories;
 
@@ -16,14 +16,20 @@ public class ReviewRepository : IReviewRepository
     {
         _context = context;
     }
-    async Task<Review> IReviewRepository.AddOne(Review review)
+
+    async public Task<DomainReview> GetOne(int id)
     {
-        _context.Reviews.Add(review.ToInfrastructure());
+        var review = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
+        return review.ToDomain();
+    }
+
+    async Task<int> IReviewRepository.AddOne(Review review)
+    {
+        var infraReview = review.ToInfrastructure();
+        _context.Reviews.Add(infraReview);
         await _context.SaveChangesAsync(new CancellationToken());
 
-        var addedReview = await _context.Reviews.OrderByDescending(r => r.CreatedAt).FirstOrDefaultAsync();
-
-        return addedReview.ToDomain();
+        return infraReview.Id;
     }
 
     async Task<PaginatedData<DomainReview>> IReviewRepository.Search(ReviewFilters filters)
