@@ -1,4 +1,4 @@
-﻿namespace AccommodationBooking.Domain.Reviews.Models;
+﻿namespace AccommodationBooking.Web.Reviews.Models;
 
 public class ReviewFilters
 {

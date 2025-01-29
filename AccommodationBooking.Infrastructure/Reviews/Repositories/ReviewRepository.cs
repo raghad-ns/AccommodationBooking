@@ -26,9 +26,18 @@ public class ReviewRepository : IReviewRepository
         return review.ToDomain();
     }
 
-    async Task<int> IReviewRepository.AddOne(DomainReview review)
+    async Task<int> IReviewRepository.InsertOne(DomainReview review)
     {
         var infraReview = review.ToInfrastructure();
+        var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == review.HotelId);
+        infraReview.Hotel = hotel;
+
+        var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == review.RoomId);
+        infraReview.Room = room;
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == review.UserId);
+        infraReview.User = user;
+
         _context.Reviews.Add(infraReview);
         await _context.SaveChangesAsync(CancellationToken.None);
 

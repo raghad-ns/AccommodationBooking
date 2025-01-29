@@ -12,9 +12,9 @@ public class ReviewService : IReviewService
     {
         _reviewRepository = reviewRepository;
     }
-    async Task<Review> IReviewService.AddOne(Review review, CancellationToken cancellationToken)
+    async Task<Review> IReviewService.InsertOne(Review review, CancellationToken cancellationToken)
     {
-        var id = await _reviewRepository.AddOne(review);
+        var id = await _reviewRepository.InsertOne(review);
         return await _reviewRepository.GetOne(id, cancellationToken);
     }
 
