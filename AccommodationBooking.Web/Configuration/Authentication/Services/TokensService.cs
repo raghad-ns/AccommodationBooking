@@ -16,10 +16,6 @@ public class TokensService : ITokensService
     {
         _authenticationOptions = authenticationOptions.Value;
         var secretKey = _authenticationOptions.Key;
-        if (authenticationOptions.Value.Issuer is null)
-        {
-            Console.WriteLine("Empty");
-        }
         _symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
     }
 

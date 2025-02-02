@@ -97,11 +97,9 @@ public class ReviewRepository : IReviewRepository
         {
             if (reviewToUpdate.UserId != requesterId)
             {
-                Console.WriteLine("Unauthorized");
                 throw new UnauthorizedAccessException();
             }
 
-            Console.WriteLine("Authorized");
             ReviewsMapper.ToInfrastructureUpdate(review, reviewToUpdate);
 
             await _context.SaveChangesAsync(CancellationToken.None);
