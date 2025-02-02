@@ -1,11 +1,11 @@
-﻿using AccommodationBooking.Library.Pagination.Models;
+﻿using AccommodationBooking.Domain.Hotels.Services;
+using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Web.Hotels.Mappers;
 using AccommodationBooking.Web.Hotels.Models;
-using AccommodationBooking.Domain.Hotels.Services;
+using AccommodationBooking.Web.Rooms.Mappers;
+using AccommodationBooking.Web.Rooms.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using AccommodationBooking.Web.Rooms.Models;
-using AccommodationBooking.Web.Rooms.Mappers;
 
 namespace AccommodationBooking.Web.Hotels.Controllers;
 

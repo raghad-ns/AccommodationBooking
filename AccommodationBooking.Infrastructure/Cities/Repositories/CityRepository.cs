@@ -1,11 +1,11 @@
-﻿using AccommodationBooking.Infrastructure.Cities.Mappers;
+﻿using AccommodationBooking.Domain.Cities.Repositories;
+using AccommodationBooking.Infrastructure.Cities.Mappers;
+using AccommodationBooking.Infrastructure.Cities.Models;
+using AccommodationBooking.Infrastructure.Contexts;
+using AccommodationBooking.Library.Pagination.Models;
+using Microsoft.EntityFrameworkCore;
 using DomainCity = AccommodationBooking.Domain.Cities.Models.City;
 using DomainCityFilters = AccommodationBooking.Domain.Cities.Models.CityFilters;
-using AccommodationBooking.Domain.Cities.Repositories;
-using AccommodationBooking.Infrastructure.Contexts;
-using Microsoft.EntityFrameworkCore;
-using AccommodationBooking.Library.Pagination.Models;
-using AccommodationBooking.Infrastructure.Cities.Models;
 
 namespace AccommodationBooking.Infrastructure.Cities.Repositories;
 

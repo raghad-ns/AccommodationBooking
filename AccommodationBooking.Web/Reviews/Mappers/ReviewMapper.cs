@@ -1,7 +1,7 @@
-﻿using Riok.Mapperly.Abstractions;
+﻿using AccommodationBooking.Web.Reviews.Models;
+using Riok.Mapperly.Abstractions;
 using DomainReview = AccommodationBooking.Domain.Reviews.Models.Review;
 using DomainReviewFilters = AccommodationBooking.Domain.Reviews.Models.ReviewFilters;
-using AccommodationBooking.Web.Reviews.Models;
 
 namespace AccommodationBooking.Web.Reviews.Mappers;
 

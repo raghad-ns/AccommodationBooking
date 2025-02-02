@@ -1,8 +1,8 @@
-﻿using AccommodationBooking.Library.Pagination.Models;
-using AccommodationBooking.Domain.Hotels.Models;
+﻿using AccommodationBooking.Domain.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Repositories;
-using FluentValidation;
 using AccommodationBooking.Domain.Rooms.Models;
+using AccommodationBooking.Library.Pagination.Models;
+using FluentValidation;
 
 namespace AccommodationBooking.Domain.Hotels.Services;
 

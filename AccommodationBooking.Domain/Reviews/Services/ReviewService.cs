@@ -1,5 +1,4 @@
-﻿using AccommodationBooking.Domain.Hotels.Models;
-using AccommodationBooking.Domain.Reviews.Models;
+﻿using AccommodationBooking.Domain.Reviews.Models;
 using AccommodationBooking.Domain.Reviews.Repositories;
 using AccommodationBooking.Library.Pagination.Models;
 using FluentValidation;

@@ -1,13 +1,13 @@
-﻿using DomainHotel = AccommodationBooking.Domain.Hotels.Models.Hotel;
-using DomainHotelFilters = AccommodationBooking.Domain.Hotels.Models.HotelFilters;
-using AccommodationBooking.Domain.Hotels.Repositories;
+﻿using AccommodationBooking.Domain.Hotels.Repositories;
+using AccommodationBooking.Domain.Rooms.Models;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Hotels.Mappers;
-using Microsoft.EntityFrameworkCore;
-using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Infrastructure.Hotels.Models;
-using AccommodationBooking.Domain.Rooms.Models;
 using AccommodationBooking.Infrastructure.Rooms.Mappers;
+using AccommodationBooking.Library.Pagination.Models;
+using Microsoft.EntityFrameworkCore;
+using DomainHotel = AccommodationBooking.Domain.Hotels.Models.Hotel;
+using DomainHotelFilters = AccommodationBooking.Domain.Hotels.Models.HotelFilters;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Repositories;
 

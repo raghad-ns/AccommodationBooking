@@ -1,6 +1,6 @@
-﻿using AccommodationBooking.Library.Pagination.Models;
-using AccommodationBooking.Domain.Hotels.Models;
+﻿using AccommodationBooking.Domain.Hotels.Models;
 using AccommodationBooking.Domain.Rooms.Models;
+using AccommodationBooking.Library.Pagination.Models;
 
 namespace AccommodationBooking.Domain.Hotels.Services;
 

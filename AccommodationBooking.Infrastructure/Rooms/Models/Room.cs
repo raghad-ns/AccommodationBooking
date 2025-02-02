@@ -1,11 +1,11 @@
 ﻿using AccommodationBooking.Domain.Rooms.Models;
-using AccommodationBooking.Infrastructure.Hotels.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using AccommodationBooking.Infrastructure.Reviews.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
 using AccommodationBooking.Infrastructure.BaseEntity.Models;
+using AccommodationBooking.Infrastructure.Hotels.Models;
+using AccommodationBooking.Infrastructure.Reviews.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccommodationBooking.Infrastructure.Rooms.Models;
 [Index(nameof(RoomNo), nameof(HotelId))]

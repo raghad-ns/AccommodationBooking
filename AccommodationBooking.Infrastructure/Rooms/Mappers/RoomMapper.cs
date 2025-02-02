@@ -1,7 +1,6 @@
 ﻿using AccommodationBooking.Infrastructure.Rooms.Models;
 using Riok.Mapperly.Abstractions;
 using DomainRoom = AccommodationBooking.Domain.Rooms.Models.Room;
-using DomainRoomFilters = AccommodationBooking.Domain.Rooms.Models.RoomFilters;
 
 namespace AccommodationBooking.Infrastructure.Rooms.Mappers;
 

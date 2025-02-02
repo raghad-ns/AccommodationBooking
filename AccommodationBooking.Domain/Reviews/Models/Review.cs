@@ -1,8 +1,4 @@
-﻿using AccommodationBooking.Domain.Hotels.Models;
-using AccommodationBooking.Domain.Rooms.Models;
-using AccommodationBooking.Domain.Users.Models;
-
-namespace AccommodationBooking.Domain.Reviews.Models;
+﻿namespace AccommodationBooking.Domain.Reviews.Models;
 
 public class Review
 {

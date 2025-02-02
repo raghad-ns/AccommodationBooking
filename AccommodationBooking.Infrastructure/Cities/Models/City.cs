@@ -1,9 +1,9 @@
-﻿using AccommodationBooking.Infrastructure.Hotels.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using AccommodationBooking.Infrastructure.BaseEntity.Models;
+using AccommodationBooking.Infrastructure.Hotels.Models;
 using Microsoft.EntityFrameworkCore;
-using AccommodationBooking.Infrastructure.BaseEntity.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccommodationBooking.Infrastructure.Cities.Models;
 

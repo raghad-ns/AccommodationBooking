@@ -1,9 +1,9 @@
 ﻿using AccommodationBooking.Domain.Cities.Services;
-using Microsoft.AspNetCore.Mvc;
-using AccommodationBooking.Web.Cities.Models;
-using Microsoft.AspNetCore.Authorization;
 using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Web.Cities.Mappers;
+using AccommodationBooking.Web.Cities.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AccommodationBooking.Web.Cities.Controllers;
 

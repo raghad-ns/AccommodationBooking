@@ -1,9 +1,9 @@
-﻿using AccommodationBooking.Infrastructure.Hotels.Models;
+﻿using AccommodationBooking.Infrastructure.BaseEntity.Models;
+using AccommodationBooking.Infrastructure.Hotels.Models;
 using AccommodationBooking.Infrastructure.Rooms.Models;
 using AccommodationBooking.Infrastructure.Users.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using AccommodationBooking.Infrastructure.BaseEntity.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccommodationBooking.Infrastructure.Reviews.Models;
 

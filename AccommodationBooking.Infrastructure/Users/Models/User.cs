@@ -1,8 +1,7 @@
-﻿using AccommodationBooking.Domain.Users.Models;
-using AccommodationBooking.Infrastructure.Reviews.Models;
+﻿using AccommodationBooking.Infrastructure.Reviews.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AccommodationBooking.Infrastructure.Users.Models;
 

@@ -1,12 +1,12 @@
 ﻿using AccommodationBooking.Domain.Hotels.Models;
-using AccommodationBooking.Infrastructure.Cities.Models;
-using AccommodationBooking.Infrastructure.Rooms.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-using AccommodationBooking.Infrastructure.Reviews.Models;
 using AccommodationBooking.Infrastructure.BaseEntity.Models;
+using AccommodationBooking.Infrastructure.Cities.Models;
+using AccommodationBooking.Infrastructure.Reviews.Models;
+using AccommodationBooking.Infrastructure.Rooms.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Models;
 
