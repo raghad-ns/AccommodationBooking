@@ -22,19 +22,19 @@ public class Room : AuditEntity
     public int ChildrenCapacity { get; set; } = 0;
     public bool IsAvailable { get; set; } = true;
     public string Description { get; set; }
-    public List<string> Images { get; set; }
+    public IReadOnlyCollection<string> Images { get; }
     public RoomType RoomType { get; set; }
-    public List<Review> Reviews { get; set; } = new List<Review>();
+    public IReadOnlyCollection<Review> Reviews { get; } = new List<Review>();
+}
 
-    public class RoomEntityTypeConfiguration : IEntityTypeConfiguration<Room>
+internal class RoomEntityTypeConfiguration : IEntityTypeConfiguration<Room>
+{
+    public void Configure(EntityTypeBuilder<Room> builder)
     {
-        public void Configure(EntityTypeBuilder<Room> builder)
-        {
-            builder
-                .HasMany(room => room.Reviews)
-                .WithOne(review => review.Room)
-                .HasForeignKey(review => review.RoomId)
-                .HasPrincipalKey(room => room.Id);
-        }
+        builder
+            .HasMany(room => room.Reviews)
+            .WithOne(review => review.Room)
+            .HasForeignKey(review => review.RoomId)
+            .HasPrincipalKey(room => room.Id);
     }
 }

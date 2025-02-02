@@ -16,6 +16,7 @@ namespace AccommodationBooking.Infrastructure.Contexts
         public DbSet<City> Cities { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Review> Reviews { get; set; }
+
         public AccommodationBookingContext(DbContextOptions<AccommodationBookingContext> options) : base(options)
         {
         }
@@ -44,11 +45,6 @@ namespace AccommodationBooking.Infrastructure.Contexts
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfiguration(new City.CityEntityTypeConfiguration());
-            builder.ApplyConfiguration(new Hotel.HotelEntityTypeConfiguration());
-            builder.ApplyConfiguration(new Room.RoomEntityTypeConfiguration());
-            builder.ApplyConfiguration(new User.UserEntityTypeConfiguration());
-
             base.OnModelCreating(builder);
             List<IdentityRole> roles = new List<IdentityRole>
             {
