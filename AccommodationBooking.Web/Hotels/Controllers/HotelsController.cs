@@ -22,11 +22,11 @@ public class HotelsController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<Hotel>>> GetMany(
+    public async Task<ActionResult<PaginatedData<Hotel>>> Search(
         CancellationToken cancellationToken,
         [FromQuery] HotelFilters? filters,
-        [FromQuery] int page=0, 
-        [FromQuery] int pageSize=10
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
         )
     {
         var hotels = await _hotelService.Search(page, pageSize, filters.ToDomain(), cancellationToken);

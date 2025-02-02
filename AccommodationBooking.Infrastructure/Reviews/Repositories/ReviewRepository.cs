@@ -54,15 +54,18 @@ public class ReviewRepository : IReviewRepository
         IQueryable<Review> baseQuery = _context.Reviews;
         baseQuery = ApplySearchFilters(baseQuery, filters);
 
+        var total = -1;
+        if (page == 1) total = baseQuery.Count();
+
         var reviews = await baseQuery 
-        .Skip(pageSize * page)
+        .Skip(pageSize * (page - 1))
         .Take(pageSize)
         .Select(review => review.ToDomain())
         .ToListAsync(cancellationToken);
 
         return new PaginatedData<DomainReview>
         {
-            Total = _context.Reviews.Count(),
+            Total = total,
             Data = reviews.AsReadOnly()
         };
     }

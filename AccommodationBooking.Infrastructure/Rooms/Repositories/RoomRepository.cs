@@ -56,20 +56,28 @@ public class RoomRepository : IRoomRepository
         return room.ToDomain();
     }
 
-    async Task<PaginatedData<DomainRoom>> IRoomRepository.Search(int page, int pageSize, DomainRoomFilters roomFilters, CancellationToken cancellationToken)
+    async Task<PaginatedData<DomainRoom>> IRoomRepository.Search(
+        int page,
+        int pageSize,
+        DomainRoomFilters roomFilters,
+        CancellationToken cancellationToken
+        )
     {
         IQueryable<Room> baseQuery = _context.Rooms;
         baseQuery = ApplySearchFilters(baseQuery, roomFilters);
 
+        var total = -1;
+        if (page == 1) total = baseQuery.Count();
+
         var rooms = await baseQuery
-            .Skip(page * pageSize)
+            .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(r => r.ToDomain())
             .ToListAsync(cancellationToken);
 
         return new PaginatedData<DomainRoom>
         {
-            Total = _context.Rooms.Count(),
+            Total = total,
             Data = rooms.AsReadOnly()
         };
     }

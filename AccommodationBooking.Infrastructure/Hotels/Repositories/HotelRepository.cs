@@ -47,8 +47,11 @@ public class HotelRepository : IHotelRepository
         IQueryable<Hotel>  baseQuery = _context.Hotels;
         baseQuery = ApplySearchFilters(baseQuery, hotelFilters);
 
+        var total = -1;
+        if (page == 1) total = baseQuery.Count();
+
         var hotels = await baseQuery
-            .Skip(page * pageSize)
+            .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Include(h => h.Rooms)
             .Select(hotel => hotel.ToDomain())
@@ -56,7 +59,7 @@ public class HotelRepository : IHotelRepository
 
         return new PaginatedData<DomainHotel>
         {
-            Total = _context.Hotels.Count(),
+            Total = total,
             Data = hotels.AsReadOnly()
         };
     }

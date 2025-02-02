@@ -21,10 +21,10 @@ public class RoomsController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<Room>>> GetMany(
+    public async Task<ActionResult<PaginatedData<Room>>> Search(
         CancellationToken cancellationToken,
         [FromQuery] RoomFilters? filters,
-        [FromQuery] int page = 0,
+        [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
         )
     {

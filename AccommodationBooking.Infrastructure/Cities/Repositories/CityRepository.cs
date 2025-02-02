@@ -43,8 +43,11 @@ public class CityRepository : ICityRepository
         IQueryable<City> baseQuery = _context.Cities;
         baseQuery = ApplySearchFilters(baseQuery, cityFilters);
 
+        var total = -1;
+        if (page == 1) total = baseQuery.Count();
+
         var cities = await baseQuery
-            .Skip(page * pageSize)
+            .Skip((page  - 1) * pageSize)
             .Take(pageSize)
             .Include(c => c.Hotels)
             .Select(city => city.ToDomain())
@@ -52,7 +55,7 @@ public class CityRepository : ICityRepository
 
         return new PaginatedData<DomainCity>
         {
-            Total = _context.Cities.Count(),
+            Total = total,
             Data = cities.AsReadOnly()
         };
     }

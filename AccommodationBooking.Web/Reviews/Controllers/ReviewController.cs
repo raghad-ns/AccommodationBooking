@@ -21,10 +21,10 @@ public class ReviewController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<Review>>> GetMany(
+    public async Task<ActionResult<PaginatedData<Review>>> Search(
         CancellationToken cancellationToken,
         [FromQuery] ReviewFilters? filters,
-        [FromQuery] int page = 0,
+        [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
         )
     {

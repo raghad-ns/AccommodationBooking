@@ -20,10 +20,10 @@ public class CitiesController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<City>>> GetMany(
+    public async Task<ActionResult<PaginatedData<City>>> Search(
         CancellationToken cancellationToken,
         [FromQuery] CityFilters? filters,
-        [FromQuery] int page = 0,
+        [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
         )
     {
