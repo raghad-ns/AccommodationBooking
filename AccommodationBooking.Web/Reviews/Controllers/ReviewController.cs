@@ -4,13 +4,14 @@ using AccommodationBooking.Web.Reviews.Mappers;
 using AccommodationBooking.Web.Reviews.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading;
 
 namespace AccommodationBooking.Web.Reviews.Controllers;
 
-
 [ApiController]
 [Route("api/reviews")]
-public class ReviewController: ControllerBase
+public class ReviewController : ControllerBase
 {
     private readonly IReviewService _reviewService;
 
@@ -33,22 +34,34 @@ public class ReviewController: ControllerBase
         return Ok(new PaginatedData<Review>
         {
             Total = reviews.Total,
-            Data = reviews.Data.Select(room => room.ToApplication()).ToList().AsReadOnly()
+            Data = reviews.Data.Select(review => review.ToApplication()).ToList().AsReadOnly()
         });
     }
 
     [HttpPost]
     public async Task<ActionResult<Review>> CreateOne([FromBody] Review review, CancellationToken cancellationToken)
     {
-        var createdRoom = await _reviewService.InsertOne(review.ToDomain(), cancellationToken);
-        return Ok(createdRoom);
+        var domainReview = review.ToDomain();
+
+        if (Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out Guid userId))
+        {
+            domainReview.UserId = userId;
+            var createdReview = await _reviewService.InsertOne(domainReview, cancellationToken);
+            return Ok(createdReview);
+        }
+
+        else return Unauthorized();
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpPut]
     public async Task<ActionResult<Review>> UpdateOne([FromBody] Review review)
     {
-        var updatedRoom = await _reviewService.UpdateOne(review.Id, review.ToDomain());
-        return Ok(updatedRoom);
+        if (Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out Guid userId))
+        {
+            var updatedReview = await _reviewService.UpdateOne(review.Id, userId, review.ToDomain());
+            return Ok(updatedReview);
+        }
+        return Forbid();
     }
 }

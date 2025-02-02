@@ -8,6 +8,7 @@ using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Domain.Exceptions.ClientError;
 using AccommodationBooking.Library.Exceptions;
 using AccommodationBooking.Infrastructure.Reviews.Models;
+using System.Security.Claims;
 
 namespace AccommodationBooking.Infrastructure.Reviews.Repositories;
 
@@ -87,11 +88,18 @@ public class ReviewRepository : IReviewRepository
         return baseQuery;
     }
 
-    async Task<DomainReview> IReviewRepository.UpdateOne(int id, DomainReview review)
+    async Task<DomainReview> IReviewRepository.UpdateOne(int id,Guid requesterId, DomainReview review)
     {
         var reviewToUpdate = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
         if (reviewToUpdate != null)
         {
+            if (reviewToUpdate.UserId != requesterId)
+            {
+                Console.WriteLine("Unauthorized");
+                throw new UnauthorizedAccessException();
+            }
+
+            Console.WriteLine("Authorized");
             ReviewsMapper.ToInfrastructureUpdate(review, reviewToUpdate);
 
             await _context.SaveChangesAsync(CancellationToken.None);

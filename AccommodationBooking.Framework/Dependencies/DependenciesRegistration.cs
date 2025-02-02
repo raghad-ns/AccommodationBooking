@@ -25,6 +25,8 @@ using AccommodationBooking.Domain.Reviews.Services;
 using AccommodationBooking.Infrastructure.Reviews.Repositories;
 using AccommodationBooking.Domain.Reviews.Repositories;
 using AccommodationBooking.Web.Configuration.Authentication.Models;
+using AccommodationBooking.Domain.Reviews.Models;
+using AccommodationBooking.Domain.Reviews.Validators;
 
 namespace AccommodationBooking.Framework.Dependencies;
 
@@ -75,7 +77,8 @@ public static class DependenciesRegistration
             .AddScoped<IValidator<Domain.Users.Models.LoginRequest>, LoginValidator>()
             .AddScoped <IValidator <City>, CityValidator>()
             .AddScoped<IValidator<Hotel>, HotelValidator>()
-            .AddScoped<IValidator<Room>, RoomValidator>();
+            .AddScoped<IValidator<Room>, RoomValidator>()
+            .AddScoped<IValidator<Review>, ReviewValidator>();
 
         return services;
     }

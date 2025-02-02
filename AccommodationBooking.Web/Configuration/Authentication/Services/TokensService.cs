@@ -28,6 +28,7 @@ public class TokensService : ITokensService
     {
         var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
             new Claim(JwtRegisteredClaimNames.GivenName, user.UserName ?? ""),
             new Claim(ClaimTypes.Role, Enum.GetName(user.Role) ?? "User") // Add the role claim

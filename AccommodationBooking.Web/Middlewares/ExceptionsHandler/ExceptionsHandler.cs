@@ -40,7 +40,7 @@ public class ExceptionsHandler
             await response.WriteAsync(e.Message);
         }
         catch (Exception e)
-        when (e is Unauthorized)
+        when (e is Unauthorized || e is UnauthorizedAccessException)
         {
             _logger.LogError(e.ToString(), e);
 
