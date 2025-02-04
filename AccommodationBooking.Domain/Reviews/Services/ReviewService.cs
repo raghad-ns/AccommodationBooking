@@ -15,14 +15,20 @@ public class ReviewService : IReviewService
         _reviewRepository = reviewRepository;
         _validator = validator;
     }
-    async Task<Review> IReviewService.InsertOne(Review review, CancellationToken cancellationToken)
+
+    public Task<Review> GetOne(int id, CancellationToken cancellationToken)
+    {
+        return _reviewRepository.GetOne(id, cancellationToken);
+    }
+
+    public async Task<Review> InsertOne(Review review, CancellationToken cancellationToken)
     {
         _validator.ValidateAndThrow(review);
         var id = await _reviewRepository.InsertOne(review);
-        return await _reviewRepository.GetOne(id, cancellationToken);
+        return await GetOne(id, cancellationToken);
     }
 
-    async Task<PaginatedData<Review>> IReviewService.Search(
+    public async Task<PaginatedData<Review>> Search(
         int page,
         int pageSize,
         ReviewFilters filters,
@@ -32,7 +38,7 @@ public class ReviewService : IReviewService
         return await _reviewRepository.Search(page, pageSize, filters, cancellationToken);
     }
 
-    async Task<Review> IReviewService.UpdateOne(int id, Guid requesterId, Review review)
+    public async Task<Review> UpdateOne(int id, Guid requesterId, Review review)
     {
         _validator.ValidateAndThrow(review);
         return await _reviewRepository.UpdateOne(id, requesterId, review);
