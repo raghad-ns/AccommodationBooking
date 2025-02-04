@@ -3,7 +3,6 @@ using AccommodationBooking.Domain.Reviews.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Reviews.Mappers;
 using AccommodationBooking.Infrastructure.Reviews.Models;
-using AccommodationBooking.Library.Exceptions;
 using AccommodationBooking.Library.Pagination.Models;
 using Microsoft.EntityFrameworkCore;
 using DomainFilters = AccommodationBooking.Domain.Reviews.Models.ReviewFilters;
@@ -106,6 +105,6 @@ public class ReviewRepository : IReviewRepository
 
             return reviewToUpdate.ToDomain();
         }
-        else throw new UserError(ExceptionMessage.ReviewDoesNotExist);
+        else throw new RecordNotFoundException<int>(nameof(Review), nameof(Review.Id), id);
     }
 }

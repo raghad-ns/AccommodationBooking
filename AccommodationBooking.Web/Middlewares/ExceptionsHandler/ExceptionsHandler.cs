@@ -1,4 +1,5 @@
 ﻿using AccommodationBooking.Domain.Exceptions.ClientError;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -31,7 +32,20 @@ public class ExceptionsHandler
             await response.WriteAsync(e.Message);
         }
         catch (Exception e)
-        when (e is NotFound)
+        when (e is ValidationException)
+        {
+            _logger.LogError(e.ToString(), e);
+
+            var response = httpContext.Response;
+            response.StatusCode = 422;
+            await response.WriteAsync(e.Message);
+        }
+        catch (Exception e)
+        when (
+        e is RecordNotFoundException<int> ||
+        e is RecordNotFoundException<string> ||
+        e is RecordNotFoundException<Guid>
+        )
         {
             _logger.LogError(e.ToString(), e);
 

@@ -37,30 +37,23 @@ public class ReviewController : ControllerBase
         });
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Review>> CreateOne([FromBody] Review review, CancellationToken cancellationToken)
     {
         var domainReview = review.ToDomain();
-
-        if (Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out Guid userId))
-        {
-            domainReview.UserId = userId;
-            var createdReview = await _reviewService.InsertOne(domainReview, cancellationToken);
-            return Ok(createdReview);
-        }
-
-        else return Unauthorized();
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        domainReview.UserId = userId;
+        var createdReview = await _reviewService.InsertOne(domainReview, cancellationToken);
+        return Ok(createdReview);
     }
 
     [Authorize]
     [HttpPut]
     public async Task<ActionResult<Review>> UpdateOne([FromBody] Review review)
     {
-        if (Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out Guid userId))
-        {
-            var updatedReview = await _reviewService.UpdateOne(review.Id, userId, review.ToDomain());
-            return Ok(updatedReview);
-        }
-        return Forbid();
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        var updatedReview = await _reviewService.UpdateOne(review.Id, userId, review.ToDomain());
+        return Ok(updatedReview);
     }
 }

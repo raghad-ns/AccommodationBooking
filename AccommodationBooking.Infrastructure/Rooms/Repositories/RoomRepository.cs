@@ -3,7 +3,6 @@ using AccommodationBooking.Domain.Rooms.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Rooms.Mappers;
 using AccommodationBooking.Infrastructure.Rooms.Models;
-using AccommodationBooking.Library.Exceptions;
 using AccommodationBooking.Library.Pagination.Models;
 using Microsoft.EntityFrameworkCore;
 using DomainRoom = AccommodationBooking.Domain.Rooms.Models.Room;
@@ -42,7 +41,7 @@ public class RoomRepository : IRoomRepository
     {
         var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
-        if (room is null) throw new UserError(ExceptionMessage.RoomDoesNotExist);
+        if (room is null) throw new RecordNotFoundException<int>(nameof(Room), nameof(Room.Id), id);
 
         return room.ToDomain();
     }
@@ -51,7 +50,7 @@ public class RoomRepository : IRoomRepository
     {
         var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNo == number, cancellationToken);
 
-        if (room is null) throw new UserError(ExceptionMessage.RoomDoesNotExist);
+        if (room is null) throw new RecordNotFoundException<string>(nameof(Room), nameof(Room.RoomNo), number);
 
         return room.ToDomain();
     }
@@ -122,6 +121,6 @@ public class RoomRepository : IRoomRepository
 
             return roomToUpdate.ToDomain();
         }
-        else throw new UserError(ExceptionMessage.RoomDoesNotExist);
+        else throw new RecordNotFoundException<int>(nameof(Room), nameof(Room.Id), roomId);
     }
 }
