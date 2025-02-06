@@ -1,5 +1,5 @@
-﻿using AccommodationBooking.Domain.Users.Services;
-using FluentValidation;
+﻿using FluentValidation;
+
 namespace AccommodationBooking.Domain.Users.Validators;
 
 public class UserValidator : AbstractValidator<Models.User>

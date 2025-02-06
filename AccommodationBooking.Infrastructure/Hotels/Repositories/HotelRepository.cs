@@ -1,11 +1,13 @@
-﻿using DomainHotel = AccommodationBooking.Domain.Hotels.Models.Hotel;
-using DomainHotelFilters = AccommodationBooking.Domain.Hotels.Models.HotelFilters;
-using AccommodationBooking.Domain.Hotels.Repositories;
+﻿using AccommodationBooking.Domain.Hotels.Repositories;
+using AccommodationBooking.Domain.Rooms.Models;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Hotels.Mappers;
-using Microsoft.EntityFrameworkCore;
-using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Infrastructure.Hotels.Models;
+using AccommodationBooking.Infrastructure.Rooms.Mappers;
+using AccommodationBooking.Library.Pagination.Models;
+using Microsoft.EntityFrameworkCore;
+using DomainHotel = AccommodationBooking.Domain.Hotels.Models.Hotel;
+using DomainHotelFilters = AccommodationBooking.Domain.Hotels.Models.HotelFilters;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Repositories;
 
@@ -45,16 +47,18 @@ public class HotelRepository : IHotelRepository
         IQueryable<Hotel>  baseQuery = _context.Hotels;
         baseQuery = ApplySearchFilters(baseQuery, hotelFilters);
 
+        var total = -1;
+        if (page == 1) total = baseQuery.Count();
+
         var hotels = await baseQuery
-            .Skip(page * pageSize)
-            .Take(pageSize)
+            .Paginate<Hotel>(page, pageSize)
             .Include(h => h.Rooms)
             .Select(hotel => hotel.ToDomain())
             .ToListAsync(cancellationToken);
 
         return new PaginatedData<DomainHotel>
         {
-            Total = _context.Hotels.Count(),
+            Total = total,
             Data = hotels.AsReadOnly()
         };
     }
@@ -83,6 +87,16 @@ public class HotelRepository : IHotelRepository
     {
         var returnedHotel = await _context.Hotels.FirstOrDefaultAsync(hotel => hotel.Id == id, cancellationToken);
         return returnedHotel.ToDomain();
+    }
+
+    async Task<List<Room>> IHotelRepository.GetRooms(int id, CancellationToken cancellationToken)
+    {
+        var returnedRooms = await _context.Hotels
+            .Where(h => h.Id == id)
+            .Include(h => h.Rooms)
+            .SelectMany(h => h.Rooms.Select(r => r.ToDomain()).ToList())
+            .ToListAsync(cancellationToken);
+        return returnedRooms;
     }
 
     async Task<DomainHotel> IHotelRepository.GetOneByName(string name, CancellationToken cancellationToken)

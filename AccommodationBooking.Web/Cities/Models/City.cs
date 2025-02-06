@@ -1,6 +1,4 @@
-﻿using AccommodationBooking.Web.Hotels.Models;
-
-namespace AccommodationBooking.Web.Cities.Models;
+﻿namespace AccommodationBooking.Web.Cities.Models;
 
 public class City
 {

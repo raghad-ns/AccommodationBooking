@@ -1,10 +1,10 @@
-﻿using AccommodationBooking.Library.Pagination.Models;
-using AccommodationBooking.Web.Rooms.Mappers;
-using AccommodationBooking.Application.Rooms.Models;
+﻿using AccommodationBooking.Application.Rooms.Models;
 using AccommodationBooking.Domain.Rooms.Services;
+using AccommodationBooking.Library.Pagination.Models;
+using AccommodationBooking.Web.Rooms.Mappers;
+using AccommodationBooking.Web.Rooms.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using AccommodationBooking.Web.Rooms.Models;
 
 namespace AccommodationBooking.Web.Rooms.Controllers;
 
@@ -21,10 +21,10 @@ public class RoomsController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<Room>>> GetMany(
+    public async Task<ActionResult<PaginatedData<Room>>> Search(
         CancellationToken cancellationToken,
         [FromQuery] RoomFilters? filters,
-        [FromQuery] int page = 0,
+        [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
         )
     {

@@ -1,5 +1,4 @@
-﻿using AccommodationBooking.Domain.Cities.Models;
-using AccommodationBooking.Domain.Rooms.Models;
+﻿using AccommodationBooking.Domain.Rooms.Models;
 
 namespace AccommodationBooking.Domain.Hotels.Models;
 

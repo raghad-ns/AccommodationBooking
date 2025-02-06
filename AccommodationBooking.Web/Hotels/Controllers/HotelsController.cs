@@ -1,7 +1,9 @@
-﻿using AccommodationBooking.Library.Pagination.Models;
+﻿using AccommodationBooking.Domain.Hotels.Services;
+using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Web.Hotels.Mappers;
 using AccommodationBooking.Web.Hotels.Models;
-using AccommodationBooking.Domain.Hotels.Services;
+using AccommodationBooking.Web.Rooms.Mappers;
+using AccommodationBooking.Web.Rooms.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,11 +22,11 @@ public class HotelsController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<Hotel>>> GetMany(
+    public async Task<ActionResult<PaginatedData<Hotel>>> Search(
         CancellationToken cancellationToken,
         [FromQuery] HotelFilters? filters,
-        [FromQuery] int page=0, 
-        [FromQuery] int pageSize=10
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
         )
     {
         var hotels = await _hotelService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
@@ -34,6 +36,22 @@ public class HotelsController : ControllerBase
             Total = hotels.Total,
             Data = hotels.Data.Select(hotel => hotel.ToApplication()).ToList().AsReadOnly()
         });
+    }
+
+    [Authorize()]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Hotel>> GetHotel(int id, CancellationToken cancellationToken)
+    {
+        var hotel = await _hotelService.GetOne(id, cancellationToken);
+        return Ok(hotel);
+    }
+
+    [Authorize()]
+    [HttpGet("{hotelId}/rooms")]
+    public async Task<ActionResult<IReadOnlyCollection<Room>>> GetRooms(int hotelId, CancellationToken cancellationToken)
+    {
+        var rooms = await _hotelService.GetRooms(hotelId, cancellationToken);
+        return Ok(rooms.Select(r => r.ToApplication()));
     }
 
     [Authorize(Roles = "Admin")]

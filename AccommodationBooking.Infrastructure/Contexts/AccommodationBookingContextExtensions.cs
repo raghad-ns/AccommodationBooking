@@ -10,11 +10,16 @@ public static class AccommodationBookingContextExtensions
         try
         {
             return await callback(transaction);
-
-        } catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             transaction.Rollback();
             throw;
         }
     }
+
+    public static IQueryable<T> Paginate<T>(this IQueryable<T> baseQuery, int page, int pageSize)
+    => baseQuery
+      .Skip((page - 1) * pageSize)
+      .Take(pageSize);
 }

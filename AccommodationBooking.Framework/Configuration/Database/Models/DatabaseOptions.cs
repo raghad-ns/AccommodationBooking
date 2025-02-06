@@ -1,4 +1,4 @@
-﻿namespace AccommodationBooking.Application.Configuration.Database.Models;
+﻿namespace AccommodationBooking.Framework.Configuration.Database.Models;
 
 public class DatabaseOptions
 {
