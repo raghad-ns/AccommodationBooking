@@ -1,11 +1,12 @@
 ﻿using AccommodationBooking.Domain.Hotels.Models;
-using AccommodationBooking.Infrastructure.Cities.Models;
-using AccommodationBooking.Infrastructure.Rooms.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
 using AccommodationBooking.Infrastructure.BaseEntity.Models;
+using AccommodationBooking.Infrastructure.Cities.Models;
+using AccommodationBooking.Infrastructure.Reviews.Models;
+using AccommodationBooking.Infrastructure.Rooms.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Models;
 
@@ -21,19 +22,26 @@ public class Hotel : AuditEntity
     public City City { get; set; } // Navigation property
     public int CityId { get; set; } // Foreign key
     public double StarRating { get; set; }
-    public IReadOnlyCollection<string> Images { get; set; } = new List<string>();
-    public IReadOnlyCollection<Amenity> Amenities { get; set; } = new List<Amenity>();
-    public IReadOnlyCollection<Room> Rooms { get; set; } // Navigation property
+    public IReadOnlyCollection<string> Images { get; } = new List<string>();
+    public IReadOnlyCollection<Amenity> Amenities { get; } = new List<Amenity>();
+    public IReadOnlyCollection<Room> Rooms { get; } = new List<Room>(); // Navigation property
+    public IReadOnlyCollection<Review> Reviews { get; } = new List<Review>();
+}
 
-    public class CityEntityTypeConfiguration : IEntityTypeConfiguration<Hotel>
+internal class HotelEntityTypeConfiguration : IEntityTypeConfiguration<Hotel>
+{
+    public void Configure(EntityTypeBuilder<Hotel> builder)
     {
-        public void Configure(EntityTypeBuilder<Hotel> builder)
-        {
-            builder
-                .HasMany(hotel => hotel.Rooms)
-                .WithOne(room => room.Hotel)
-                .HasForeignKey(room => room.HotelId)
-                .HasPrincipalKey(hotel => hotel.Id);
-        }
+        builder
+            .HasMany(hotel => hotel.Rooms)
+            .WithOne(room => room.Hotel)
+            .HasForeignKey(room => room.HotelId)
+            .HasPrincipalKey(hotel => hotel.Id);
+
+        builder
+            .HasMany(hotel => hotel.Reviews)
+            .WithOne(review => review.Hotel)
+            .HasForeignKey(review => review.HotelId)
+            .HasPrincipalKey(hotel => hotel.Id);
     }
 }

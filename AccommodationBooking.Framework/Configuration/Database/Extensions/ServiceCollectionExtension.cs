@@ -1,4 +1,4 @@
-﻿using AccommodationBooking.Application.Configuration.Database.Models;
+﻿using AccommodationBooking.Framework.Configuration.Database.Models;
 using AccommodationBooking.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

@@ -1,8 +1,6 @@
 ﻿using AccommodationBooking.Infrastructure.Cities.Models;
-using AccommodationBooking.Infrastructure.Hotels.Mappers;
-using DomainCity = AccommodationBooking.Domain.Cities.Models.City;
-using DomainCityFilters = AccommodationBooking.Domain.Cities.Models.CityFilters;
 using Riok.Mapperly.Abstractions;
+using DomainCity = AccommodationBooking.Domain.Cities.Models.City;
 
 namespace AccommodationBooking.Infrastructure.Cities.Mappers;
 

@@ -1,5 +1,4 @@
 ﻿using AccommodationBooking.Web.Configuration.Authentication.Models;
-using AccommodationBooking.Web.Configuration.Authentication.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -24,6 +23,7 @@ public class TokensService : ITokensService
     {
         var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
             new Claim(JwtRegisteredClaimNames.GivenName, user.UserName ?? ""),
             new Claim(ClaimTypes.Role, Enum.GetName(user.Role) ?? "User") // Add the role claim

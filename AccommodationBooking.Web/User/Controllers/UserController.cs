@@ -1,9 +1,9 @@
-﻿using AccommodationBooking.Web.User.Mappers;
-using AccommodationBooking.Domain.Users.Services;
-using AccommodationBooking.Web.User.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using AccommodationBooking.Domain.Users.Services;
 using AccommodationBooking.Web.Configuration.Authentication.Services;
+using AccommodationBooking.Web.User.Mappers;
+using AccommodationBooking.Web.User.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AccommodationBooking.Application.User.Controllers;
 [ApiController]

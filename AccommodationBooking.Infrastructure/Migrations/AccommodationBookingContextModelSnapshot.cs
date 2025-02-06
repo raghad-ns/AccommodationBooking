@@ -103,6 +103,46 @@ namespace AccommodationBooking.Infrastructure.Migrations
                     b.ToTable("Hotels");
                 });
 
+            modelBuilder.Entity("AccommodationBooking.Infrastructure.Reviews.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("StarRating")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HotelId");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
+                });
+
             modelBuilder.Entity("AccommodationBooking.Infrastructure.Rooms.Models.Room", b =>
                 {
                     b.Property<int>("Id")
@@ -248,13 +288,13 @@ namespace AccommodationBooking.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "06520d60-e4a9-47d1-912c-23ab85a0280a",
+                            Id = "fd73b9ad-ac2a-4521-899c-d02405ee5dbf",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "df07f80c-3da8-4a4c-88c0-3aea092c6fa2",
+                            Id = "f87300d8-f9fe-4bb3-9103-f131204c7152",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -402,6 +442,33 @@ namespace AccommodationBooking.Infrastructure.Migrations
                     b.Navigation("City");
                 });
 
+            modelBuilder.Entity("AccommodationBooking.Infrastructure.Reviews.Models.Review", b =>
+                {
+                    b.HasOne("AccommodationBooking.Infrastructure.Hotels.Models.Hotel", "Hotel")
+                        .WithMany("Reviews")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AccommodationBooking.Infrastructure.Rooms.Models.Room", "Room")
+                        .WithMany("Reviews")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AccommodationBooking.Infrastructure.Users.Models.User", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("Room");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AccommodationBooking.Infrastructure.Rooms.Models.Room", b =>
                 {
                     b.HasOne("AccommodationBooking.Infrastructure.Hotels.Models.Hotel", "Hotel")
@@ -471,7 +538,19 @@ namespace AccommodationBooking.Infrastructure.Migrations
 
             modelBuilder.Entity("AccommodationBooking.Infrastructure.Hotels.Models.Hotel", b =>
                 {
+                    b.Navigation("Reviews");
+
                     b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("AccommodationBooking.Infrastructure.Rooms.Models.Room", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("AccommodationBooking.Infrastructure.Users.Models.User", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

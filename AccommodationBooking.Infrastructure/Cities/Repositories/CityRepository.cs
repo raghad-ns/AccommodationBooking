@@ -1,11 +1,11 @@
-﻿using AccommodationBooking.Infrastructure.Cities.Mappers;
+﻿using AccommodationBooking.Domain.Cities.Repositories;
+using AccommodationBooking.Infrastructure.Cities.Mappers;
+using AccommodationBooking.Infrastructure.Cities.Models;
+using AccommodationBooking.Infrastructure.Contexts;
+using AccommodationBooking.Library.Pagination.Models;
+using Microsoft.EntityFrameworkCore;
 using DomainCity = AccommodationBooking.Domain.Cities.Models.City;
 using DomainCityFilters = AccommodationBooking.Domain.Cities.Models.CityFilters;
-using AccommodationBooking.Domain.Cities.Repositories;
-using AccommodationBooking.Infrastructure.Contexts;
-using Microsoft.EntityFrameworkCore;
-using AccommodationBooking.Library.Pagination.Models;
-using AccommodationBooking.Infrastructure.Cities.Models;
 
 namespace AccommodationBooking.Infrastructure.Cities.Repositories;
 
@@ -43,16 +43,18 @@ public class CityRepository : ICityRepository
         IQueryable<City> baseQuery = _context.Cities;
         baseQuery = ApplySearchFilters(baseQuery, cityFilters);
 
+        var total = -1;
+        if (page == 1) total = baseQuery.Count();
+
         var cities = await baseQuery
-            .Skip(page * pageSize)
-            .Take(pageSize)
+            .Paginate<City>(page, pageSize)
             .Include(c => c.Hotels)
             .Select(city => city.ToDomain())
             .ToListAsync(cancellationToken);
 
         return new PaginatedData<DomainCity>
         {
-            Total = _context.Cities.Count(),
+            Total = total,
             Data = cities.AsReadOnly()
         };
     }

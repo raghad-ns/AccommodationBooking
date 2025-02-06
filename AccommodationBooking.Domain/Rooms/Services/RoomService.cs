@@ -1,7 +1,6 @@
-﻿using AccommodationBooking.Library.Pagination.Models;
-using AccommodationBooking.Domain.Rooms.Models;
+﻿using AccommodationBooking.Domain.Rooms.Models;
 using AccommodationBooking.Domain.Rooms.Repositories;
-using AccommodationBooking.Domain.Rooms.Validators;
+using AccommodationBooking.Library.Pagination.Models;
 using FluentValidation;
 
 namespace AccommodationBooking.Domain.Rooms.Services;
@@ -16,34 +15,34 @@ public class RoomService : IRoomService
         _roomRepository = roomRepository;
         _validator = validator;
     }
-    async Task<Room> IRoomService.InsertOne(Room room, CancellationToken cancellationToken)
+    public async Task<Room> InsertOne(Room room, CancellationToken cancellationToken)
     {
         _validator.ValidateAndThrow(room);
         var id = await _roomRepository.InsertOne(room);
-        return await _roomRepository.GetOne(id, cancellationToken);
+        return await GetOne(id, cancellationToken);
     }
 
-    Task IRoomService.DeleteOne(int roomId)
+    public Task DeleteOne(int roomId)
     {
         return _roomRepository.DeleteOne(roomId);
     }
 
-    Task<Room> IRoomService.GetOne(int id, CancellationToken cancellationToken)
+    public Task<Room> GetOne(int id, CancellationToken cancellationToken)
     {
         return _roomRepository.GetOne(id, cancellationToken);
     }
 
-    Task<Room> IRoomService.GetOneByNumber(string number, CancellationToken cancellationToken)
+    public Task<Room> GetOneByNumber(string number, CancellationToken cancellationToken)
     {
         return _roomRepository.GetOneByNumber(number, cancellationToken);
     }
 
-    Task<PaginatedData<Room>> IRoomService.Search(int page, int pageSize, RoomFilters roomFilters, CancellationToken cancellationToken)
+    public Task<PaginatedData<Room>> Search(int page, int pageSize, RoomFilters roomFilters, CancellationToken cancellationToken)
     {
         return _roomRepository.Search(page, pageSize, roomFilters, cancellationToken);
     }
 
-    Task<Room> IRoomService.UpdateOne(int roomId, Room room)
+    public Task<Room> UpdateOne(int roomId, Room room)
     {
         _validator.ValidateAndThrow(room);
         return _roomRepository.UpdateOne(roomId, room);

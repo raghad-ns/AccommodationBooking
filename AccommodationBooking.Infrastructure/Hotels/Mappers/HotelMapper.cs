@@ -1,6 +1,6 @@
-﻿using DomainHotel = AccommodationBooking.Domain.Hotels.Models.Hotel;
-using AccommodationBooking.Infrastructure.Hotels.Models;
+﻿using AccommodationBooking.Infrastructure.Hotels.Models;
 using Riok.Mapperly.Abstractions;
+using DomainHotel = AccommodationBooking.Domain.Hotels.Models.Hotel;
 
 namespace AccommodationBooking.Infrastructure.Hotels.Mappers;
 

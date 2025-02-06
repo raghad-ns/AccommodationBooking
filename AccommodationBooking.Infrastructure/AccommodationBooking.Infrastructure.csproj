@@ -27,9 +27,6 @@
     <Folder Include="Accommodations\Mappers\" />
     <Folder Include="Accommodations\Models\" />
     <Folder Include="Accommodations\Repositories\" />
-    <Folder Include="Reviews\Mappers\" />
-    <Folder Include="Reviews\Models\" />
-    <Folder Include="Reviews\Repositories\" />
   </ItemGroup>
 
 </Project>

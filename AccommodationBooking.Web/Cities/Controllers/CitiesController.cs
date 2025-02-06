@@ -1,9 +1,9 @@
 ﻿using AccommodationBooking.Domain.Cities.Services;
-using Microsoft.AspNetCore.Mvc;
-using AccommodationBooking.Web.Cities.Models;
-using Microsoft.AspNetCore.Authorization;
 using AccommodationBooking.Library.Pagination.Models;
 using AccommodationBooking.Web.Cities.Mappers;
+using AccommodationBooking.Web.Cities.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AccommodationBooking.Web.Cities.Controllers;
 
@@ -20,10 +20,10 @@ public class CitiesController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedData<City>>> GetMany(
+    public async Task<ActionResult<PaginatedData<City>>> Search(
         CancellationToken cancellationToken,
         [FromQuery] CityFilters? filters,
-        [FromQuery] int page = 0,
+        [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
         )
     {

@@ -1,13 +1,12 @@
-﻿using AccommodationBooking.Library.Pagination.Models;
-using DomainRoom = AccommodationBooking.Domain.Rooms.Models.Room;
-using DomainRoomFilters = AccommodationBooking.Domain.Rooms.Models.RoomFilters;
+﻿using AccommodationBooking.Domain.Exceptions.ClientError;
 using AccommodationBooking.Domain.Rooms.Repositories;
 using AccommodationBooking.Infrastructure.Contexts;
 using AccommodationBooking.Infrastructure.Rooms.Mappers;
-using Microsoft.EntityFrameworkCore;
 using AccommodationBooking.Infrastructure.Rooms.Models;
-using AccommodationBooking.Domain.Exceptions.ClientError;
-using AccommodationBooking.Library.Exceptions;
+using AccommodationBooking.Library.Pagination.Models;
+using Microsoft.EntityFrameworkCore;
+using DomainRoom = AccommodationBooking.Domain.Rooms.Models.Room;
+using DomainRoomFilters = AccommodationBooking.Domain.Rooms.Models.RoomFilters;
 
 namespace AccommodationBooking.Infrastructure.Rooms.Repositories;
 
@@ -42,7 +41,7 @@ public class RoomRepository : IRoomRepository
     {
         var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
-        if (room is null) throw new UserError(ExceptionMessage.RoomDoesNotExist);
+        if (room is null) throw new RecordNotFoundException<int>(nameof(Room), nameof(Room.Id), id);
 
         return room.ToDomain();
     }
@@ -51,25 +50,32 @@ public class RoomRepository : IRoomRepository
     {
         var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNo == number, cancellationToken);
 
-        if (room is null) throw new UserError(ExceptionMessage.RoomDoesNotExist);
+        if (room is null) throw new RecordNotFoundException<string>(nameof(Room), nameof(Room.RoomNo), number);
 
         return room.ToDomain();
     }
 
-    async Task<PaginatedData<DomainRoom>> IRoomRepository.Search(int page, int pageSize, DomainRoomFilters roomFilters, CancellationToken cancellationToken)
+    async Task<PaginatedData<DomainRoom>> IRoomRepository.Search(
+        int page,
+        int pageSize,
+        DomainRoomFilters roomFilters,
+        CancellationToken cancellationToken
+        )
     {
         IQueryable<Room> baseQuery = _context.Rooms;
         baseQuery = ApplySearchFilters(baseQuery, roomFilters);
 
+        var total = -1;
+        if (page == 1) total = baseQuery.Count();
+
         var rooms = await baseQuery
-            .Skip(page * pageSize)
-            .Take(pageSize)
+            .Paginate<Room>(page, pageSize)
             .Select(r => r.ToDomain())
             .ToListAsync(cancellationToken);
 
         return new PaginatedData<DomainRoom>
         {
-            Total = _context.Rooms.Count(),
+            Total = total,
             Data = rooms.AsReadOnly()
         };
     }
@@ -114,6 +120,6 @@ public class RoomRepository : IRoomRepository
 
             return roomToUpdate.ToDomain();
         }
-        else throw new UserError(ExceptionMessage.RoomDoesNotExist);
+        else throw new RecordNotFoundException<int>(nameof(Room), nameof(Room.Id), roomId);
     }
 }

@@ -1,10 +1,10 @@
-using AccommodationBooking.Application.Configuration.Database.Extensions;
 using AccommodationBooking.Application.Configuration.Authentication.Extensions;
-using AccommodationBooking.Framework.Dependencies;
-using AccommodationBooking.Web.Middlewares.ExceptionsHandler;
+using AccommodationBooking.Application.Configuration.Database.Extensions;
 using AccommodationBooking.Application.User.Controllers;
+using AccommodationBooking.Framework.Dependencies;
 using AccommodationBooking.Web.Cities.Controllers;
 using AccommodationBooking.Web.Hotels.Controllers;
+using AccommodationBooking.Web.Middlewares.ExceptionsHandler;
 using AccommodationBooking.Web.Rooms.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +15,10 @@ builder.Logging.AddConsole();
 // Add authentication services to the container.
 builder.Services
     .LoadDatabaseConfiguration(builder)
-    .LoadAuthenticationConfiguration(builder);
+    .LoadAuthenticationConfiguration(builder)
+    .RegisterAuthenticationOptions(builder);
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services
     .AddDatabaseConfiguration()

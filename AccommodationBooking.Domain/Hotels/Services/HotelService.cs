@@ -1,8 +1,8 @@
-﻿using AccommodationBooking.Library.Pagination.Models;
-using AccommodationBooking.Domain.Hotels.Models;
+﻿using AccommodationBooking.Domain.Hotels.Models;
 using AccommodationBooking.Domain.Hotels.Repositories;
+using AccommodationBooking.Domain.Rooms.Models;
+using AccommodationBooking.Library.Pagination.Models;
 using FluentValidation;
-using AccommodationBooking.Domain.Cities.Models;
 
 namespace AccommodationBooking.Domain.Hotels.Services;
 
@@ -17,34 +17,40 @@ public class HotelService : IHotelService
         _validator = validator;
     }
 
-    async Task<Hotel> IHotelService.InsertOne(Hotel hotel, CancellationToken cancellationToken)
+    public async Task<Hotel> InsertOne(Hotel hotel, CancellationToken cancellationToken)
     {
         _validator.ValidateAndThrow(hotel);
         var id = await _hotelRepository.InsertOne(hotel);
-        return await _hotelRepository.GetOne(id, cancellationToken);
+        return await GetOne(id, cancellationToken);
     }
 
-    Task IHotelService.DeleteOne(int hotelId)
+    public Task DeleteOne(int hotelId)
     {
         return _hotelRepository.DeleteOne(hotelId);
     }
 
-    Task<Hotel> IHotelService.GetOne(int id, CancellationToken cancellationToken)
+    public Task<Hotel> GetOne(int id, CancellationToken cancellationToken)
     {
         return _hotelRepository.GetOne(id, cancellationToken);
     }
 
-    Task<Hotel> IHotelService.GetOneByName(string name, CancellationToken cancellationToken)
+
+    public async Task<List<Room>> GetRooms(int id, CancellationToken cancellationToken)
+    {
+        return await _hotelRepository.GetRooms(id, cancellationToken);
+    }
+
+    public Task<Hotel> GetOneByName(string name, CancellationToken cancellationToken)
     {
         return _hotelRepository.GetOneByName(name, cancellationToken);
     }
 
-    Task<PaginatedData<Hotel>> IHotelService.Search(int page, int pageSize, HotelFilters hotelFilters, CancellationToken cancellationToken)
+    public Task<PaginatedData<Hotel>> Search(int page, int pageSize, HotelFilters hotelFilters, CancellationToken cancellationToken)
     {
         return _hotelRepository.Search(page, pageSize, hotelFilters, cancellationToken);
     }
 
-    Task<Hotel> IHotelService.UpdateOne(int hotelId, Hotel hotel)
+    public Task<Hotel> UpdateOne(int hotelId, Hotel hotel)
     {
         _validator.ValidateAndThrow(hotel);
         return _hotelRepository.UpdateOne(hotelId, hotel);
