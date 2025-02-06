@@ -94,11 +94,6 @@ public class ReviewRepository : IReviewRepository
         var reviewToUpdate = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
         if (reviewToUpdate != null)
         {
-            if (reviewToUpdate.UserId != requesterId)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
             ReviewsMapper.ToInfrastructureUpdate(review, reviewToUpdate);
 
             await _context.SaveChangesAsync(CancellationToken.None);

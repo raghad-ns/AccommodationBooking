@@ -50,10 +50,10 @@ public class ReviewController : ControllerBase
 
     [Authorize]
     [HttpPut]
-    public async Task<ActionResult<Review>> UpdateOne([FromBody] Review review)
+    public async Task<ActionResult<Review>> UpdateOne([FromBody] Review review, CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        var updatedReview = await _reviewService.UpdateOne(review.Id, userId, review.ToDomain());
+        var updatedReview = await _reviewService.UpdateOne(review.Id, userId, review.ToDomain(), cancellationToken);
         return Ok(updatedReview);
     }
 }
