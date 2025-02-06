@@ -18,6 +18,8 @@ builder.Services
     .LoadAuthenticationConfiguration(builder)
     .RegisterAuthenticationOptions(builder);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services
     .AddDatabaseConfiguration()
     .ConfigureAuthentication()

@@ -88,7 +88,7 @@ public class ReviewRepository : IReviewRepository
         return baseQuery;
     }
 
-    async Task<DomainReview> IReviewRepository.UpdateOne(int id, Guid requesterId, DomainReview review)
+    async Task<DomainReview> IReviewRepository.UpdateOne(int id, DomainReview review)
     {
         var reviewToUpdate = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
         if (reviewToUpdate != null)

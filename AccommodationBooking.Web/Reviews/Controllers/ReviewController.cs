@@ -4,7 +4,6 @@ using AccommodationBooking.Web.Reviews.Mappers;
 using AccommodationBooking.Web.Reviews.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace AccommodationBooking.Web.Reviews.Controllers;
 
@@ -42,8 +41,6 @@ public class ReviewController : ControllerBase
     public async Task<ActionResult<Review>> CreateOne([FromBody] Review review, CancellationToken cancellationToken)
     {
         var domainReview = review.ToDomain();
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        domainReview.UserId = userId;
         var createdReview = await _reviewService.InsertOne(domainReview, cancellationToken);
         return Ok(createdReview);
     }
@@ -52,8 +49,7 @@ public class ReviewController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<Review>> UpdateOne([FromBody] Review review, CancellationToken cancellationToken)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        var updatedReview = await _reviewService.UpdateOne(review.Id, userId, review.ToDomain(), cancellationToken);
+        var updatedReview = await _reviewService.UpdateOne(review.Id, review.ToDomain(), cancellationToken);
         return Ok(updatedReview);
     }
 }
