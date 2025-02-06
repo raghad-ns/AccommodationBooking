@@ -47,8 +47,7 @@ public class CityRepository : ICityRepository
         if (page == 1) total = baseQuery.Count();
 
         var cities = await baseQuery
-            .Skip((page  - 1) * pageSize)
-            .Take(pageSize)
+            .Paginate<City>(page, pageSize)
             .Include(c => c.Hotels)
             .Select(city => city.ToDomain())
             .ToListAsync(cancellationToken);

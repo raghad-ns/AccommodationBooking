@@ -56,9 +56,8 @@ public class ReviewRepository : IReviewRepository
         var total = -1;
         if (page == 1) total = baseQuery.Count();
 
-        var reviews = await baseQuery 
-        .Skip(pageSize * (page - 1))
-        .Take(pageSize)
+        var reviews = await baseQuery
+        .Paginate<Review>(page, pageSize)
         .Select(review => review.ToDomain())
         .ToListAsync(cancellationToken);
 
@@ -89,7 +88,7 @@ public class ReviewRepository : IReviewRepository
         return baseQuery;
     }
 
-    async Task<DomainReview> IReviewRepository.UpdateOne(int id,Guid requesterId, DomainReview review)
+    async Task<DomainReview> IReviewRepository.UpdateOne(int id, Guid requesterId, DomainReview review)
     {
         var reviewToUpdate = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
         if (reviewToUpdate != null)

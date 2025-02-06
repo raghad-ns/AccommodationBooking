@@ -51,8 +51,7 @@ public class HotelRepository : IHotelRepository
         if (page == 1) total = baseQuery.Count();
 
         var hotels = await baseQuery
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Paginate<Hotel>(page, pageSize)
             .Include(h => h.Rooms)
             .Select(hotel => hotel.ToDomain())
             .ToListAsync(cancellationToken);

@@ -69,8 +69,7 @@ public class RoomRepository : IRoomRepository
         if (page == 1) total = baseQuery.Count();
 
         var rooms = await baseQuery
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Paginate<Room>(page, pageSize)
             .Select(r => r.ToDomain())
             .ToListAsync(cancellationToken);
 
