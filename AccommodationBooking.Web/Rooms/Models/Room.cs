@@ -11,6 +11,6 @@ public class Room
     public int ChildrenCapacity { get; init; } = 0;
     public bool IsAvailable { get; init; } = true;
     public string? Description { get; init; }
-    public IReadOnlyCollection<string> Images { get; init; } = new List<string>();
+    public IReadOnlyCollection<string> Images { get; init; } = Array.Empty<string>();
     public RoomType RoomType { get; init; }
 }

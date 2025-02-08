@@ -9,5 +9,5 @@ public class HotelFilters
     public string? City { get; set; } = null;
     public double? StarRatingGreaterThanOrEqual { get; set; } = null;
     public double? StartRatingLessThanOrEqual { get; set; } = null;
-    public IReadOnlyCollection<string> Amenities { get; set; } = null;
+    public IReadOnlyCollection<string> Amenities { get; set; } = Array.Empty<string>();
 }

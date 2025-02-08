@@ -8,5 +8,5 @@ public class City
     public string Name { get; set; }
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
-    public IReadOnlyCollection<HotelSummary> Hotels { get; set; } = new List<HotelSummary>();
+    public IReadOnlyCollection<HotelSummary> Hotels { get; set; } = Array.Empty<HotelSummary>();
 }

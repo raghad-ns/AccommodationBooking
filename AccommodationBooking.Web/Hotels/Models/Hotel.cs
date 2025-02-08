@@ -10,6 +10,6 @@ public class Hotel
     public string Address { get; init; }
     public int? CityId { get; init; }
     public double StarRating { get; init; }
-    public IReadOnlyCollection<string> Images { get; init; } = new List<string>();
-    public IReadOnlyCollection<Amenity> Amenities { get; init; } = new List<Amenity>();
+    public IReadOnlyCollection<string> Images { get; init; } = Array.Empty<string>();
+    public IReadOnlyCollection<Amenity> Amenities { get; init; } = Array.Empty<Amenity>();
 }

@@ -10,7 +10,7 @@ public class Hotel
     public string Address { get; set; }
     public int? CityId { get; set; }
     public double StarRating { get; set; }
-    public IReadOnlyCollection<string> Images { get; set; } = new List<string>();
-    public IReadOnlyCollection<Amenity> Amenities { get; set; } = new List<Amenity>();
-    public IReadOnlyCollection<Room> Rooms { get; set; } = new List<Room>();
+    public IReadOnlyCollection<string> Images { get; set; } = Array.Empty<string>();
+    public IReadOnlyCollection<Amenity> Amenities { get; set; } = Array.Empty<Amenity>();
+    public IReadOnlyCollection<Room> Rooms { get; set; } = Array.Empty<Room>();
 }

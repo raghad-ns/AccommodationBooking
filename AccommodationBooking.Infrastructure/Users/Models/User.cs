@@ -9,7 +9,7 @@ public class User : IdentityUser<Guid>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public IReadOnlyCollection<Review> Reviews { get; } = new List<Review>();
+    public IReadOnlyCollection<Review> Reviews { get; } = Array.Empty<Review>();
 }
 
 internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
