@@ -22,7 +22,7 @@ public class RoomService : IRoomService
         return await GetOne(id, cancellationToken);
     }
 
-    public Task DeleteOne(int roomId)
+    public Task<int> DeleteOne(int roomId)
     {
         return _roomRepository.DeleteOne(roomId);
     }

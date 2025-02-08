@@ -28,9 +28,9 @@ public class CityRepository : ICityRepository
         return infraCity.Id;
     }
 
-    async Task ICityRepository.DeleteOne(int cityId)
+    Task<int> ICityRepository.DeleteOne(int cityId)
     {
-        await _context.Cities.Where(c => c.Id == cityId).ExecuteDeleteAsync();
+        return _context.Cities.Where(c => c.Id == cityId).ExecuteDeleteAsync();
     }
 
     async Task<PaginatedData<DomainCity>> ICityRepository.Search(

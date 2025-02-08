@@ -23,7 +23,7 @@ public class CityService : ICityService
         return await GetOne(id, cancellationToken);
     }
 
-    public Task DeleteOne(int cityId)
+    public Task<int> DeleteOne(int cityId)
     {
         return _cityRepository.DeleteOne(cityId);
     }

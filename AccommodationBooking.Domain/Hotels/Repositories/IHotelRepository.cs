@@ -12,5 +12,5 @@ public interface IHotelRepository
     Task<Hotel> GetOneByName(string name, CancellationToken cancellationToken);
     Task<int> InsertOne(Hotel hotel);
     Task<Hotel> UpdateOne(int hotelId, Hotel hotel);
-    Task DeleteOne(int hotelId);
+    Task<int> DeleteOne(int hotelId);
 }

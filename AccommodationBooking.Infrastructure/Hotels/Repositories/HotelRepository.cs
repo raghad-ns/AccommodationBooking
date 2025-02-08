@@ -32,9 +32,9 @@ public class HotelRepository : IHotelRepository
         return infraHotel.Id;
     }
 
-    async Task IHotelRepository.DeleteOne(int hotelId)
+    Task<int> IHotelRepository.DeleteOne(int hotelId)
     {
-        await _context.Cities.Where(h => h.Id == hotelId).ExecuteDeleteAsync();
+        return _context.Cities.Where(h => h.Id == hotelId).ExecuteDeleteAsync();
     }
 
     async Task<PaginatedData<DomainHotel>> IHotelRepository.Search(

@@ -24,7 +24,7 @@ public class HotelService : IHotelService
         return await GetOne(id, cancellationToken);
     }
 
-    public Task DeleteOne(int hotelId)
+    public Task<int> DeleteOne(int hotelId)
     {
         return _hotelRepository.DeleteOne(hotelId);
     }

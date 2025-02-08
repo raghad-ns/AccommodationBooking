@@ -31,10 +31,10 @@ public class RoomRepository : IRoomRepository
         return infraRoom.Id;
     }
 
-    async Task IRoomRepository.DeleteOne(int roomId)
+    Task<int> IRoomRepository.DeleteOne(int roomId)
     {
 
-        await _context.Cities.Where(r => r.Id == roomId).ExecuteDeleteAsync();
+        return _context.Cities.Where(r => r.Id == roomId).ExecuteDeleteAsync();
     }
 
     async Task<DomainRoom> IRoomRepository.GetOne(int id, CancellationToken cancellationToken)

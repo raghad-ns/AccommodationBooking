@@ -10,5 +10,5 @@ public interface ICityService
     Task<City> GetOneByName(string name, CancellationToken cancellationToken);
     Task<City> InsertOne(City city, CancellationToken cancellationToken);
     Task<City> UpdateOne(int cityId, City city);
-    Task DeleteOne(int cityId);
+    Task<int> DeleteOne(int cityId);
 }

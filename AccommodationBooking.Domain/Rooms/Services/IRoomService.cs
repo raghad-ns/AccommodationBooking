@@ -10,5 +10,5 @@ public interface IRoomService
     Task<Room> GetOneByNumber(string number, CancellationToken cancellationToken);
     Task<Room> InsertOne(Room room, CancellationToken cancellationToken);
     Task<Room> UpdateOne(int roomId, Room room);
-    Task DeleteOne(int roomId);
+    Task<int> DeleteOne(int roomId);
 }

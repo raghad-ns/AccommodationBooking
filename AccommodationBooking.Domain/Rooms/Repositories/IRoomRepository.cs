@@ -11,5 +11,5 @@ public interface IRoomRepository
     Task<DomainRoom> GetOneByNumber(string number, CancellationToken cancellationToken);
     Task<int> InsertOne(DomainRoom room);
     Task<DomainRoom> UpdateOne(int roomId, DomainRoom room);
-    Task DeleteOne(int roomId);
+    Task<int> DeleteOne(int roomId);
 }
