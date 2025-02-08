@@ -41,7 +41,27 @@ public class CityServiceTests
         var returnedCity = await _cityService.InsertOne(city, new CancellationToken());
 
         // Assert
-        returnedCity.Should().NotBeNull().And.Be(city);
+        returnedCity.Should().BeEquivalentTo(city);
+    }
+
+    [Fact]
+    public async void InsertOne_ShouldInvokeRepositoryMethod()
+    {
+        // Arrange
+        var city = _fixture.Create<City>();
+
+        _cityRepositoryMock
+            .Setup(repo => repo.InsertOne(It.IsAny<City>()))
+            .ReturnsAsync(city.Id);
+        _cityRepositoryMock
+            .Setup(repo => repo.GetOne(city.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(city);
+
+        // Act
+        var returnedCity = await _cityService.InsertOne(city, new CancellationToken());
+
+        // Assert
+        _cityRepositoryMock.Verify(mock => mock.InsertOne(It.IsAny<City>()), Times.Once);
     }
 
     [Fact]
@@ -79,7 +99,24 @@ public class CityServiceTests
         var returnedCity = await _cityService.UpdateOne(city.Id, city);
 
         // Assert
-        returnedCity.Should().NotBeNull().And.Be(city);
+        returnedCity.Should().BeEquivalentTo(city);
+    }
+    
+    [Fact]
+    public async void UpdateOne_ShouldInvokeRepositoryMethod()
+    {
+        // Arrange
+        var city = _fixture.Create<City>();
+
+        _cityRepositoryMock
+            .Setup(repo => repo.UpdateOne(It.IsAny<int>(), It.IsAny<City>()))
+            .ReturnsAsync(city);
+
+        // Act
+        var returnedCity = await _cityService.UpdateOne(city.Id, city);
+
+        // Assert
+        _cityRepositoryMock.Verify(mock => mock.UpdateOne(It.IsAny<int>(), It.IsAny<City>()), Times.Once);
     }
 
     [Fact]
@@ -113,6 +150,20 @@ public class CityServiceTests
         // Assert
         await deletion.Should().NotThrowAsync();
     }
+    
+    [Fact]
+    public async void DeleteOne_ShouldInvokeRepositoryMethod()
+    {
+        // Arrange
+        _cityRepositoryMock
+            .Setup(repo => repo.DeleteOne(It.IsAny<int>()));
+
+        // Act
+        var deletion = async () => await _cityService.DeleteOne(_fixture.Create<int>());
+
+        // Assert
+        _cityRepositoryMock.Verify(mock => mock.DeleteOne(It.IsAny<int>()), Times.Once);
+    }
 
     [Fact]
     public async void Search_ShouldReturnListOfRecords()
@@ -139,11 +190,11 @@ public class CityServiceTests
             _fixture.Create<int>(),
             _fixture.Create<int>(),
             _fixture.Create<CityFilters>(),
-            _fixture.Create<CancellationToken>()
+            default
             );
 
         // Assert
-        returnedCities.Should().Be(paginatedCities);
+        returnedCities.Should().BeEquivalentTo(paginatedCities);
     }
 
     [Fact]
@@ -156,12 +207,29 @@ public class CityServiceTests
             .ReturnsAsync(city);
 
         // Act
-        var returnedCity = await _cityService.GetOne(_fixture.Create<int>(), _fixture.Create<CancellationToken>());
+        var returnedCity = await _cityService.GetOne(_fixture.Create<int>(), default);
 
         // Assert
         returnedCity
             .Should().NotBeNull()
-            .And.Be(city);
+            .And.BeEquivalentTo(city);
+    }
+    
+
+    [Fact]
+    public async void GetOne_ShouldInvokeRepositoryMethod()
+    {
+        // Arrange
+        var city = _fixture.Create<City>();
+        _cityRepositoryMock
+            .Setup(repo => repo.GetOne(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(city);
+
+        // Act
+        var returnedCity = await _cityService.GetOne(_fixture.Create<int>(), default);
+
+        // Assert
+        _cityRepositoryMock.Verify(mock => mock.GetOne(It.IsAny<int>(), default), Times.Once);
     }
 
     [Fact]
@@ -174,7 +242,7 @@ public class CityServiceTests
             .ReturnsAsync((City?)null);
 
         // Act
-        var returnedCity = await _cityService.GetOne(_fixture.Create<int>(), _fixture.Create<CancellationToken>());
+        var returnedCity = await _cityService.GetOne(_fixture.Create<int>(), default);
 
         // Assert
         returnedCity.Should().BeNull();
@@ -192,13 +260,32 @@ public class CityServiceTests
         // Act
         var returnedCity = await _cityService.GetOneByName(
             _fixture.Create<string>(),
-            _fixture.Create<CancellationToken>()
+            default
             );
 
         // Assert
         returnedCity
             .Should().NotBeNull()
-            .And.Be(city);
+            .And.BeEquivalentTo(city);
+    }
+    
+    [Fact]
+    public async void GetOneByName_ShouldInvokeRepositoryMethod()
+    {
+        // Arrange
+        var city = _fixture.Create<City>();
+        _cityRepositoryMock
+            .Setup(repo => repo.GetOneByName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(city);
+
+        // Act
+        var returnedCity = await _cityService.GetOneByName(
+            city.Name,
+            default
+            );
+
+        // Assert
+        _cityRepositoryMock.Verify(mock => mock.GetOneByName(It.IsAny<string>(), default), Times.Once);
     }
 
     [Fact]
@@ -213,7 +300,7 @@ public class CityServiceTests
         // Act
         var returnedCity = await _cityService.GetOneByName(
             _fixture.Create<string>(),
-            _fixture.Create<CancellationToken>()
+            default
             );
 
         // Assert
