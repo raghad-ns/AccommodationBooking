@@ -4,7 +4,12 @@ namespace AccommodationBooking.Infrastructure.Contexts;
 
 public static class AccommodationBookingContextExtensions
 {
-    public static async Task<TModel> PerformTransaction<TModel>(this AccommodationBookingContext context, Func<IDbContextTransaction, Task<TModel>> callback)
+    public delegate Task<TModel> Transaction<TModel>(IDbContextTransaction transaction);
+
+    public static async Task<TModel> PerformTransaction<TModel>(
+        this AccommodationBookingContext context,
+        Transaction<TModel> callback
+        )
     {
         var transaction = await context.Database.BeginTransactionAsync();
         try

@@ -31,11 +31,7 @@ public class HotelsController : ControllerBase
     {
         var hotels = await _hotelService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
-        return Ok(new PaginatedData<Hotel>
-        {
-            Total = hotels.Total,
-            Data = hotels.Data.Select(hotel => hotel.ToApplication()).ToList().AsReadOnly()
-        });
+        return Ok(hotels.MapValues<Hotel>(hotel => hotel.ToApplication()));
     }
 
     [Authorize()]

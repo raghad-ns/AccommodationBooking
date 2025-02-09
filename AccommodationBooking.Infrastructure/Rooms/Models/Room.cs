@@ -24,7 +24,7 @@ public class Room : AuditEntity
     public string Description { get; set; }
     public IReadOnlyCollection<string> Images { get; }
     public RoomType RoomType { get; set; }
-    public IReadOnlyCollection<Review> Reviews { get; } = Array.Empty<Review>();
+    public IReadOnlyCollection<Review> Reviews { get; } 
 }
 
 internal class RoomEntityTypeConfiguration : IEntityTypeConfiguration<Room>

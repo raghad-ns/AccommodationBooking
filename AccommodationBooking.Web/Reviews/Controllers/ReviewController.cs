@@ -29,11 +29,7 @@ public class ReviewController : ControllerBase
     {
         var reviews = await _reviewService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
-        return Ok(new PaginatedData<Review>
-        {
-            Total = reviews.Total,
-            Data = reviews.Data.Select(review => review.ToApplication()).ToList().AsReadOnly()
-        });
+        return Ok(reviews.MapValues<Review>(review => review.ToApplication()));
     }
 
     [Authorize]

@@ -30,11 +30,7 @@ public class RoomsController : ControllerBase
     {
         var rooms = await _roomService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
-        return Ok(new PaginatedData<Room>
-        {
-            Total = rooms.Total,
-            Data = rooms.Data.Select(room => room.ToApplication()).ToList().AsReadOnly()
-        });
+        return Ok(rooms.MapValues<Room>(room => room.ToApplication()));
     }
 
     [Authorize(Roles = "Admin")]

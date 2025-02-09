@@ -29,11 +29,7 @@ public class CitiesController : ControllerBase
     {
         var cities = await _cityService.Search(page, pageSize, filters.ToDomain(), cancellationToken);
 
-        return Ok(new PaginatedData<City>
-        {
-            Total = cities.Total,
-            Data = cities.Data.Select(city => city.ToApplication()).ToList().AsReadOnly()
-        });
+        return Ok(cities.MapValues<City>(city => city.ToApplication()));
     }
 
     [Authorize(Roles = "Admin")]

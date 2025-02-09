@@ -17,7 +17,7 @@ public class City : AuditEntity
     public string Name { get; set; }
     public string Country { get; set; }
     public string? PostOfficeCode { get; set; }
-    public IReadOnlyCollection<Hotel> Hotels { get; } = Array.Empty<Hotel>();
+    public IReadOnlyCollection<Hotel> Hotels { get; }
 }
 
 internal class CityEntityTypeConfiguration : IEntityTypeConfiguration<City>

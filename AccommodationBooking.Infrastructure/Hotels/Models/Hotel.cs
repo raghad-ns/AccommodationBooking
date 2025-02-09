@@ -22,10 +22,10 @@ public class Hotel : AuditEntity
     public City City { get; set; } // Navigation property
     public int CityId { get; set; } // Foreign key
     public double StarRating { get; set; }
-    public IReadOnlyCollection<string> Images { get; } = Array.Empty<string>();
-    public IReadOnlyCollection<Amenity> Amenities { get; } = Array.Empty<Amenity>();
-    public IReadOnlyCollection<Room> Rooms { get; } = Array.Empty<Room>(); // Navigation property
-    public IReadOnlyCollection<Review> Reviews { get; } = Array.Empty<Review>();
+    public IReadOnlyCollection<string> Images { get; } 
+    public IReadOnlyCollection<Amenity> Amenities { get; } 
+    public IReadOnlyCollection<Room> Rooms { get; } // Navigation property
+    public IReadOnlyCollection<Review> Reviews { get; } 
 }
 
 internal class HotelEntityTypeConfiguration : IEntityTypeConfiguration<Hotel>
